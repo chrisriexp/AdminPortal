@@ -1,0 +1,98 @@
+<?php
+
+use App\Http\Controllers\API\Auth\AuthController;
+use App\Http\Controllers\API\NotebookController;
+use App\Http\Controllers\API\NotificationsController;
+use App\Http\Controllers\API\Pipeline\CommentsController;
+use App\Http\Controllers\API\Pipeline\ProjectsController;
+use App\Http\Controllers\API\Pipeline\TasksController;
+use App\Http\Controllers\API\quickTaskController;
+use App\Http\Controllers\API\SettingsController;
+use App\Http\Controllers\API\Users\UserController;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "api" middleware group. Make something great!
+|
+*/
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+// Update User Theme
+Route::middleware('auth:sanctum')->post('/theme/{theme}', function(Request $request, $theme){
+    $user = User::find($request->user()->id);
+    $user->theme = $theme;
+    $user->save();
+
+    return response()->json(['success'=> true, 'message'=> 'Theme update successful.'], 200);
+});
+
+// Get System Users
+Route::middleware('auth:sanctum')->get('/member-list', [UserController::class, 'member_list']);
+
+// Authentication Routes
+Route::middleware(['auth:sanctum', 'ability:admin,super-admin'])->get('/users', [AuthController::class, 'users']);
+Route::middleware('auth:sanctum')->post('/token/validate', [AuthController::class, 'validateToken']);
+Route::post('/login', [AuthController::class, 'login']);
+// Route::middleware(['auth:sanctum', 'ability:admin,super-admin'])->post('/register', [AuthController::class, 'register']);
+Route::post('/register', [AuthController::class, 'register']);
+
+Route::post('/resetPassword', [AuthController::class, 'resetPassword']);
+Route::middleware('auth:sanctum')->post('/resetEmail', [AuthController::class, 'resetEmail']);
+Route::middleware('auth:sanctum')->get('/logout', [AuthController::class, 'logout']);
+Route::middleware(['auth:sanctum', 'ability:admin,super-admin'])->post('/update', [AuthController::class, 'update']);
+
+// Notebook Routes
+Route::middleware('auth:sanctum')->get('/notebooks/{sort}', [NotebookController::class, 'index']);
+Route::middleware('auth:sanctum')->get('/notebook/new', [NotebookController::class, 'create']);
+Route::middleware('auth:sanctum')->put('/notebook/update/{id}', [NotebookController::class, 'update']);
+Route::middleware('auth:sanctum')->delete('/notebook/{id}', [NotebookController::class, 'drop']);
+Route::middleware('auth:sanctum')->post('/notebook/personal-note', [NotebookController::class, 'personal_note']);
+Route::middleware('auth:sanctum')->post('/notebook/{id}/share', [NotebookController::class, 'share']);
+// Notebook Folders
+Route::middleware('auth:sanctum')->get('/notebooks/folder/{type}/{sort}', [NotebookController::class, 'folder']);
+Route::middleware('auth:sanctum')->post('/notebooks/folder/new', [NotebookController::class, 'new_folder']);
+
+// Quick Task Routes
+Route::middleware('auth:sanctum')->get('/quick-tasks/{filter}', [quickTaskController::class, 'index']);
+Route::middleware('auth:sanctum')->post('/quick-task', [quickTaskController::class, 'create']);
+Route::middleware('auth:sanctum')->delete('/quick-task/{id}', [quickTaskController::class, 'drop']);
+Route::middleware('auth:sanctum')->put('/quick-task/{id}/{type}', [quickTaskController::class, 'update']);
+Route::middleware('auth:sanctum')->put('/quick-task/personal-note', [quickTaskController::class, 'update_personal_note']);
+
+// Pipeline Routes
+// Projects
+Route::middleware('auth:sanctum')->post('/pipeline/project', [ProjectsController::class, 'create']);
+Route::middleware('auth:sanctum')->get('/pipeline/projects', [ProjectsController::class, 'index']);
+Route::middleware('auth:sanctum')->get('/pipeline/project/{id}/details', [ProjectsController::class, 'details']);
+// Sections
+Route::middleware('auth:sanctum')->post('/pipeline/project/section', [ProjectsController::class, 'create_section']);
+// Tasks
+Route::middleware('auth:sanctum')->get('/pipeline/task/{id}', [TasksController::class, 'get']);
+Route::middleware('auth:sanctum')->put('/pipeline/task/{id}', [TasksController::class, 'update']);
+Route::middleware('auth:sanctum')->get('/pipeline/task/{id}/complete', [TasksController::class, 'complete']);
+Route::middleware('auth:sanctum')->post('/pipeline/project/task', [TasksController::class, 'create']);
+Route::middleware('auth:sanctum')->post('/pipeline/my-tasks', [TasksController::class, 'index_my_tasks']);
+Route::middleware('auth:sanctum')->post('/pipeline/project/{id}/tasks', [TasksController::class, 'index']);
+// Task Comments
+Route::middleware('auth:sanctum')->post('/pipeline/comment', [CommentsController::class, 'create']);
+
+// Settings
+Route::middleware('auth:sanctum')->post('/pipeline/settings', [SettingsController::class, 'pipeline']);
+Route::middleware('auth:sanctum')->delete('/pipeline/settings/{type}/{id}', [SettingsController::class, 'delete_pipeline_item']);
+Route::middleware('auth:sanctum')->post('/notebooks/settings', [SettingsController::class, 'notebooks']);
+Route::middleware('auth:sanctum')->delete('/notebooks/settings/folder/{item}', [SettingsController::class, 'delete_notebook_folder']);
+Route::middleware('auth:sanctum')->delete('/notebooks/settings/tags/{id}', [SettingsController::class, 'delete_notebook_tag']);
+
+// Notifications Routes
+Route::middleware('auth:sanctum')->get('/notifications', [NotificationsController::class, 'index']);

@@ -1,0 +1,14 @@
+[
+    {
+        "name": "User Profile",
+        "code": "user"
+    },
+    {
+        "name": "Pipeline",
+        "code": "pipeline"
+    },
+    {
+        "name": "Notebooks",
+        "code": "notebooks"
+    }
+]
