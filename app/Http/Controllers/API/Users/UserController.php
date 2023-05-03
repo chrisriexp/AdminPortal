@@ -29,8 +29,6 @@ class UserController extends Controller
             'id'=> $id,
             'users'=> $users
         ];
-        
-        Log::info($response);
 
         return response()->json($response, 200);
     }
