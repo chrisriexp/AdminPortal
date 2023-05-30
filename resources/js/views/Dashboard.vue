@@ -52,12 +52,16 @@
                     </div>
                 </div>
 
-                <div class="w-full h-fit p-6 grid gap-4">
+                <div v-if="data.quickTasks.length > 0" class="w-full h-fit p-6 grid gap-4">
                     <div @click="currentTask = index" v-for="(task, index) in data.quickTasks" :key="index" :class="[task.important ? 'border-custom-red text-custom-red' : 'border-custom-black text-custom-black', currentTask == index ? (task.important ? 'text-white bg-custom-red' : 'bg-[#F4F4F4] text-custom-black') : 'bg-white text-custom-black']" class=" w-full h-[52px] flex items-center gap-4 px-6 text-[16px] font-medium border-[1px] border-opacity-10 rounded-[2px] cursor-pointer">
                         <Icon @click="currentTask = index; completeTask()" icon="material-symbols:check-circle-rounded" height="24" class="hover:text-custom-green" />
                         <p>{{ task.task }}</p>
                     </div>
                 </div>
+
+                <div v-else class="w-full h-fit">
+                        <LottieAnimation :animationData="NotFoundAnimation" :renderer="'canvas'" :width="'200px'" :height="'200px'" :speed="0.75" class="m-auto" />
+                    </div>
             </div>
         </div>
 
@@ -167,22 +171,28 @@
                         <div class="w-fit h-full flex items-center float-right"><a href="/pipeline/my-tasks" class="flex items-center gap-4 text-custom-purple text-[16px]">View all <Icon :icon="'material-symbols:arrow-back-rounded'" height="20" class="rotate-180" /></a></div>
                     </div>
 
-                    <div class="w-full h-fit px-4 grid grid-cols-3 text-[16px] text-custom-black font-medium border-b-[1px] border-custom-black border-opacity-10">
-                        <p class="opacity-50 col-span-2">Task Name</p>
-                        <p class="opacity-50">Due Date</p>
+                    <div v-if="data.pipeline.recent.length > 0" class="w-full h-fit grid gap-6">
+                        <div class="w-full h-fit px-4 grid grid-cols-3 text-[16px] text-custom-black font-medium border-b-[1px] border-custom-black border-opacity-10">
+                            <p class="opacity-50 col-span-2">Task Name</p>
+                            <p class="opacity-50">Due Date</p>
+                        </div>
+
+                        <!-- Recent Tasks -->
+                        <a v-for="(task, index) in data.pipeline.recent" :key="index" :href="'/pipeline/'+task.project_id+'/'+task.id" class="w-full h-[49px] grid border-[1px] border-custom-black border-opacity-10 bg-white rounded-[2px]">
+                            <div class="w-full h-fit my-auto px-4 grid grid-cols-3">
+                                <div class="w-full h-fit grid col-span-2">
+                                    <p class="truncate pr-4">{{ task.name }}</p>
+                                </div>
+                                <div class="w-full h-fit grid">
+                                    <p :class="moment(task.due_date).isBefore(new Date()) ? 'text-custom-red' : ''" class="truncate pr-4">{{ moment(task.due_date).format('ddd, MMM DD') }}</p>
+                                </div>
+                            </div>
+                        </a>
                     </div>
 
-                    <!-- Recent Tasks -->
-                    <a v-for="(task, index) in data.pipeline.recent" :key="index" :href="'/pipeline/'+task.project_id+'/'+task.id" class="w-full h-[49px] grid border-[1px] border-custom-black border-opacity-10 bg-white rounded-[2px]">
-                        <div class="w-full h-fit my-auto px-4 grid grid-cols-3">
-                            <div class="w-full h-fit grid col-span-2">
-                                <p class="truncate pr-4">{{ task.name }}</p>
-                            </div>
-                            <div class="w-full h-fit grid">
-                                <p :class="moment(task.due_date).isBefore(new Date()) ? 'text-custom-red' : ''" class="truncate pr-4">{{ moment(task.due_date).format('ddd, MMM DD') }}</p>
-                            </div>
-                        </div>
-                    </a>
+                    <div v-else class="w-full h-fit">
+                        <LottieAnimation :animationData="NotFoundAnimation" :renderer="'canvas'" :width="'200px'" :height="'200px'" :speed="0.75" class="m-auto" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -286,11 +296,13 @@ import { Icon } from '@iconify/vue';
 import moment from 'moment';
 
 import carriers from '../../assets/rover_carriers.json'
+import NotFoundAnimation from '../../assets/newNotFound.json'
 
 export default{
     name: "Dashboard",
     data(){
         return {
+            NotFoundAnimation,
             carriers,
             loading: true,
             ready: false,
