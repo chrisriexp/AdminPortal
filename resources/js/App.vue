@@ -21,7 +21,7 @@ export default {
         toggleDark(darkMode)
         document.body.classList.add('bg-custom-gray-bg')
       }else{
-        document.body.classList.add('bg-custom-light-blue')
+        document.body.classList.add('bg-white')
       }
 
       this.$primevue.changeTheme('light-mode', response.data.theme, 'theme-link', () => {});
@@ -69,5 +69,13 @@ input[type="text"]:focus{
 
 input:focus{
   outline: none !important;
+}
+
+.p-editor-container .p-editor-toolbar {
+    background: #fff;
+}
+
+.ql-snow .ql-editor pre.ql-syntax{
+  color: #5BA3E0 !important;
 }
 </style>

@@ -12,15 +12,19 @@ module.exports = {
         'pt-sans': ['PT Sans', 'sans-serif']
       },
       colors: {
+        'custom-purple': '#A778E5',
+        'custom-orange': '#F4812D',
+        'custom-red': '#F42D2D',
+        'custom-green': '#2FA52D',
+        'custom-black': '#212121',
+        'sidebar-bg': '#FBFBFB',
+        'custom-yellow': '#FFC15E',
+
         'custom-blue': '#5080C7',
-        'custom-red': '#F70503',
-        'custom-green': '#31C48D',
         'custom-gray': '#4c4c4c',
         'custom-light-blue': '#EFF3F6',
         'custom-light-blue-bg': '#E8F0FE',
         'custom-dark-blue': '#172340',
-        'custom-orange': '#F59C4A',
-        'custom-yellow': '#F5F06E',
         'custom-bg': '#F5F5F5',
         'custom-light': '#DEDEDE',
         'custom-light-gray': '#939498',

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Helper\NotificationsHelper;
 
 class AuthController extends Controller
 {
@@ -36,6 +37,8 @@ class AuthController extends Controller
             $response = [
                 'valid'=> true,
                 'role'=> $request->user()->role,
+                'react'=> $request->user()->react,
+                'onboarding'=> $request->user()->onboarding,
                 'message'=> 'Token authenticated successfully.'
             ];
 
@@ -134,7 +137,7 @@ class AuthController extends Controller
         // Create User Personal Tasks Project
         $projectInputs = [];
         $projectInputs['owner'] = $input['id'];
-        $projectInputs['name'] = 'Personal Tasks';
+        $projectInputs['name'] = $request->name."'s ".'Personal Tasks';
         $projectInputs['color'] = '#5080C7';
         $projectInputs['members'] = json_encode([$input['id']]);
         $projectInputs['id'] = uniqid('pipeline_project_');
@@ -149,34 +152,34 @@ class AuthController extends Controller
         $deafult_priority = [
             [
                 'name'=> 'High',
-                'color'=> '#FF6361'
+                'color'=> '#F42D2D'
             ],
             [
                 'name'=> 'Medium',
-                'color'=> '#BC5090'
+                'color'=> '#F4812D'
             ],
             [
                 'name'=> 'Normal',
-                'color'=> '#494CA2'
+                'color'=> '#2D94F4'
             ],
             [
                 'name'=> 'Low',
-                'color'=> '#D2D462'
+                'color'=> '#2FA52D'
             ]
         ];
 
         $deafult_progress = [
             [
                 'name'=> 'Not Started',
-                'color'=> '#FF6361'
+                'color'=> '#F42D2D'
             ],
             [
                 'name'=> 'In Progress',
-                'color'=> '#D2D462'
+                'color'=> '#2D88A5'
             ],
             [
                 'name'=> 'Done',
-                'color'=> '#6F975C'
+                'color'=> '#2FA52D'
             ]
         ];
 
@@ -201,6 +204,15 @@ class AuthController extends Controller
             $progress = PipelineProjectProgress::create($item);
             $progress->save();
         }
+
+        (new NotificationsHelper)->sendEmail((object) [
+            "name"=> $user->name,
+            "email"=> $user->email,
+            "system"=> "system",
+            "type"=> "success",
+            "header"=> "New Account Created",
+            "body"=> "Welcome to the Rocket Admin Portal ".$user->name.", your account has just been created. To login to the portal head to - https://admin.rocketflood.com/login, if you have forgotten or need to reset your password you can do so by going to - https://admin.rocketflood.com/reset-password"
+        ]);
 
         $response = [
             'success'=> true,
@@ -232,6 +244,14 @@ class AuthController extends Controller
         if($user){
             $user->password = bcrypt($request->password);
             $user->save();
+
+            (new NotificationsHelper)->createNotification((object) [
+                'user_id'=> $user->id,
+                'header'=> "Password Reset",
+                'body'=> "The password for your account was reset successfully. If you did not request this please reach out to the support team.",
+                'type'=> "success",
+                'system'=> 'system'
+            ]);
 
             $response = [
                 'success'=> true,
@@ -269,8 +289,25 @@ class AuthController extends Controller
         $user = User::where('email', $request->user()->email)->first();
 
         if(Auth('web')->attempt(['email'=> $request->user()->email, 'password'=> $request->password])){
+            (new NotificationsHelper)->sendEmail((object) [
+                'name'=> $user->name,
+                'email'=> $user->email,
+                'header'=> "Email Reset",
+                'body'=> "The email for your account was reset successfully to ".$request->email.". If you did not request this please reach out to the support team.",
+                'type'=> "info",
+                'system'=> 'system'
+            ]);
+
             $user->email = strtolower($request->email);
             $user->save();
+
+            (new NotificationsHelper)->createNotification((object) [
+                'user_id'=> $user->id,
+                'header'=> "Email Reset",
+                'body'=> "The email for your account was reset successfully. If you did not request this please reach out to the support team.",
+                'type'=> "success",
+                'system'=> 'system'
+            ]);
 
             $response = [
                 'success'=> true,

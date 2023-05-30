@@ -102,7 +102,12 @@ class SettingsController extends Controller
             
             return response()->json($response, 200);
         }else{
-            $data = PipelineProjects::where('owner', $request->user()->id)->orderBy('created_at', 'desc')->get();
+            if($request->user()->role == 'super-admin'){
+                $data = PipelineProjects::orderBy('created_at', 'desc')->get();
+            }else{
+                $data = PipelineProjects::where('owner', $request->user()->id)->orderBy('created_at', 'desc')->get();
+            }
+            
             $users = User::orderBy('created_at', 'desc')->get(['name', 'id']);
             $projects = [];
 
@@ -194,7 +199,7 @@ class SettingsController extends Controller
 
             $response = [
                 'success'=> true,
-                'message'=> 'Project priority deleted successfully.'
+                'message'=> 'Project progress deleted successfully.'
             ];
 
             return response()->json($response, 200);
@@ -252,6 +257,13 @@ class SettingsController extends Controller
                     $tag->save();
                 }
             }
+
+            $response = [
+                'success'=> true,
+                'message'=> "Notebooks updated successfully."
+            ];
+
+            return response()->json($response, 200);
 
         }else{
             $folders = json_decode($request->user()->notebook_folders);
@@ -319,7 +331,7 @@ class SettingsController extends Controller
 
         $response = [
             'success'=> true,
-            'message'=> 'Notebook folder deleted successfully.'
+            'message'=> 'Notebook tag deleted successfully.'
         ];
 
         return response()->json($response, 200);

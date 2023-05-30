@@ -1,12 +1,21 @@
 <?php
 
 use App\Http\Controllers\API\Auth\AuthController;
+use App\Http\Controllers\API\Auth\ResetPasswordController;
+use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\API\NotebookController;
 use App\Http\Controllers\API\NotificationsController;
+use App\Http\Controllers\API\Onboarding\Agents;
 use App\Http\Controllers\API\Pipeline\CommentsController;
 use App\Http\Controllers\API\Pipeline\ProjectsController;
 use App\Http\Controllers\API\Pipeline\TasksController;
 use App\Http\Controllers\API\quickTaskController;
+use App\Http\Controllers\API\REACT\CommissionStatementController;
+use App\Http\Controllers\API\REACT\SubAgentController;
+use App\Http\Controllers\API\Reports\OnboardingReports;
+use App\Http\Controllers\API\Reports\REACTReports;
+use App\Http\Controllers\API\Reports\ROVERReports;
+use App\Http\Controllers\API\ROVER\ErrorsController;
 use App\Http\Controllers\API\SettingsController;
 use App\Http\Controllers\API\Users\UserController;
 use App\Models\User;
@@ -39,18 +48,30 @@ Route::middleware('auth:sanctum')->post('/theme/{theme}', function(Request $requ
 
 // Get System Users
 Route::middleware('auth:sanctum')->get('/member-list', [UserController::class, 'member_list']);
+Route::middleware(['auth:sanctum', 'ability:super-admin'])->get('/user/{id}', [UserController::class, 'get_user']);
+// Delete User
+Route::middleware(['auth:sanctum', 'ability:admin,super-admin'])->delete('/user/{id}', [UserController::class, 'drop']);
 
 // Authentication Routes
 Route::middleware(['auth:sanctum', 'ability:admin,super-admin'])->get('/users', [AuthController::class, 'users']);
 Route::middleware('auth:sanctum')->post('/token/validate', [AuthController::class, 'validateToken']);
 Route::post('/login', [AuthController::class, 'login']);
-// Route::middleware(['auth:sanctum', 'ability:admin,super-admin'])->post('/register', [AuthController::class, 'register']);
-Route::post('/register', [AuthController::class, 'register']);
+Route::middleware(['auth:sanctum', 'ability:admin,super-admin'])->post('/register', [AuthController::class, 'register']);
 
-Route::post('/resetPassword', [AuthController::class, 'resetPassword']);
+Route::middleware('auth:sanctum')->post('/resetPassword', [AuthController::class, 'resetPassword']);
 Route::middleware('auth:sanctum')->post('/resetEmail', [AuthController::class, 'resetEmail']);
 Route::middleware('auth:sanctum')->get('/logout', [AuthController::class, 'logout']);
-Route::middleware(['auth:sanctum', 'ability:admin,super-admin'])->post('/update', [AuthController::class, 'update']);
+Route::middleware(['auth:sanctum', 'ability:admin,super-admin'])->post('/user/update', [AuthController::class, 'update']);
+
+// Unauthenticated Password Reset
+Route::get('/reset-password/token/{email}', [ResetPasswordController::class, 'token']);
+Route::post('/reset-password', [ResetPasswordController::class, 'update']);
+
+// Update Email Notifications
+Route::middleware('auth:sanctum')->post('/update/email-notification', [UserController::class, 'email_notification']);
+
+// Dashboard Routes
+Route::middleware('auth:sanctum')->get('/dashboard', [DashboardController::class, 'index']);
 
 // Notebook Routes
 Route::middleware('auth:sanctum')->get('/notebooks/{sort}', [NotebookController::class, 'index']);
@@ -75,17 +96,20 @@ Route::middleware('auth:sanctum')->put('/quick-task/personal-note', [quickTaskCo
 Route::middleware('auth:sanctum')->post('/pipeline/project', [ProjectsController::class, 'create']);
 Route::middleware('auth:sanctum')->get('/pipeline/projects', [ProjectsController::class, 'index']);
 Route::middleware('auth:sanctum')->get('/pipeline/project/{id}/details', [ProjectsController::class, 'details']);
+Route::middleware('auth:sanctum')->delete('/pipeline/project/{id}', [ProjectsController::class, 'drop']);
 // Sections
 Route::middleware('auth:sanctum')->post('/pipeline/project/section', [ProjectsController::class, 'create_section']);
 // Tasks
 Route::middleware('auth:sanctum')->get('/pipeline/task/{id}', [TasksController::class, 'get']);
 Route::middleware('auth:sanctum')->put('/pipeline/task/{id}', [TasksController::class, 'update']);
+Route::middleware('auth:sanctum')->delete('/pipeline/task/{id}', [TasksController::class, 'drop']);
 Route::middleware('auth:sanctum')->get('/pipeline/task/{id}/complete', [TasksController::class, 'complete']);
 Route::middleware('auth:sanctum')->post('/pipeline/project/task', [TasksController::class, 'create']);
 Route::middleware('auth:sanctum')->post('/pipeline/my-tasks', [TasksController::class, 'index_my_tasks']);
 Route::middleware('auth:sanctum')->post('/pipeline/project/{id}/tasks', [TasksController::class, 'index']);
 // Task Comments
 Route::middleware('auth:sanctum')->post('/pipeline/comment', [CommentsController::class, 'create']);
+Route::middleware('auth:sanctum')->delete('/pipeline/comment/{id}', [CommentsController::class, 'drop']);
 
 // Settings
 Route::middleware('auth:sanctum')->post('/pipeline/settings', [SettingsController::class, 'pipeline']);
@@ -96,3 +120,20 @@ Route::middleware('auth:sanctum')->delete('/notebooks/settings/tags/{id}', [Sett
 
 // Notifications Routes
 Route::middleware('auth:sanctum')->get('/notifications', [NotificationsController::class, 'index']);
+
+// REACT Controller
+Route::middleware('auth:sanctum')->post('/react/sub-agents', [SubAgentController::class, 'index']);
+Route::middleware('auth:sanctum')->post('/react/sub-agent', [SubAgentController::class, 'create']);
+Route::middleware('auth:sanctum')->put('/react/sub-agent/{id}', [SubAgentController::class, 'update']);
+Route::middleware('auth:sanctum')->get('/react/commission/check', [CommissionStatementController::class, 'check']);
+Route::middleware('auth:sanctum')->post('/react/commission/upload', [CommissionStatementController::class, 'upload']);
+Route::middleware('auth:sanctum')->get('/react/sub-agent/report/{id}', [SubAgentController::class, 'report']);
+Route::middleware('auth:sanctum')->get('/react/reports', [REACTReports::class, 'index']);
+
+// Onboarding Controller
+Route::middleware('auth:sanctum')->post('/onboarding', [Agents::class, 'index']);
+Route::middleware('auth:sanctum')->get('/onboarding/reports', [OnboardingReports::class, 'index']);
+
+// ROVER Controller
+Route::middleware('auth:sanctum')->post('rover/errors', [ErrorsController::class, 'index']);
+Route::middleware('auth:sanctum')->get('/rover/reports', [ROVERReports::class, 'index']);

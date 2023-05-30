@@ -1,42 +1,38 @@
 <template>
     <Reminders v-if="reminders" @close-reminder="reminders = false" />
 
-    <div class="w-full h-[45px] grid bg-custom-bg dark:bg-custom-dark-bg border-b-[2px] border-custom-dark-blue dark:border-white shadow-customdrop relative">
-        <div class="w-fit h-full flex mx-6 items-center font-semibold text-[14px] text-custom-light-gray dark:text-white">
-            <router-link :to="{name: 'Dashboard'}" :class="active=='dashboard' ? 'bg-custom-dark-blue dark:bg-custom-gray text-white' : 'hover:text-custom-dark-blue dark:hover:bg-custom-gray dark:hover:text-white'" class="h-full px-6 items-center flex gap-2"><i class="pi pi-home"></i>Dashboard</router-link>
-            <router-link :to="{name: 'Notebooks'}" :class="active=='notebooks' ? 'bg-custom-dark-blue dark:bg-custom-gray text-white' : 'hover:text-custom-dark-blue dark:hover:bg-custom-gray dark:hover:text-white'" class="h-full px-6 items-center flex gap-2"><i class="pi pi-file-edit"></i>Notebooks</router-link>
-            <router-link :to="{name: 'Pipeline', params: {project: 'my-tasks'}}" :class="active=='pipeline' ? 'bg-custom-dark-blue dark:bg-custom-gray text-white' : 'hover:text-custom-dark-blue dark:hover:bg-custom-gray dark:hover:text-white'" class="h-full px-6 items-center flex gap-2"><i class="pi pi-sitemap"></i>Pipeline</router-link>
-            <button @click="toggle_modules_menu" aria-haspopup="true" aria-controls="modules_menu" class="h-full px-6 items-center flex gap-2"><i class="pi pi-th-large"></i>Modules</button>
-            <Menu ref="modules_menu" id="modules_menu" :model="module_items" :popup="true" class="font-medium text-[14px] text-custom-light-gray dark:text-white" />
-        </div>
+    <div class="w-full h-[72px] bg-white px-8 flow-root shadow-customdrop border-b-[1px] border-custom-black border-opacity-50 relative">
+        <div class="w-fit h-full float-left flex items-center gap-32">
+            <img src="../../assets/adminLogoLight.png" alt="Logo">
 
-        <div class="w-fit h-full flex gap-4 items-center right-4 absolute text-custom-gray dark:text-white">
-            <!-- Dark Mode Toggle -->
-            <div class="w-fit h-fit flex items-center my-auto gap-2">
-                <InputSwitch @click="themeFromCreated = false" id="darkModeInput" v-model="darkMode" />
-                <p class="text-[14px] font-medium">{{ darkMode ? 'Dark Mode' : 'Light Mode' }}</p>
-                <i :class="darkMode ? 'pi pi-moon' : 'pi pi-sun'"></i>
+            <div class="w-fit h-fit flex items-center gap-6">
+                <router-link :to="{name: 'Dashboard'}" :class="active == 'dashboard' ? 'bg-custom-purple text-white' : 'text-custom-black opacity-50'" class="flex items-center gap-2 px-4 py-[4px] text-[16px] font-medium rounded-[4px]"><Icon :icon="'heroicons:home-solid'" height="24" class="m-auto" /> <span>Dashboard</span></router-link>
+                <router-link :to="{name: 'Notebooks'}" :class="active == 'notebooks' ? 'bg-custom-purple text-white' : 'text-custom-black opacity-50'" class="flex items-center gap-2 px-4 py-[4px] text-[16px] font-medium rounded-[4px]"><Icon :icon="'icon-park-solid:notes'" height="24" class="m-auto" /> <span>Notebooks</span></router-link>
+                <router-link :to="{name: 'Pipeline', params: {project: 'my-tasks'}}" :class="active == 'pipeline' ? 'bg-custom-purple text-white' : 'text-custom-black opacity-50'" class="flex items-center gap-2 px-4 py-[4px] text-[16px] font-medium rounded-[4px]"><Icon :icon="'icon-park-solid:connection-point'" height="24" class="m-auto" /> <span>Pipelines</span></router-link>
+                
+                <button @click="toggle_modules_menu" aria-haspopup="true" aria-controls="modules_menu" :class="active=='modules' ? 'bg-custom-purple text-white' : 'text-custom-black opacity-50'" class="flex items-center gap-2 px-4 py-[4px] text-[16px] font-medium rounded-[4px]"><Icon :icon="'material-symbols:space-dashboard-rounded'" height="24" class="m-auto" />Modules</button>
+                <Menu ref="modules_menu" id="modules_menu" :model="module_items" :popup="true" class="text-[16px] text-custom-black dark:text-white" />
             </div>
-
-            <!-- Profile Menu Popup -->
-            <div @click="toggle" aria-haspopup="true" aria-controls="overlay_menu" class="h-[35px] w-[35px] grid bg-[#dad8d8] rounded-full cursor-pointer shadow-newdrop"><p style="user-select: none;" class="m-auto font-bold font-pt-sans text-custom-dark-blue">{{ initals }}</p></div>
-            <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
         </div>
+
+        <div @click="toggle" aria-haspopup="true" aria-controls="overlay_menu" class="w-fit h-full flex gap-2 items-center float-right cursor-pointer">
+            <div class="w-fit h-fit grid text-[16px] text-custom-black">
+                <p class="font-medium">{{ name }}</p>
+                <p class="opacity-50">{{ role == 'super-admin' ? 'Super Admin' : (role == 'admin' ? 'Admin' : (role == 'user' ? 'User' : '')) }}</p>
+            </div>
+            <div class="w-[48px] h-[48px] grid rounded-full bg-[#C6C6C6]"><p class="m-auto text-[20px] font-bold text-custom-black">{{ initals }}</p></div>
+        </div>
+        <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
     </div>
 </template>
 
 <script>
-import { BellIcon, ChatBubbleBottomCenterTextIcon, InformationCircleIcon, Cog8ToothIcon } from '@heroicons/vue/24/outline';
+import { HomeIcon, DocumentTextIcon, RectangleGroupIcon } from '@heroicons/vue/24/outline';
 
 import Menu from 'primevue/menu';
 import Reminders from '../views/Reminders.vue'
 
-import InputSwitch from 'primevue/inputswitch';
-
-import { useDark, useToggle } from '@vueuse/core';
-
-const isDark = useDark();
-const toggleDark = useToggle(isDark);
+import { Icon } from '@iconify/vue';
 
 export default{
     name: 'Top Nav Menu',
@@ -48,9 +44,9 @@ export default{
     },
     data(){
         return {
+            name: "",
             initals: "",
-            darkMode: false,
-            themeFromCreated: true,
+            role: "",
             profilePopup: false,
             reminders: false,
             items: [
@@ -65,7 +61,7 @@ export default{
                     label: 'Reports',
                     icon: 'pi pi-chart-bar',
                     command: async () => {
-                        
+                        this.$router.push({name: 'Reports', params: {category: 'onboarding'}})
                     }
                 },
                 {
@@ -79,7 +75,7 @@ export default{
                     label: 'Settings',
                     icon: 'pi pi-cog',
                     command: async () => {
-                        this.$router.push({name: 'Settings'})
+                        this.$router.push({name: 'Settings', params: {category: 'user'}})
                     }
                 },
                 {
@@ -99,82 +95,40 @@ export default{
             ],
             module_items: [
                 {
-                    label: 'Onboarding Portal',
+                    label: 'MGA Onboarding',
                     icon: '',
                     command: async () => {
-                        console.log('go to user onboading')
+                        this.$router.push({name: 'Onboarding_Agents'})
                     }
                 },
                 {
                     label: 'ROVER',
                     icon: '',
                     command: async () => {
-                        console.log('go to user rover')
+                        this.$router.push({name: 'ROVER_Errors'})
                     }
                 },
                 {
                     label: 'REACT',
                     icon: '',
                     command: async () => {
-                        console.log('go to user react')
+                        this.$router.push({name: 'REACT_SubAgents'})
                     }
                 }
             ]
         }
     },
     async created(){
+        this.role = this.$route.meta.role
+
         await axios.get('/api/user')
         .then(response => {
             const names = response.data.name.split(" ")
             const i1 = Array.from(names[0])[0]
             const i2 = Array.from(names[1])[0]
             this.initals = i1+i2
-
-            if(response.data.theme == 'dark-mode'){
-                this.darkMode = true
-            }else{
-                toggleDark(false)
-            }
+            this.name = response.data.name
         })
-    },
-    watch: {
-        darkMode: async function(value){
-            toggleDark(value)
-
-            if(value == true){
-                this.$primevue.changeTheme('light-mode', 'dark-mode', 'theme-link', () => {});
-                document.body.classList.remove('bg-custom-light-blue')
-                document.body.classList.add('bg-custom-gray-bg')
-
-                if(!this.themeFromCreated){
-                    await axios.post('/api/theme/dark-mode')
-                    .then(response =>  {
-                        this.$toast.add({
-                            severity: 'success',
-                            summary: 'Theme',
-                            detail: response.data.message,
-                            life: 2500
-                        })
-                    })
-                }
-
-                this.themeFromCreated = true
-            }else{
-                this.$primevue.changeTheme('dark-mode', 'light-mode', 'theme-link', () => {});
-                document.body.classList.remove('bg-custom-gray-bg')
-                document.body.classList.add('bg-custom-light-blue')
-
-                await axios.post('/api/theme/light-mode')
-                .then(response =>  {
-                    this.$toast.add({
-                        severity: 'success',
-                        summary: 'Theme',
-                        detail: response.data.message,
-                        life: 2500
-                    })
-                })
-            }
-        }
     },
     methods: {
         toggle(event){
@@ -185,22 +139,23 @@ export default{
         },
     },
     components: {
-        BellIcon,
-        ChatBubbleBottomCenterTextIcon,
-        InformationCircleIcon,
-        Cog8ToothIcon,
+        HomeIcon,
+        DocumentTextIcon,
+        RectangleGroupIcon,
         Menu,
         Reminders,
-        InputSwitch
+        Icon
     }
 }
 </script>
 
 <style>
-.p-inputswitch.p-focus .p-inputswitch-slider {
-    box-shadow: none !important;
+.p-menu .p-menuitem>.p-menuitem-content .p-menuitem-link:hover{
+    background-color: #F4F4F4 !important;
+    color: #a778e5 !important;
 }
-.p-inputswitch-slider{
-    height: 25px !important;
+
+.p-menu .p-menuitem>.p-menuitem-content .p-menuitem-link:hover .p-menuitem-icon, .p-menu .p-menuitem>.p-menuitem-content .p-menuitem-link:hover .p-menuitem-text {
+    color: #a778e5 !important;
 }
 </style>

@@ -1,0 +1,17 @@
+[
+    {
+        "name": "MGA Onboarding",
+        "code": "onboarding",
+        "icon": "fa-solid:users"
+    },
+    {
+        "name": "ROVER",
+        "code": "rover",
+        "icon": "mdi:error"
+    },
+    {
+        "name": "REACT",
+        "code": "react",
+        "icon": "fa-solid:money-check-alt"
+    }
+]

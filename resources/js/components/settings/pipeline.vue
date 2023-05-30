@@ -1,135 +1,233 @@
 <template>
-    <div class="w-full h-fit grid p-10">
-        <div class="w-full h-fit grid p-4 rounded-[6px] bg-white dark:bg-custom-dark-bg">
-            <div class="w-full h-fit flow-root">
-                <!-- Name -->
-                <div class="w-fit h-fit float-left flex items-center gap-2">
-                    <p>Select Project: </p>
-                    <Dropdown v-model="project" :options="projects" optionLabel="name" class="w-[300px] h-[35px] flex items-center text-[14px]" />
-                </div>
-
-                <!-- Save Information Delete Project -->
-                <div v-if="project.id" class="w-fit h-fit flex items-center gap-4 float-right">
-                    <button @click="updateProject" class="text-[14px] h-[35px] w-fit px-4 bg-custom-dark-blue dark:bg-custom-light-gray-bg text-white rounded-[4px] border-[1px]">Update Projects</button>
-                    <button class="text-[14px] h-[35px] w-fit px-4 bg-custom-gray dark:bg-custom-light-gray-bg text-white rounded-[4px]">Delete Projects</button>
-                </div>
+    <div class="w-full h-fit grid gap-6 pb-12">
+        <!-- Header -->
+        <div class="w-full h-fit flow-root">
+            <div class="w-fit h-full flex items-center float-left">
+                <p class="text-[32px] text-custom-black font-semibold">Pipeline</p>
             </div>
 
-            <div v-if="project.id" class="w-full h-fit mt-8 grid grid-cols-2 gap-8 text-[14px] text-custom-dark-blue dark:text-white">
-                <div class="w-full h-fit grid gap-4">
-                    <!-- Project Name -->
-                    <div class="w-fit h-fit flex items-center gap-2">
-                        <p class="w-[150px]">Name</p>
-                        <InputText v-model="project.name" class="w-[300px] h-[35px] text-[14px]" />
+            <div class="w-fit h-full flex items-center gap-6 float-right">
+                <!-- Delete Project -->
+                <button @click="$emit('deleteProject')" class="w-[206px] h-[48px] grid justify-items-center text-[16px] text-white font-semibold bg-custom-black shadow-newdrop rounded-[4px]">
+                    <div class="w-fit h-fit flex items-center gap-4 my-auto">
+                        <Icon :icon="'fluent:delete-20-filled'" height="24" />
+                        <p>Delete Project</p>
                     </div>
-                    <!-- Project Color -->
-                    <div class="w-fit h-fit flex items-center gap-2">
-                        <p class="w-[150px]"> Color</p>
-                        <!-- <ColorPicker @color-change="updateColor" :color="project.color" :visible-formats="['hex']" class="text-custom-light-gray dark:bg-custom-dark-bg"  /> -->
-                        <div @click="show_projectColor = !show_projectColor" :class="'bg-['+project.color+']'" class="w-[30px] h-[30px] rounded-[4px] cursor-pointer"></div>
-                        <ColorPicker
-                        v-if="show_projectColor"
-                        class="absolute z-40 mt-96 ml-48"
-                        style="width: 220px;"
-                        :theme="theme == 'light-mode' ? 'light' : 'dark'"
-                        :color="project.color"
-                        :sucker-hide="true"
-                        @changeColor="changeColor"
-                        />
-                    </div>
+                </button>
 
-                    <!-- Project Members -->
-                    <div class="w-fit h-fit flex items-center gap-2">
-                        <p class="w-[150px]">Members</p>
-                        <MultiSelect v-model="project.members" :options="users" optionLabel="name" class="w-[300px] h-[35px] text-[14px] flex items-center" />
+                <!-- Update Project -->
+                <button @click="updateProject" class="w-[245px] h-[48px] grid justify-items-center text-[16px] text-white font-semibold bg-custom-purple shadow-newdrop rounded-[4px]">
+                    <div class="w-fit h-fit flex items-center gap-4 my-auto">
+                        <Icon :icon="'ic:round-update'" height="24" />
+                        <p>Update Project</p>
                     </div>
-                </div>
+                </button>
+            </div>
+        </div>
 
-                <div class="w-full h-fit">
-                    <div class="text-[16px] w-full h-fit flow-root">
-                        <p class="float-left">Sections</p>
-                        <button @click="addItem('sectionOptions')" class="float-right flex items-center gap-2"><i class="pi pi-plus"></i>Add Section</button>
-                    </div>
+        <div class="w-fit h-fit grid gap-2">
+            <p class="text-[16px] text-custom-black font-medium">Project Select</p>
 
-                    <div v-for="(section, index) in project.sectionOptions" :key="index" class="w-full h-fit flex items-center gap-4 my-2 px-6 py-2 bg-custom-bg dark:bg-custom-light-gray-bg rounded-[4px]">
-                        <i @click="removeItem('sectionOptions', index)" class="pi pi-trash text-[16px] hover:text-custom-red cursor-pointer"></i>
-                        <p>Name:</p>
-                        <InputText v-model="section.name" class="w-[300px] h-[25px] text-[14px]" />
-                    </div>
+            <div class="w-fit h-fit flex items-center gap-4">
+                <!-- Project Select -->
+                <Dropdown v-model="project" :options="projects" optionLabel="name" class="w-[519px] h-[48px] flex items-center text-[16px]" />
+
+                <!-- Project Color -->
+                <div @click="show_projectColor = !show_projectColor" :class="'bg-['+project.color+']'" class="w-[36px] h-[36px] rounded-full p-[2px] cursor-pointer relative">
+                    <ColorPicker v-if="show_projectColor"
+                    class="absolute z-40 mt-12"
+                    style="width: 220px;"
+                    :theme="theme == 'light-mode' ? 'light' : 'dark'"
+                    :color="project.color"
+                    :sucker-hide="true"
+                    @changeColor="changeColor" />
                 </div>
             </div>
-            
-            <hr class="my-6">
+        </div>
 
-            <div v-if="project.id" class="w-full h-fit grid grid-cols-2 gap-8 text-[14px] text-custom-dark-blue dark:text-white">
-                <div class="w-full h-fit grid gap-6">
-                    <div class="w-full h-fit">
-                        <div class="text-[16px] w-full h-fit flow-root">
-                            <p class="float-left">Priorites</p>
-                            <button @click="addItem('priorityOptions')" class="float-right flex items-center gap-2"><i class="pi pi-plus"></i>Add Priority</button>
+        <div class="w-full h-fit grid grid-cols-2 gap-8">
+            <!-- Project Name -->
+            <div class="w-full h-fit grid gap-2">
+                <p class="text-[16px] text-custom-black font-medium">Name</p>
+                <InputText v-model="project.name" class="w-full h-[48px] text-[16px]" />
+            </div>
+
+            <!-- Project Members -->
+            <div class="w-full h-fit grid gap-2">
+                <p class="text-[16px] text-custom-black font-medium">Members</p>
+                <MultiSelect v-model="project.members" :options="users" optionLabel="name" class="w-full h-[48px] text-[16px] flex items-center" />
+            </div>
+        </div>
+
+        <div class="w-full h-fit grid grid-cols-2 gap-8">
+            <!-- Project Sections -->
+            <div class="w-full h-fit p-4 grid gap-4 bg-white border-[1px] border-custom-black border-opacity-10 rounded-[4px]">
+                <!-- Header -->
+                <div class="w-full h-fit flow-root">
+                    <div class="w-fit h-full flex items-center float-left">
+                        <p class="text-custom-black text-[24px] font-semibold">Sections</p>
+                    </div>
+
+                    <!-- Add Section Button -->
+                    <div class="w-fit h-full flex items-center float-right">
+                        <button @click="addItem('sectionOptions')" class="w-[36px] h-[36px] grid bg-white rounded-[2px] shadow-newdrop">
+                            <Icon :icon="'ic:round-plus'" height="24" class="m-auto text-custom-purple" />
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Project Sections -->
+                <div v-for="(section, index) in project.sectionOptions" :key="index" class="w-full h-[52px] px-4 flex items-center bg-sidebar-bg border-[1px] border-custom-black border-opacity-10 rounded-[2px]">
+                    <div class="w-full h-fit flow-root">
+                        <div class="w-fit h-full flex items-center gap-4 float-left">
+                            <p class="text-[16px] text-custom-black">Name</p>
+                            <!-- Folder Name -->
+                            <InputText v-model="section.name" placeholder="Folder Name" class="w-[223px] h-[32px] mx-auto rounded-[2px]" />
                         </div>
 
-                        <div v-for="(priority, index) in project.priorityOptions" :key="index" class="w-full h-fit flex items-center gap-4 my-2 px-6 py-2 bg-custom-bg dark:bg-custom-light-gray-bg rounded-[4px]">
-                            <i @click="removeItem('priorityOptions', index)" class="pi pi-trash text-[16px] hover:text-custom-red cursor-pointer"></i>
-                            <p>Name:</p>
-                            <InputText v-model="priority.name" class="w-[300px] h-[25px] text-[14px]" />
-                            <div @click="priority.showColorMenu = !priority.showColorMenu" :class="'bg-['+priority.color+']'" class="w-[25px] h-[25px] rounded-[4px] cursor-pointer"></div>
-                            <ColorPicker
-                                v-if="priority.showColorMenu"
-                                class="absolute z-40 mt-96 ml-48"
+                        <div class="w-fit h-full grid float-right">
+                            <!-- Delete Button -->
+                            <button @click="removeItem('sectionOptions', index)" class="w-[36px] h-[36px] grid bg-white rounded-[2px] shadow-newdrop">
+                                <Icon :icon="'fluent:delete-20-filled'" height="24" class="m-auto text-custom-red" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Tags -->
+            <div class="w-full h-fit p-4 grid gap-4 bg-white border-[1px] border-custom-black border-opacity-10 rounded-[4px]">
+                <!-- Header -->
+                <div class="w-full h-fit flow-root">
+                    <div class="w-fit h-full flex items-center float-left">
+                        <p class="text-custom-black text-[24px] font-semibold">Tags</p>
+                    </div>
+
+                    <!-- Add Tag Button -->
+                    <div class="w-fit h-full flex items-center float-right">
+                        <button @click="addItem('tagOptions')" class="w-[36px] h-[36px] grid bg-white rounded-[2px] shadow-newdrop">
+                            <Icon :icon="'ic:round-plus'" height="24" class="m-auto text-custom-purple" />
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Project Tags -->
+                <div v-for="(tag, index) in project.tagOptions" :key="index" class="w-full h-[52px] px-4 flex items-center bg-sidebar-bg border-[1px] border-custom-black border-opacity-10 rounded-[2px]">
+                    <div class="w-full h-fit flow-root">
+                        <div class="w-fit h-full flex items-center gap-4 float-left">
+                            <p class="text-[16px] text-custom-black">Name</p>
+                            <!-- Tag Name -->
+                            <InputText v-model="tag.name" placeholder="Tag Name" class="w-[223px] h-[32px] mx-auto rounded-[2px]" />
+                            <!-- Tag Colors -->
+                            <div @click="tag.showColorMenu = !tag.showColorMenu" :class="'bg-['+tag.color+']'" class="w-[24px] h-[24px] rounded-full p-[2px] cursor-pointer">
+                                <ColorPicker v-if="tag.showColorMenu"
+                                class="absolute z-40 mt-8"
+                                style="width: 220px;"
+                                :theme="theme == 'light-mode' ? 'light' : 'dark'"
+                                :color="tag.color"
+                                :sucker-hide="true"
+                                @changeColor="changeTagColor($event, index)" />
+                            </div>
+                        </div>
+
+                        <div class="w-fit h-full grid float-right">
+                            <!-- Delete Button -->
+                            <button @click="removeItem('tagOptions', index)" class="w-[36px] h-[36px] grid bg-white rounded-[2px] shadow-newdrop">
+                                <Icon :icon="'fluent:delete-20-filled'" height="24" class="m-auto text-custom-red" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full h-fit grid grid-cols-2 gap-8">
+            <!-- Project Progress -->
+            <div class="w-full h-fit p-4 grid gap-4 bg-white border-[1px] border-custom-black border-opacity-10 rounded-[4px]">
+                <!-- Header -->
+                <div class="w-full h-fit flow-root">
+                    <div class="w-fit h-full flex items-center float-left">
+                        <p class="text-custom-black text-[24px] font-semibold">Progress</p>
+                    </div>
+
+                    <!-- Add Progress Button -->
+                    <div class="w-fit h-full flex items-center float-right">
+                        <button @click="addItem('progressOptions')" class="w-[36px] h-[36px] grid bg-white rounded-[2px] shadow-newdrop">
+                            <Icon :icon="'ic:round-plus'" height="24" class="m-auto text-custom-purple" />
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Project Progress -->
+                <div v-for="(item, index) in project.progressOptions" :key="index" class="w-full h-[52px] px-4 flex items-center bg-sidebar-bg border-[1px] border-custom-black border-opacity-10 rounded-[2px]">
+                    <div class="w-full h-fit flow-root">
+                        <div class="w-fit h-full flex items-center gap-4 float-left">
+                            <p class="text-[16px] text-custom-black">Name</p>
+                            <!-- Progress Name -->
+                            <InputText v-model="item.name" placeholder="Progress Name" class="w-[223px] h-[32px] mx-auto rounded-[2px]" />
+                            <!-- Progress Colors -->
+                            <div @click="item.showColorMenu = !item.showColorMenu" :class="'bg-['+item.color+']'" class="w-[24px] h-[24px] rounded-full p-[2px] cursor-pointer">
+                                <ColorPicker v-if="item.showColorMenu"
+                                    class="absolute z-40 mt-8"
+                                    style="width: 220px;"
+                                    :theme="theme == 'light-mode' ? 'light' : 'dark'"
+                                    :color="item.color"
+                                    :sucker-hide="true"
+                                    @changeColor="changeProgressColor($event, index)" />
+                            </div>
+                        </div>
+
+                        <div class="w-fit h-full grid float-right">
+                            <!-- Delete Button -->
+                            <button @click="removeItem('progressOptions', index)" class="w-[36px] h-[36px] grid bg-white rounded-[2px] shadow-newdrop">
+                                <Icon :icon="'fluent:delete-20-filled'" height="24" class="m-auto text-custom-red" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Priority -->
+            <div class="w-full h-fit p-4 grid gap-4 bg-white border-[1px] border-custom-black border-opacity-10 rounded-[4px]">
+                <!-- Header -->
+                <div class="w-full h-fit flow-root">
+                    <div class="w-fit h-full flex items-center float-left">
+                        <p class="text-custom-black text-[24px] font-semibold">Priority</p>
+                    </div>
+
+                    <!-- Add Priority Button -->
+                    <div class="w-fit h-full flex items-center float-right">
+                        <button @click="addItem('priorityOptions')" class="w-[36px] h-[36px] grid bg-white rounded-[2px] shadow-newdrop">
+                            <Icon :icon="'ic:round-plus'" height="24" class="m-auto text-custom-purple" />
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Project Priority -->
+                <div v-for="(priority, index) in project.priorityOptions" :key="index" class="w-full h-[52px] px-4 flex items-center bg-sidebar-bg border-[1px] border-custom-black border-opacity-10 rounded-[2px]">
+                    <div class="w-full h-fit flow-root">
+                        <div class="w-fit h-full flex items-center gap-4 float-left">
+                            <p class="text-[16px] text-custom-black">Name</p>
+                            <!-- Priority Name -->
+                            <InputText v-model="priority.name" placeholder="Priority Name" class="w-[223px] h-[32px] mx-auto rounded-[2px]" />
+                            <!-- Priority Colors -->
+                            <div @click="priority.showColorMenu = !priority.showColorMenu" :class="'bg-['+priority.color+']'" class="w-[24px] h-[24px] rounded-full p-[2px] cursor-pointer">
+                                <ColorPicker v-if="priority.showColorMenu"
+                                class="absolute z-40 mt-8"
                                 style="width: 220px;"
                                 :theme="theme == 'light-mode' ? 'light' : 'dark'"
                                 :color="priority.color"
                                 :sucker-hide="true"
-                                @changeColor="changePriorityColor($event, index)"
-                            />
-                        </div>
-                    </div>
-
-                    <div class="w-full h-fit">
-                        <div class="text-[16px] w-full h-fit flow-root">
-                            <p class="float-left">Progress</p>
-                            <button @click="addItem('progressOptions')" class="float-right flex items-center gap-2"><i class="pi pi-plus"></i>Add Progress</button>
+                                @changeColor="changePriorityColor($event, index)" />
+                            </div>
                         </div>
 
-                        <div v-for="(item, index) in project.progressOptions" :key="index" class="w-full h-fit flex items-center gap-4 my-2 px-6 py-2 bg-custom-bg dark:bg-custom-light-gray-bg rounded-[4px]">
-                            <i @click="removeItem('progressOptions', index)" class="pi pi-trash text-[16px] hover:text-custom-red cursor-pointer"></i>
-                            <p>Name:</p>
-                            <InputText v-model="item.name" class="w-[300px] h-[25px] text-[14px]" />
-                            <div @click="item.showColorMenu = !item.showColorMenu" :class="'bg-['+item.color+']'" class="w-[25px] h-[25px] rounded-[4px] cursor-pointer"></div>
-                            <ColorPicker
-                                v-if="item.showColorMenu"
-                                class="absolute z-40 mt-96 ml-48"
-                                style="width: 220px;"
-                                :theme="theme == 'light-mode' ? 'light' : 'dark'"
-                                :color="item.color"
-                                :sucker-hide="true"
-                                @changeColor="changeProgressColor($event, index)"
-                            />
+                        <div class="w-fit h-full grid float-right">
+                            <!-- Delete Button -->
+                            <button @click="removeItem('priorityOptions', index)" class="w-[36px] h-[36px] grid bg-white rounded-[2px] shadow-newdrop">
+                                <Icon :icon="'fluent:delete-20-filled'" height="24" class="m-auto text-custom-red" />
+                            </button>
                         </div>
-                    </div>
-                </div>
-
-                <div class="w-full h-fit">
-                    <div class="text-[16px] w-full h-fit flow-root">
-                        <p class="float-left">Tags</p>
-                        <button @click="addItem('tagOptions')" class="float-right flex items-center gap-2"><i class="pi pi-plus"></i>Add Tag</button>
-                    </div>
-
-                    <div v-for="(tag, index) in project.tagOptions" :key="index" class="w-full h-fit flex items-center gap-4 my-2 px-6 py-2 bg-custom-bg dark:bg-custom-light-gray-bg rounded-[4px]">
-                        <i @click="removeItem('tagOptions', index)" class="pi pi-trash text-[16px] hover:text-custom-red cursor-pointer"></i>
-                        <p>Name:</p>
-                        <InputText v-model="tag.name" class="w-[300px] h-[25px] text-[14px]" />
-                        <div @click="tag.showColorMenu = !tag.showColorMenu" :class="'bg-['+tag.color+']'" class="w-[25px] h-[25px] rounded-[4px] cursor-pointer"></div>
-                        <ColorPicker
-                            v-if="tag.showColorMenu"
-                            class="absolute z-40 mt-96 ml-48"
-                            style="width: 220px;"
-                            :theme="theme == 'light-mode' ? 'light' : 'dark'"
-                            :color="tag.color"
-                            :sucker-hide="true"
-                            @changeColor="changeTagColor($event, index)"
-                        />
                     </div>
                 </div>
             </div>
@@ -142,10 +240,12 @@ import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import MultiSelect from 'primevue/multiselect';
 import Accordion from 'primevue/accordion';
-import AccordionTab from 'primevue/accordiontab';
-// import { ColorPicker } from 'vue-accessible-color-picker'
+import AccordionTab from 'primevue/accordiontab'
+
 import { ColorPicker } from 'vue-color-kit'
 import 'vue-color-kit/dist/vue-color-kit.css'
+
+import { Icon } from '@iconify/vue';
 
 export default{
     name: "Pipeline Settings",
@@ -162,7 +262,8 @@ export default{
             isSucking: false
         }
     },
-    async mounted(){
+    async mounted() {
+        this.$emit('loading')
         await axios.post('/api/pipeline/settings')
         .then(response => {
             this.projects = response.data.projects
@@ -184,6 +285,9 @@ export default{
 
             project.members = memberArr
         })
+
+        this.project = this.projects[0]
+        this.$emit('loading')
     },
     watch: {
         project: async function (value){
@@ -198,6 +302,8 @@ export default{
             this.project.tagOptions.forEach(item => {
                 item.showColorMenu = false
             })
+
+            this.$router.replace({params: {id: value.id}})
         }
     },
     methods: {
@@ -273,7 +379,8 @@ export default{
         MultiSelect,
         ColorPicker,
         Accordion,
-        AccordionTab
+        AccordionTab,
+        Icon
     }
 }
 </script>

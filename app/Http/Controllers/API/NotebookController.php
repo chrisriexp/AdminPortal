@@ -10,6 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Helper\NotificationsHelper;
 
 class NotebookController extends Controller
 {
@@ -72,6 +73,21 @@ class NotebookController extends Controller
     // Delete Notebook
     public function drop(Request $request, $id){
         $notebook = Notebook::find($id);
+
+        if($notebook->shared && !empty(json_decode($notebook->shared))){
+            $sharedWith = json_decode($notebook->shared);
+
+            foreach ($sharedWith as $user){
+                (new NotificationsHelper)->createNotification((object) [
+                    'user_id'=> $user,
+                    'header'=> 'Notebook Deleted',
+                    'body'=> 'The notebook "'.$notebook->title.'" has been deleted.',
+                    'type'=> 'info',
+                    'system'=> 'notebooks'
+                ]);
+            }
+        }
+
         $notebook->delete();
 
         $response = [
@@ -93,6 +109,8 @@ class NotebookController extends Controller
             $sharedNotebooks = [];
             foreach($notebooks as $notebook){
                 if($notebook->shared && in_array($request->user()->id, json_decode($notebook->shared))){
+                    $notebook_owner = User::find($notebook->user);
+                    $notebook->owner = $notebook_owner->name;
                     array_push($sharedNotebooks, $notebook);
                 }
             }
@@ -170,6 +188,7 @@ class NotebookController extends Controller
 
         foreach($request->users as $user){
             array_push($share_ids, $user['id']);
+
         }
 
         if($notebook->shared){
@@ -184,21 +203,13 @@ class NotebookController extends Controller
         // Create Notification for Each User the Notebook was Shared with who isnt already shared with
         foreach($share_ids as $user){
             if(!in_array($user, $currentShared)){
-                $notificationInputs = [];
-
-                $notificationInputs['user_id'] = $user;
-                $notificationInputs['header'] = "Notebook Shared";
-                $notificationInputs['body'] = $request->user()->name." shared a notebook with you '".$notebook->title."'";
-                $notificationInputs['type'] = "info";
-                $notificationInputs['system'] = "notebooks";
-
-                $notificationInputs['id'] = uniqid('notification_');
-                while(Notifications::where('id', $notificationInputs['id'])->exists()){
-                    $notificationInputs['id'] = uniqid('notification_');
-                }
-
-                $notification = Notifications::create($notificationInputs);
-                $notification->save();
+                (new NotificationsHelper)->createNotification((object) [
+                    "user_id"=> $user,
+                    "header"=> "Notebook Shared",
+                    "body"=> $request->user()->name.' shared notebook "'.$notebook->title.'" with you. You can access this notebook under the "Shared" folder.',
+                    "type"=> "info",
+                    "system"=> "notebooks"
+                ]);
             }
         }
 

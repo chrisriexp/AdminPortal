@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import LoadingAnimation from '../../assets/cpuLoading.json'
+import LoadingAnimation from '../../assets/loading_prism.json'
 
 export default {
   name: "loading",

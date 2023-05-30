@@ -1,25 +1,93 @@
 <template>
-    <!-- Loading -->
-    <div v-if="loading" class="w-full h-full grid bg-[#3F3F3F] bg-opacity-[26%] z-50 absolute ml-[-67px] rounded-[5px]">
-        <div class="w-full h-full grid mt-[10%]">
-            <LottieAnimation :animationData="LoadingAnimation" :width="'250px'" :height="'250px'" :speed="1" class="m-auto" />
-        </div>
-    </div>
+    <div class="w-full h-full grid overflow-y-scroll">
+        <!-- Notifications Quick View -->
+        <div v-if="view == 'all'" class="w-full h-fit grid grid-cols-2 gap-6 p-2">
+            <!-- Left Side Systems -->
+            <div class="w-full h-fit grid gap-4">
+                <div v-for="(system, index) in systems" :key="index" class="w-full h-fit grid col gap-6">
+                    <div v-if="index % 2 == 0 ? true : false" class="w-full h-fit grid gap-4 p-4 text-custom-black bg-white rounded-[4px] shadow-newdrop">
+                        <div class="w-full h-full flow-root">
+                            <!-- System Name -->
+                            <div class="w-fit h-full flex items-center gap-4 float-left">
+                                <Icon :icon="systemIcons[system]" height="24" class="text-custom-purple" />
+                                <p class="text-[24px] font-medium">{{ names[system] }}</p>
+                            </div>
 
-    <div class="w-full h-fit max-h-[700px] p-4 flex flex-wrap gap-6 overflow-y-scroll">
-        <div v-for="(system, index) in systems" :key="index" class="w-[425px] h-[500px] grid gap-4 p-4 border-[1px] border-custom-light dark:border-custom-gray bg-custom-bg dark:bg-custom-dark-bg rounded-[4px]">
-            <div class="w-full h-fit flow-root text-custom-light-gray font-medium text-[16px]">
-                <p class="float-left">{{ system }} notifications</p>
-                <p class="flex items-center gap-2 float-right cursor-pointer">View All<i class="pi pi-arrow-circle-right"></i></p>
+                            <!-- View all system Notifications -->
+                            <div class="w-fit h-full flex items-center float-right">
+                                <button @click="view = system" class="w-fit h-fit  text-[16px] text-custom-purple flex items-center gap-4">View all <Icon :icon="'material-symbols:arrow-back-rounded'" height="20" class="text-custom-purple rotate-180" /></button>
+                            </div>
+                        </div>
+
+                        <div v-for="(notification, notificationIndex) in notifications[system].slice(0,3)" :key="notificationIndex" class="w-full h-fit grid gap-2 p-4 pb-10 pl-6 bg-opacity-[8%] shadow-newdrop rounded-[2px] relative" :class="notification.type == 'success' ? 'bg-custom-green' : (notification.type == 'error' ? 'bg-custom-red' : 'bg-custom-orange')">
+                            <div class="h-full w-[6px] rounded-tl-[2px] rounded-bl-[2px] left-0 absolute" :class="notification.type == 'success' ? 'bg-custom-green' : (notification.type == 'error' ? 'bg-custom-red' : 'bg-custom-orange')"></div>
+
+                            <div class="w-fit h-fit flex items-center gap-4">
+                                <Icon :icon="notificationIcons[notification.type]" height="24" :class="notification.type == 'success' ? 'text-custom-green' : (notification.type == 'error' ? 'text-custom-red' : 'text-custom-orange')" />
+                                <p class="text-[16px] font-medium">{{ notification.header }}</p>
+                            </div>
+
+                            <p class="text-[14px]">{{ notification.body }}</p>
+
+                            <p class="text-[12px] opacity-50 right-4 bottom-4 absolute">{{ moment(notification.created_at).format('ddd MMM Do YYYY, h:mm a') }}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="w-full h-[400px] grid overflow-y-scroll">
-                <div class="w-full h-fit grid gap-4">
-                    <div  @click="read(notification.id, index)" v-for="(notification, notificationIndex) in notifications[system]" :key="notificationIndex" class="w-full h-fit p-2 grid gap-2 text-custom-gray dark:text-white text-[14px] bg-white dark:bg-custom-light-gray-bg border-[1px] border-custom-red rounded-[4px] cursor-pointer">
-                        <p class="text-custom-light-gray float-left font-medium">{{ notification.header }}</p>
-                        <p class="text-custom-dark-blue dark:text-white">{{ notification.body }}</p>
-                        <p class="float-right font-light">{{ moment(notification.created_at).format('dddd, MMMM Do YYYY, h:mm a') }}</p>
+            <!-- Right Side Systems -->
+            <div class="w-full h-fit grid gap-4">
+                <div v-for="(system, index) in systems" :key="index" class="w-full h-fit grid col gap-6">
+                    <div v-if="index % 2 == 0 ? false : true" :class="index == 1 ? 'mt-[-15px]' : ''" class="w-full h-fit grid gap-4 p-4 text-custom-black bg-white rounded-[4px] shadow-newdrop">
+                        <div class="w-full h-full flow-root">
+                            <!-- System Name -->
+                            <div class="w-fit h-full flex items-center gap-4 float-left">
+                                <Icon :icon="systemIcons[system]" height="24" class="text-custom-purple" />
+                                <p class="text-[24px] font-medium">{{ names[system] }}</p>
+                            </div>
+
+                            <!-- View all system Notifications -->
+                            <div class="w-fit h-full flex items-center float-right">
+                                <button @click="view = system" class="w-fit h-fit  text-[16px] text-custom-purple flex items-center gap-4">View all <Icon :icon="'material-symbols:arrow-back-rounded'" height="20" class="text-custom-purple rotate-180" /></button>
+                            </div>
+                        </div>
+
+                        <div v-for="(notification, notificationIndex) in notifications[system].slice(0,3)" :key="notificationIndex" class="w-full h-fit grid gap-2 p-4 pb-10 pl-6 bg-opacity-[8%] shadow-newdrop rounded-[2px] relative" :class="notification.type == 'success' ? 'bg-custom-green' : (notification.type == 'error' ? 'bg-custom-red' : 'bg-custom-orange')">
+                            <div class="h-full w-[6px] rounded-tl-[2px] rounded-bl-[2px] left-0 absolute" :class="notification.type == 'success' ? 'bg-custom-green' : (notification.type == 'error' ? 'bg-custom-red' : 'bg-custom-orange')"></div>
+
+                            <div class="w-fit h-fit flex items-center gap-4">
+                                <Icon :icon="notificationIcons[notification.type]" height="24" :class="notification.type == 'success' ? 'text-custom-green' : (notification.type == 'error' ? 'text-custom-red' : 'text-custom-orange')" />
+                                <p class="text-[16px] font-medium">{{ notification.header }}</p>
+                            </div>
+
+                            <p class="text-[14px]">{{ notification.body }}</p>
+
+                            <p class="text-[12px] opacity-50 right-4 bottom-4 absolute">{{ moment(notification.created_at).format('ddd MMM Do YYYY, h:mm a') }}</p>
+                        </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- All Notifications View -->
+        <div v-else class="w-full h-fit grid gap-4">
+            <div class="w-fit h-fit flex items-center gap-6">
+                <button @click="view = 'all'" class="w-[24px] h-[24px] grid bg-white rounded-[2px] shadow-newdrop"><Icon :icon="'material-symbols:arrow-back-rounded'" height="18" class="text-custom-purple m-auto" /></button>
+                <p class="text-[16px] font-medium text-custom-black">Notification/<span class="text-custom-purple">{{ names[view] }}</span></p>
+            </div>
+        
+            <div class="w-fll h-fit grid gap-4 p-4 bg-white rounded-[4px] border-[1px] border-custom-black border-opacity-10">
+                <div v-for="(notification, notificationIndex) in notifications[view]" :key="notificationIndex" class="w-full h-fit grid gap-2 p-4 pb-10 pl-6 bg-opacity-[8%] shadow-newdrop rounded-[2px] relative" :class="notification.type == 'success' ? 'bg-custom-green' : (notification.type == 'error' ? 'bg-custom-red' : 'bg-custom-orange')">
+                    <div class="h-full w-[6px] rounded-tl-[2px] rounded-bl-[2px] left-0 absolute" :class="notification.type == 'success' ? 'bg-custom-green' : (notification.type == 'error' ? 'bg-custom-red' : 'bg-custom-orange')"></div>
+
+                    <div class="w-fit h-fit flex items-center gap-4">
+                        <Icon :icon="notificationIcons[notification.type]" height="24" :class="notification.type == 'success' ? 'text-custom-green' : (notification.type == 'error' ? 'text-custom-red' : 'text-custom-orange')" />
+                        <p class="text-[16px] font-medium">{{ notification.header }}</p>
+                    </div>
+
+                    <p class="text-[14px]">{{ notification.body }}</p>
+
+                    <p class="text-[12px] opacity-50 right-4 bottom-4 absolute">{{ moment(notification.created_at).format('ddd MMM Do YYYY, h:mm a') }}</p>
                 </div>
             </div>
         </div>
@@ -29,19 +97,38 @@
 <script>
 import LoadingAnimation from '../../../assets/cpuLoading.json'
 import moment from 'moment'
+import { Icon } from '@iconify/vue';
 
 export default {
     name: "Reminder Notifications",
     data(){
         return {
-            loading: false,
             moment,
             LoadingAnimation,
             notifications: {},
-            systems: []
+            systems: [],
+            view: 'all',
+            systemIcons: {
+                'system': 'gala:settings',
+                'pipeline': 'icon-park-solid:connection-point',
+                'notebooks': 'icon-park-solid:notes',
+                'react': 'heroicons-solid:document-report'
+            },
+            names: {
+                'system': 'System',
+                'pipeline': 'Pipeline',
+                'notebooks': 'Notebooks',
+                'react': "REACT"
+            },
+            notificationIcons: {
+                'info': 'mdi:information-variant-circle',
+                'success': 'material-symbols:check-circle-rounded',
+                'error': 'mdi:error'
+            }
         }
     },
     async mounted(){
+        this.$emit('loading')
         this.moment = moment
 
         await axios.get('/api/notifications')
@@ -49,6 +136,10 @@ export default {
             this.systems = Object.keys(response.data.notifications)
             this.notifications = response.data.notifications
         })
+        this.$emit('loading')
+
+        console.log(this.systems)
+        console.log(this.notifications)
     },
     methods: {
         async read(id){
@@ -62,6 +153,9 @@ export default {
                 })
             })
         }
+    },
+    components: {
+        Icon
     }
 }
 </script>

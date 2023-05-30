@@ -1,0 +1,666 @@
+{
+    "aon": {
+        "name": "AON Edge",
+        "type": "API",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/test/aonedge-api/",
+            "MGA": "https://backend.agentportal.rocketmga.com/api/test/aonedge-api/"
+        }
+    },
+    "beyond": {
+        "name": "Beyond Flood",
+        "type": "API",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/test/beyond-flood-api/",
+            "MGA": "https://backend.agentportal.rocketmga.com/api/test/beyond-flood-api/"
+        }
+    },
+    "cat": {
+        "name": "Cat Coverage",
+        "type": "API",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/test/cat-coverage-api/",
+            "MGA": null
+        }
+    },
+    "dual": {
+        "name": "Dual Flood",
+        "type": "API",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/test/dual-flood-api/",
+            "MGA": "https://backend.agentportal.rocketmga.com/api/test/dual-flood-api/"
+        }
+    },
+    "flow": {
+        "name": "Flow Flood",
+        "type": "API",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/test/flow-flood-api/",
+            "MGA": "https://backend.agentportal.rocketmga.com/api/test/flow-flood-api/"
+        }
+    },
+    "frs": {
+        "name": "Flood Risk Solutions",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/test/flood-risk-api/",
+            "MGA": null
+        }
+    },
+    "hippo": {
+        "name": "Hippo",
+        "type": "API",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/test/hippo-api/",
+            "MGA": null
+        }
+    },
+    "johnson": {
+        "name": "Johnson and Johnson",
+        "type": "API",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/test/jj-flood-api/",
+            "MGA": null
+        }
+    },
+    "neptune": {
+        "name": "Neptune",
+        "type": "API",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/test/neptune-api/",
+            "MGA": "https://backend.agentportal.rocketmga.com/api/test/neptune-api/"
+        }
+    },
+    "palomar": {
+        "name": "Palomar",
+        "type": "API",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/test/palomar-api/",
+            "MGA": "https://backend.agentportal.rocketmga.com/api/test/palomar-api/"
+        }
+    },
+    "pmf": {
+        "name": "Private Market Flood",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "sterling": {
+        "name": "Sterling",
+        "type": "API",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/test/sterling-api/",
+            "MGA": "https://backend.agentportal.rocketmga.com/api/test/sterling-api/"
+        }
+    },
+    "superior": {
+        "name": "Superior Flood",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "tower": {
+        "name": "Tower Hill",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "wright-resi": {
+        "name": "Wright - ResiFlood",
+        "type": "API",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/test/resi-flood-api/",
+            "MGA": "https://backend.agentportal.rocketmga.com/api/test/resi-flood-api/"
+        }
+    },
+    "wright-nfip": {
+        "name": "Wright - NFIP",
+        "type": "API",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/test/wright-nfip-api/",
+            "MGA": "https://backend.agentportal.rocketmga.com/api/test/resi-flood-api/"
+        }
+    },
+    "wright-hiscox": {
+        "name": "Wright - Hiscox",
+        "type": "API",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/test/wright-hiscox-api/",
+            "MGA": "https://backend.agentportal.rocketmga.com/api/test/wright-hiscox-api/"
+        }
+    },
+    "allstate": {
+        "name": "Allstate",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "amer-risk": {
+        "name": "American Risk",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "amer-inte": {
+        "name": "American Integrity",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "amer-modern": {
+        "name": "American Modern",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "asi": {
+        "name": "ASI",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "amer-tra": {
+        "name": "American Traditions",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "aspen": {
+        "name": "Aspen",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "avatar": {
+        "name": "Avatar",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "bankers": {
+        "name": "Bankers",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "bristol": {
+        "name": "Bristol West",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "centauri": {
+        "name": "Centauri",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "citizens": {
+        "name": "Citizens",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "cypress": {
+        "name": "Cypress",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "dairy": {
+        "name": "Dairyland",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "edison": {
+        "name": "Edison",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "fed-nat": {
+        "name": "Federated National",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "fl-fam": {
+        "name": "Florida Family",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "fl-pen": {
+        "name": "Florida Peninsula",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "foremost": {
+        "name": "Foremost",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "frontline": {
+        "name": "Frontline",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "gainsco": {
+        "name": "Gainsco",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "geovera": {
+        "name": "Geovera",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "guard": {
+        "name": "Guard",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "heritage": {
+        "name": "Heritage",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "hippo-home": {
+        "name": "Hippo - Home",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "home-choice": {
+        "name": "Homeowners Choice",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "home-amer": {
+        "name": "Homeowners of America",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "infinity": {
+        "name": "Infinity",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "kemper": {
+        "name": "Kemper",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "kingstone": {
+        "name": "Kingstone",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "lemonade": {
+        "name": "Lemonade",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "lighthouse": {
+        "name": "Lighthouse",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "maip": {
+        "name": "MAIP",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "maison": {
+        "name": "Maison",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "mercury": {
+        "name": "Mercury",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "metlife": {
+        "name": "Metlife",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "mission": {
+        "name": "Mission Select",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "narr-bay": {
+        "name": "Narraganset Bay",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "nat-gen": {
+        "name": "National General",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "nationwide": {
+        "name": "Nationwide",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "olympus": {
+        "name": "Olympus",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "ocean-harbor": {
+        "name": "Ocean Harbor",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "occidental": {
+        "name": "Occidental",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "ppl-trust": {
+        "name": "Peoples Trust",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "plym-rock": {
+        "name": "Plymouth Rock",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "progressive": {
+        "name": "Progressive",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "safeco": {
+        "name": "Safeco",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "safepoint": {
+        "name": "Safepoint",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "sagesure": {
+        "name": "SageSure Companies",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "security": {
+        "name": "Security First",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "south-fid": {
+        "name": "Southern Fidelity",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "south-oak": {
+        "name": "Southern Oak",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "spinnaker": {
+        "name": "Spinnaker",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "st-johns": {
+        "name": "St. Johns",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "stillwater": {
+        "name": "Stillwater",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "swyfft": {
+        "name": "Swyfft",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "tower-hill-comp": {
+        "name": "Tower Hill Companies",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "travelers": {
+        "name": "Travelers",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "typtap": {
+        "name": "TypTap",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "univ-na": {
+        "name": "Universal North America",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "univ-pc": {
+        "name": "Universal P&C",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "united-pc": {
+        "name": "United P&C",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "united-auto": {
+        "name": "Unite Auto",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "velocity": {
+        "name": "Velocity",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "wellington": {
+        "name": "Wellington",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    },
+    "willshire": {
+        "name": "Willshire",
+        "type": "BOT",
+        "backend": {
+            "RA": "https://agent.rocketflood.com/backend/api/bot/flood/get-applications?application_id=",
+            "MGA": null
+        }
+    }
+}

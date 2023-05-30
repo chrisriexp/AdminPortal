@@ -1,79 +1,104 @@
 <template>
-    <div class="w-[1200px] h-fit grid grid-cols-2 gap-10 p-10 bg-custom-bg dark:bg-custom-light-gray-bg rounded-[5px] border-[1px] border-custom-light-gray">
-        <div class="w-full h-fit grid gap-4 text-[16px] text-custom-light-gray dark:text-white font-medium">
-            <div class="w-full h-fit grid grid-cols-2 gap-6">
-                <button @click="createTask()" class="py-[4px] text-white font-medium bg-custom-dark-blue dark:bg-custom-dark-bg border-[1px] border-transparent dark:border-custom-gray rounded-[4px]">Create Task</button>
-
-                <button @click="$emit('close')" class="py-[4px] text-custom-light-gray font-medium hover:bg-custom-light dark:hover:bg-custom-gray dark:hover:bg-opacity-20 rounded-[4px]">Discard</button>
+    <div class="w-fit h-fit grid gap-6 p-10 bg-sidebar-bg rounded-[4px] shadow-newdrop">
+        <div class="w-full h-fit flow-root">
+            <div class="w-fit h-full flex items-center text-[32px] text-custom-black font-semibold float-left">
+                <p>Create Task</p>
             </div>
-            
-            <Dropdown v-model="task.project" :options="projects" optionLabel="name" placeholder="Select Project *" class="w-full h-[40px] flex items-center" />
-            
-            <InputText :disabled="task.project.name ? false : true" id="project_name" v-model="task.name" placeholder="Task Name *" class="h-[40px] w-full text-" />
 
-            <Dropdown :disabled="task.project.name ? false : true" v-model="task.section" :options="sections" optionLabel="name" placeholder="Select Section" class="w-full h-[40px] flex items-center" />
+            <!-- Close Create Task -->
+            <div @click="$emit('close')" class="h-[39px] w-[39px] grid bg-white rounded-[2px] float-right shadow-newdrop cursor-pointer"><XMarkIcon class="h-[24px] m-auto text-custom-red" /></div>
+        </div>
 
-            <div class="w-full h-fit grid grid-cols-2 gap-6">
-                <div class="w-full h-fit grid gap-4">
-                    <Dropdown :disabled="task.project.name ? false : true" v-model="task.assigned" :options="members" optionLabel="name" placeholder="Assigned to" class="w-full h-[40px] flex items-center" />
-                    <Calendar :disabled="task.project.name ? false : true" showIcon v-model="task.due_date" dateFormat="yy-mm-dd" placeholder="Due Date" class="w-full hidden" />
-                </div>
+        <!-- Task Informatio -->
+        <div class="w-full h-fit grid grid-cols-2 gap-4">
+            <div class="w-[540px] h-full grid">
+                <!-- Project Select -->
+                <Dropdown v-model="task.project" :options="projects" optionLabel="name" class="w-full h-[48px] flex items-center" >
+                    <template #value="slotProps">
+                        <div class="flex gap-2 items-center">
+                            <p class="flex items-center gap-2"><span class="text-[16px] opacity-80 text-custom-black  flex items-center gap-2"><PuzzlePieceIcon class="h-[24px]" />Project:</span> {{ slotProps.value.name }}</p>
+                        </div>
+                    </template>
+                </Dropdown>
 
-                <div class="w-full h-fit grid gap-4">
-                    <Dropdown :disabled="task.project.name ? false : true" v-model="task.priority" :options="priorityOptions" optionLabel="name" placeholder="Priority" class="w-full h-[40px] flex items-center" >
-                        <template #value="slotProps">
-                            <div v-if="slotProps.value" class="flex align-items-center">
-                                <div :class="'bg-['+slotProps.value.color+']'" class="px-4 rounded-full text-white">{{ slotProps.value.name }}</div>
-                            </div>
-                            <span v-else>
-                                {{ slotProps.placeholder }}
-                            </span>
-                        </template>
-                        
-                        <template #option="slotProps">
-                            <div class="flex align-items-center">
-                                <div :class="'bg-['+slotProps.option.color+']'" class="px-4 rounded-full text-white">{{ slotProps.option.name }}</div>
-                            </div>
-                        </template> 
-                    </Dropdown>
+                <!-- Task Name -->
+                <InputText :disabled="task.project_id ? false : true" v-model="task.name" placeholder="Task Name *" class="h-[48px] w-full" />
 
+                <!-- Section Select -->
+                <Dropdown :disabled="task.project_id ? false : true" v-model="task.section" :options="sections" optionLabel="name" class="w-full h-[48px] flex items-center disabled:bg-custom-bg" >
+                    <template #value="slotProps">
+                        <div class="flex gap-2 items-center">
+                            <p class="flex items-center gap-2"><span class="text-[16px] opacity-80 text-custom-black  flex items-center gap-2"><FolderIcon class="h-[24px]" />Section:</span> {{ slotProps.value.name }}</p>
+                        </div>
+                    </template>
+                </Dropdown>
 
-                    <Dropdown :disabled="task.project.name ? false : true" v-model="task.progress" :options="progressOptions" optionLabel="name" placeholder="Progress" class="w-full h-[40px] flex items-center" >
-                        <template #value="slotProps">
-                            <div v-if="slotProps.value" class="flex align-items-center">
-                                <div :class="'bg-['+slotProps.value.color+']'" class="px-4 rounded-full text-white">{{ slotProps.value.name }}</div>
-                            </div>
-                            <span v-else>
-                                {{ slotProps.placeholder }}
-                            </span>
-                        </template>
-                        
-                        <template #option="slotProps">
-                            <div class="flex align-items-center">
-                                <div :class="'bg-['+slotProps.option.color+']'" class="px-4 rounded-full text-white">{{ slotProps.option.name }}</div>
-                            </div>
-                        </template> 
-                    </Dropdown>
-                </div>
-            </div>
-            
-            <div class="w-full h-fit flex items-center gap-2">
-                <p>Tags:</p>
-                <MultiSelect :disabled="task.project.name ? false : true" v-model="task.tags" display="chip" :options="tags" optionLabel="name" class="w-[400px] h-[40px] text-[12px] flex items-center" >
+                <!-- Assigned To -->
+                <Dropdown :disabled="task.project_id ? false : true" v-model="task.assigned" :options="members" optionLabel="name" class="w-full h-[48px] flex items-center disabled:bg-custom-bg" >
+                    <template #value="slotProps">
+                        <div class="flex gap-2 items-center">
+                            <p class="flex items-center gap-2"><span class="text-[16px] opacity-80 text-custom-black  flex items-center gap-2"><UserCircleIcon class="h-[24px]" />Assigned To:</span> {{ slotProps.value.name }}</p>
+                        </div>
+                    </template>
+                </Dropdown>
+
+                <Calendar :disabled="task.project.name ? false : true" showIcon v-model="task.due_date" dateFormat="yy-mm-dd" placeholder="Due Date" class="w-full h-[48px]" />
+
+                <!-- Priority -->
+                <Dropdown :disabled="task.project_id ? false : true" v-model="task.priority" :options="priorityOptions" optionLabel="name" class="w-full h-[48px] flex items-center disabled:bg-custom-bg" >
+                    <template #value="slotProps">
+                        <div class="flex gap-2 items-center">
+                            <p class="flex items-center gap-2"><span class="text-[16px] opacity-80 text-custom-black  flex items-center gap-2"><ExclamationTriangleIcon class="h-[24px]" />Priority:</span> <span :class="'bg-['+slotProps.value.color+']'" class="px-4 text-[14px] rounded-full text-white">{{ slotProps.value.name }}</span></p>
+                        </div>
+                    </template>
+                    <template #option="slotProps">
+                        <div class="flex align-items-center">
+                            <div :class="'bg-['+slotProps.option.color+']'" class="px-4 text-[14px] rounded-full text-white">{{ slotProps.option.name }}</div>
+                        </div>
+                    </template> 
+                </Dropdown>
+
+                <!-- Progress -->
+                <Dropdown :disabled="task.project_id ? false : true" v-model="task.progress" :options="progressOptions" optionLabel="name" class="w-full h-[48px] flex items-center disabled:bg-custom-bg" >
+                    <template #value="slotProps">
+                        <div class="flex gap-2 items-center">
+                            <p class="flex items-center gap-2"><span class="text-[16px] opacity-80 text-custom-black  flex items-center gap-2"><MapPinIcon class="h-[24px]" />Progress:</span> <span :class="'bg-['+slotProps.value.color+']'" class="px-4 text-[14px] rounded-full text-white">{{ slotProps.value.name }}</span></p>
+                        </div>
+                    </template>
+                    <template #option="slotProps">
+                        <div class="flex align-items-center">
+                            <div :class="'bg-['+slotProps.option.color+']'" class="px-4 text-[14px] rounded-full text-white">{{ slotProps.option.name }}</div>
+                        </div>
+                    </template> 
+                </Dropdown>
+
+                <!-- Tags -->
+                <MultiSelect :disabled="task.project_id ? false : true" v-model="task.tags" :options="tags" optionLabel="name" placeholder="Projects" class="w-full h-[48px] flex items-center" >
+                    <template #value="">
+                        <div class="flex gap-2 items-center">
+                            <p class="flex items-center gap-2"><span class="text-[16px] opacity-80 text-custom-black  flex items-center gap-2"><TagIcon class="h-[24px]" />Tags</span></p>
+                        </div>
+                    </template>
+
                     <template #option="slotProps">
                         <div class="flex gap-2 items-center">
-                            <div :class="'bg-['+slotProps.option.color+']'" class="px-4 rounded-full text-white">{{ slotProps.option.name }}</div>
+                            <div :class="'bg-['+slotProps.option.color+']'" class="px-4 text-[14px] rounded-full text-white">{{ slotProps.option.name }}</div>
                         </div>
                     </template>
                 </MultiSelect>
             </div>
 
-            <div class="w-full h-fit flex flex-wrap items-center gap-4">
-                <p v-for="(tag, index) in task.tags" :key="index" :class="'bg-['+tag.color+']'" class="w-fit h-fit px-4 text-[14px] font-bold text-white rounded-full">{{ tag.name }}</p>
-            </div>
+            <Editor v-model="task.desc" id="newTaskDesc" editorStyle="height: 408px" class="w-[540px]" />
         </div>
 
-        <Editor :class="task.project.name ? '' : 'hidden'" v-model="task.desc" id="newTaskDesc" editorStyle="height: 500px" />
+        <div class="w-fit max-w-[540px] h-fit max-h-[80px] flex flex-wrap gap-2 overflow-y-scroll">
+            <p v-for="(tag, index) in task.tags" :key="index" style="user-select: none;" :class="'bg-['+tag.color+']'" class="px-4 text-[14px] rounded-full text-white">{{ tag.name }}</p>
+        </div>
+
+        <!-- Add Section -->
+        <div class="w-full h-fit grid gap-2">
+            <button @click="createTask()" class="w-full h-[48px] text-white text-[16px] font-semibold bg-custom-purple shadow-newdrop rounded-[4px]">Create Task</button>
+        </div>
     </div>
 </template>
 
@@ -83,6 +108,8 @@ import Dropdown from 'primevue/dropdown';
 import MultiSelect from 'primevue/multiselect';
 import Calendar from 'primevue/calendar';
 import Editor from 'primevue/editor';
+
+import { XMarkIcon, PuzzlePieceIcon, FolderIcon, UserCircleIcon, ExclamationTriangleIcon, MapPinIcon, TagIcon } from '@heroicons/vue/24/solid'
 
 export default {
     name: "Create Task",
@@ -133,6 +160,12 @@ export default {
                 this.progressOptions = response.data.progress
                 this.tags = response.data.tags
             })
+
+            this.task.section = {}
+            this.task.assigned = {}
+            this.task.priority = {}
+            this.task.progress = {}
+            this.task.tags = []
         },
         'task.section': async function(value){
             this.task.section_id = this.task.section.id
@@ -160,9 +193,11 @@ export default {
                 return
             }
 
+            this.$emit('loading')
             await axios.post('/api/pipeline/project/task', this.task)
             .then(response => {
                 this.$emit('updateTasks')
+                this.$emit('loading')
                 this.$emit('close')
             })
         }
@@ -172,7 +207,14 @@ export default {
         Dropdown,
         MultiSelect,
         Calendar,
-        Editor
+        Editor,
+        XMarkIcon,
+        PuzzlePieceIcon,
+        FolderIcon,
+        UserCircleIcon,
+        ExclamationTriangleIcon,
+        MapPinIcon,
+        TagIcon
     }
 }
 </script>
@@ -188,7 +230,7 @@ export default {
 }
 
 .p-calendar .p-inputtext{
-    height: 40px;
+    height: 48x;
     border-radius: 4px;
     border-color: #dedede !important;
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Notifications;
 use App\Models\PipelineComments;
 use Illuminate\Http\Request;
+use App\Helper\NotificationsHelper;
 
 class CommentsController extends Controller
 {
@@ -27,26 +28,30 @@ class CommentsController extends Controller
 
         // Crate Notifications for all Tagged Users
         foreach($request->tags as $user){
-            $notificationInputs = [];
-
-            $notificationInputs['user_id'] = $user['id'];
-            $notificationInputs['header'] = "Pipeline Task Comment";
-            $notificationInputs['body'] = $request->user()->name." tagged you in a new comment for task '".$request->task_name."' in project - ".$request->project_name;
-            $notificationInputs['type'] = "info";
-            $notificationInputs['system'] = "pipeline";
-
-            $notificationInputs['id'] = uniqid('notification_');
-            while(Notifications::where('id', $notificationInputs['id'])->exists()){
-                $notificationInputs['id'] = uniqid('notification_');
-            }
-
-            $notification = Notifications::create($notificationInputs);
-            $notification->save();
+            (new NotificationsHelper)->createNotification((object) [
+                'user_id'=> $user['id'],
+                'header'=> 'You were Tagged in a Task Comment',
+                'body'=> $request->user()->name.' tagged you in a new comment for Task - "'.$request->task_name.'" in Project - "'.$request->project_name.'".',
+                'type'=> 'info',
+                'system'=> 'pipeline'
+            ]);
         }
 
         $response = [
             'success'=> true,
             'comments'=> $comments
+        ];
+        
+        return response()->json($response, 200);
+    }
+
+    public function drop(Request $request, $id){
+        $comment = PipelineComments::find($id);
+        $comment->delete();
+
+        $response = [
+            'success'=> true,
+            'message'=> 'Comment Deleted Successfully.'
         ];
         
         return response()->json($response, 200);

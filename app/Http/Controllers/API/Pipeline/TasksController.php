@@ -10,6 +10,7 @@ use App\Models\PipelineTasks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Helper\NotificationsHelper;
 
 class TasksController extends Controller
 {
@@ -37,7 +38,9 @@ class TasksController extends Controller
                 }
             }
 
-            array_push($data, $project_data);
+            if(count($project_data->tasks) > 0){
+                array_push($data, $project_data);
+            }
         }
 
         $response = [
@@ -51,7 +54,7 @@ class TasksController extends Controller
 
     // Get Project Sepecific Tasks
     public function index(Request $request, $id){
-        $tasksNoSection = PipelineTasks::where('project_id', $id)->where('section_id', null)->orderBy($request->sort['code'], 'desc')->get();
+        $tasksNoSection = PipelineTasks::where('project_id', $id)->where('section_id', null)->where('completed', $request->completed)->orderBy($request->sort['code'], 'desc')->get();
 
         $json_fields = ['assigned', 'priority', 'progress', 'tags', 'desc'];
         $filters = [
@@ -107,7 +110,7 @@ class TasksController extends Controller
         ];
 
         foreach($request->sections as $section){
-            $tasks = PipelineTasks::where('project_id', $id)->where('section_id', $section['id'])->orderBy($request->sort['code'], 'desc')->get();
+            $tasks = PipelineTasks::where('project_id', $id)->where('section_id', $section['id'])->where('completed', $request->completed)->orderBy($request->sort['code'], 'desc')->get();
             $filterSection = [];
 
             foreach ($tasks as $task){
@@ -135,7 +138,9 @@ class TasksController extends Controller
                 'tasks' => $filterSection
             ];
 
-            array_push($data->sections, $sectionData);
+            if(count($sectionData->tasks) > 0){
+                array_push($data->sections, $sectionData);
+            }
         }
         
         $response = [
@@ -179,6 +184,30 @@ class TasksController extends Controller
         $task = new PipelineTasks($inputs);
         $task->save();
 
+        $project = PipelineProjects::where('id', $task->project_id)->first();
+
+        // Create Notification for Assigned User
+        if(!empty(json_decode($task->assigned))){
+            (new NotificationsHelper)->createNotification((object) [
+                'user_id'=> json_decode($task->assigned)->id,
+                'header'=> "New Task Created",
+                'body'=> 'New task "'.$task->name.'" was just created and assigned to you by '.$request->user()->name.'. This task is in project "'.$project->name.'".',
+                'type'=> 'success',
+                'system'=> 'pipeline'
+            ]);
+        }
+
+        // Create Task Created Comment
+        $comment  = new PipelineComments();
+        $comment->id = uniqid('pipeline_comment_');
+        while(PipelineComments::where('id', $comment->id)->exists()){
+            $comment->id= uniqid('pipeline_comment_');
+        }
+        $comment->task_id = $task->id;
+        $comment->user = "system";
+        $comment->desc = '"<p>Task was created successfully. '. (!empty(json_decode($task->assigned)) ? 'Task assigned to '.json_decode($task->assigned)->name : '') .'</p>"';
+        $comment->save();
+
         $response = [
             'success'=> true,
             'message'=> 'Project created successfully.'
@@ -211,6 +240,7 @@ class TasksController extends Controller
         return response()->json($response, 200);
     }
 
+    // Update Task
     public function update(Request $request, $id){
         $task = PipelineTasks::find($id);
         $json_fields = ['assigned', 'priority', 'progress', 'tags', 'desc'];
@@ -236,12 +266,35 @@ class TasksController extends Controller
         return response()->json($response, 200);
     }
 
+    // Update Task Completion Status
     public function complete(Request $request, $id){
         $task = PipelineTasks::find($id);
         $json_fields = ['assigned', 'priority', 'progress', 'tags', 'desc'];
 
         $task->completed = !$task->completed;
         $task->save();
+
+        // Notification to Assigned User
+        if(!empty(json_decode($task->assigned))){
+            (new NotificationsHelper)->createNotification((object) [
+                'user_id'=> json_decode($task->assigned)->id,
+                'header'=> 'Task Completed',
+                'body'=> 'Task "'.$task->name.'" was marked '. ($task->completed ? 'complete' : 'incomplete') .' by '.$request->user()->name,
+                'type'=> 'success',
+                'system'=> 'pipeline'
+            ]);
+        }
+
+        // Create Task Completion Comment
+        $comment  = new PipelineComments();
+        $comment->id = uniqid('pipeline_comment_');
+        while(PipelineComments::where('id', $comment->id)->exists()){
+            $comment->id= uniqid('pipeline_comment_');
+        }
+        $comment->task_id = $task->id;
+        $comment->user = "system";
+        $comment->desc = '"<p>Task was marked '. ($task->completed ? 'complete' : 'incomplete') .' by '. $request->user()->name .'</p>"';
+        $comment->save();
 
         foreach($json_fields as $field){
             $task[$field] = json_decode($task[$field]);
@@ -251,6 +304,37 @@ class TasksController extends Controller
             'success'=> true,
             'task'=> $task,
             'message'=> 'Task completion updated successfully.'
+        ];
+        
+        return response()->json($response, 200);
+    }
+
+    // Delete Task
+    public function drop(Request $request, $id){
+        $task = PipelineTasks::find($id);
+
+        // Notification to assigned User
+        if(!empty(json_decode($task->assigned))){
+            (new NotificationsHelper)->createNotification((object) [
+                'user_id'=> json_decode($task->assigned)->id,
+                'header'=> 'Task Deleted',
+                'body'=> 'Task "'.$task->name.'" was deleted by '.$request->user()->name,
+                'type'=> 'error',
+                'system'=> 'pipeline'
+            ]);
+        }
+
+        $task->delete();
+
+        $task_comments = PipelineComments::where('task_id', $id)->get();
+
+        foreach($task_comments as $comment){
+            $comment->delete();
+        }
+
+        $response = [
+            'success'=> true,
+            'message'=> "Task Deleted Succcessfully"
         ];
         
         return response()->json($response, 200);

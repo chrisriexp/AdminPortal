@@ -6,7 +6,7 @@
 
     <div v-if="ready" class="w-screen h-screen grid grid-cols-2">
         <!-- Login Animation and Information -->
-        <div class="w-full h-full grid bg-custom-light-blue">
+        <div class="w-full h-full grid bg-sidebar-bg">
             <div class="w-fit h-fit m-auto grid justify-items-center">
                 <div class="w-[600px] h-fit grid text-[18px] text-custom-gray font-pt-sans">
                     <p class="text-custom-dark-blue">Welcome to the,<br><span class="text-[32px] font-bold">Rocket Flood Admin Portal!</span></p>
@@ -14,27 +14,37 @@
                     <p class="italic">If you don't have an account, please contact our support team to get started.<br><br>Thank you for using Rocket Flood!</p>
                 </div>
                 
-                <LottieAnimation :animationData="LoginAnimation" :width="'500px'" :height="'500px'" :speed="0.75" class="m-auto" />
+                <LottieAnimation :animationData="LoginAnimation" :renderer="'canvas'" :width="'500px'" :height="'500px'" :speed="0.75" class="m-auto" />
             </div>
         </div>
 
         <div class="w-full h-full grid bg-white">
             <!-- Login Form -->
             <form @submit.prevent="login" class="w-fit h-fit m-auto">
-                <div class="grid gap-2 w-[300px] h-fit my-8">
-                    <!-- Username -->
-                    <span class="p-input-icon-left">
-                        <i class="pi pi-user" />
-                        <InputText v-model="form.email" type="email" placeholder="Username" class="w-full h-[40px] dark:bg-custom-light-gray-bg rounded-[4px]" />
-                    </span>
+                <div class="grid gap-8 w-[400px] h-fit">
+                    <!-- Logo -->
+                    <img src="../../assets/purpleLogo64.png" alt="Logo" class="w-fit h-fit mx-auto">
 
-                    <!-- Password -->
-                    <span class="p-input-icon-left">
-                        <i class="pi pi-lock" />
-                        <InputText v-model="form.password" type="password" placeholder="Password" class="w-full h-[40px] dark:bg-custom-light-gray-bg rounded-[4px]" />
-                    </span>
+                    <p class="w-fit h-fit mx-auto text-[32px] text-custom-black font-semibold">Login</p>
 
-                    <input type="submit" value="Login" class="mt-4 cursor-pointer bg-custom-dark-blue text-[15px] text-white font-medium py-2 border-l-[4px] border-b-[5px] border-[#2c4174] active:border-custom-dark-blue rounded-[4px] shadow-newdrop active:shadow-none">
+                    <div class="w-full h-fit grid gap-4 py-8 relative">
+                        <!-- Username -->
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-user" />
+                            <InputText v-model="form.email" placeholder="Email" class="w-full h-[48px] rounded-[4px]" />
+                        </span>
+
+                        <!-- Password -->
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-lock" />
+                            <InputText v-model="form.password" type="password" placeholder="Password" class="w-full h-[48px] rounded-[4px] border-[#d3dbe3] border-[1px]" />
+                        </span>
+
+                        <a href="/reset-password" class="right-0 bottom-0 absolute text-[16px] text-custom-purple underline">Forgot Password?</a>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <input type="submit" value="Login" style="border-radius: 4px;" class="w-full h-[48px] cursor-pointer bg-custom-purple text-[16px] text-white font-semibold shadow-newdrop">
                 </div>
             </form>
         </div>
@@ -45,7 +55,7 @@
 import loading from '../components/loading.vue'
 import textInput from '../components/textInput.vue'
 
-import LoginAnimation from '../../assets/login.json'
+import LoginAnimation from '../../assets/newLogin.json'
 
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';

@@ -11,6 +11,11 @@ use App\Models\PipelineProjectTags;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Helper\NotificationsHelper;
+use App\Models\PipelineComments;
+use App\Models\PipelineTasks;
+
+use function PHPSTORM_META\map;
 
 class ProjectsController extends Controller
 {
@@ -71,34 +76,34 @@ class ProjectsController extends Controller
         $deafult_priority = [
             [
                 'name'=> 'High',
-                'color'=> '#FF6361'
+                'color'=> '#F42D2D'
             ],
             [
                 'name'=> 'Medium',
-                'color'=> '#BC5090'
+                'color'=> '#F4812D'
             ],
             [
                 'name'=> 'Normal',
-                'color'=> '#494CA2'
+                'color'=> '#2D94F4'
             ],
             [
                 'name'=> 'Low',
-                'color'=> '#D2D462'
+                'color'=> '#2FA52D'
             ]
         ];
 
         $deafult_progress = [
             [
                 'name'=> 'Not Started',
-                'color'=> '#FF6361'
+                'color'=> '#F42D2D'
             ],
             [
                 'name'=> 'In Progress',
-                'color'=> '#D2D462'
+                'color'=> '#2D88A5'
             ],
             [
                 'name'=> 'Done',
-                'color'=> '#6F975C'
+                'color'=> '#2FA52D'
             ]
         ];
 
@@ -122,6 +127,17 @@ class ProjectsController extends Controller
 
             $progress = PipelineProjectProgress::create($item);
             $progress->save();
+        }
+
+        // Create Notification for all members that the Project has been created
+        foreach($request->members as $user){
+            (new NotificationsHelper)->createNotification((object) [
+                'user_id'=> $user,
+                'header'=> 'New Project Created',
+                'body'=> 'A new project has been created - "'.$project->name.'"',
+                'type'=> 'success',
+                'system'=> 'pipeline'
+            ]);
         }
 
         $response = [
@@ -184,6 +200,77 @@ class ProjectsController extends Controller
             'priority'=> $priority,
             'progress'=> $progress,
             'tags'=> $tags
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    // Delete Project
+    public function drop(Request $request, $id){
+        $project = PipelineProjects::find($id);
+
+        if($request->user()->role !== 'super-admin' || $request->user()->id !== $project->owner){
+            $response = [
+                'success'=> false,
+                'message'=> 'Unathorized'
+            ];
+    
+            return response()->json($response, 401);
+        }
+
+        // Delete all Project Tags
+        $tags = PipelineProjectTags::where('project_id', $id)->get();
+        foreach($tags as $tag){
+            $tag->delete();
+        }
+
+        // Delete all Project Sections
+        $sections = PipelineProjectSections::where('project_id', $id)->get();
+        foreach($sections as $section){
+            $section->delete();
+        }
+
+        // Delete all Project Progress
+        $progress = PipelineProjectProgress::where('project_id', $id)->get();
+        foreach($progress as $item){
+            $item->delete();
+        }
+
+        // Delete all Project Priority
+        $priority = PipelineProjectPriority::where('project_id', $id)->get();
+        foreach($priority as $item){
+            $item->delete();
+        }
+
+        // Delete all Project Tasks
+        $tasks = PipelineTasks::where('project_id', $id)->get();
+        foreach($tasks as $task){
+            // Delete all task comments
+            $comments = PipelineComments::where('task_id', $task->id)->get();
+            foreach($comments as $comment){
+                $comment->delete();
+            }
+            
+            $task->delete();
+        }
+
+        // Notify all Members
+        $members = json_decode($project->members);
+        foreach($members as $member){
+            (new NotificationsHelper)->createNotification((object) [
+                'user_id'=> $member,
+                'header'=> 'Project Deleted',
+                'body'=> 'The project "'.$project->name.'" has been deleted, all related information has also been deleted such as tasks, comments, and uploads by '.$request->user()->name,
+                'type'=> 'error',
+                'system'=> 'pipeline'
+            ]);
+        }
+
+        $project->delete();
+
+        $response = [
+            'success'=> true,
+            'message'=> 'Project deleted successfully.'
         ];
 
         return response()->json($response, 200);

@@ -4,167 +4,227 @@
         <loading class="m-auto" />
     </div>
 
-    <topNav :active="'notebooks'" @loading="loading = !loading" class="fixed" />
-
-    <!-- Create folder -->
-    <div v-if="createFolder" class="w-screen h-screen grid bg-[#3F3F3F] bg-opacity-[26%] justify-items-center z-50 fixed">
-        <div class="w-fit h-fit m-auto px-8 py-6 grid gap-4 justify-items-center bg-white dark:bg-custom-dark-bg border-[1px] border-custom-dark-blue dark:border-custom-gray shadow-newdrop rounded-[4px]">
-            <p class="text-[18px] text-custom-gray dark:text-white text-center">Enter name below to create a new folder.</p>
-            <InputText v-model="newFolderName" type="text" placeholder="Folder Name" class="w-full h-[35px] dark:bg-custom-light-gray-bg rounded-[4px]" />
-
-            <div class="w-full grid grid-cols-2 gap-4">
-                <button @click="function(){if (newFolderName == ''){$toast.add({severity: 'warn',summary:'Folder Name',detail:'Please enter a name to create folder.',life:2500})}else{newFolder()}}" class="text-center w-full gap-2 py-[3px] text-[14px] text-white font-medium bg-custom-dark-blue dark:bg-custom-gray dark:bg-opacity-50 rounded-[2px]">Create Folder</button>
-                <button @click="()=>{createFolder = false; newFolderName = ''}" class="text-center w-full gap-2 py-[3px] text-[14px] text-custom-gray dark:text-custom-bg font-medium rounded-[2px] hover:bg-custom-bg dark:hover:bg-custom-gray dark:hover:bg-opacity-20">Dismiss</button>
-            </div>
-        </div>
+    <!-- Nav Bar -->
+    <div class="absolute z-40 w-full">
+        <topNav :active="'notebooks'" @loading="loading = !loading" class="fixed z-40" />
     </div>
-    
-    <!-- Share Notebook -->
-    <div v-if="shareNotebook" class="w-screen h-screen grid bg-[#3F3F3F] bg-opacity-[26%] justify-items-center z-50 fixed">
-        <div class="w-fit h-fit m-auto px-8 py-6 grid gap-4 justify-items-center bg-white dark:bg-custom-dark-bg border-[1px] border-custom-dark-blue dark:border-custom-gray shadow-newdrop rounded-[4px]">
-            <p class="text-[18px] text-custom-gray dark:text-white text-center">Select users to share this notebook with.</p>
-            <MultiSelect v-model="notes[selectedNote].shared" display="chip" :options="members" optionLabel="name" class="w-[400px] h-[40px] text-[12px] flex items-center" />
 
-            <div class="w-full grid grid-cols-2 gap-4">
-                <button @click="updateShare()" class="text-center w-full gap-2 py-[3px] text-[14px] text-white font-medium bg-custom-dark-blue dark:bg-custom-gray dark:bg-opacity-50 rounded-[2px]">Update Share</button>
-                <button @click="shareNotebook = false" class="text-center w-full gap-2 py-[3px] text-[14px] text-custom-gray dark:text-custom-bg font-medium rounded-[2px] hover:bg-custom-bg dark:hover:bg-custom-gray dark:hover:bg-opacity-20">Dismiss</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Quick Menu -->
-    <div class="w-full h-fit flow-root px-24 py-2 bg-white dark:bg-custom-light-gray-bg">
-        <div class="h-full w-fit flex items-center gap-2 float-left text-custom-dark-blue dark:text-white">
-            <!-- Create Button -->
-            <button @click="createToggle" aria-haspopup="true" aria-controls="create_menu" class="h-fit w-fit flex gap-2 items-center px-2 py-[5px] text-[14px] bg-custom-dark-blue dark:bg-custom-dark-bg text-white font-medium border-[1px] border-custom-dark-blue dark:border-custom-gray rounded-[5px]">Create <i class="pi pi-plus"></i></button>
-            <Menu ref="create_menu" id="create_menu" :model="create_items" :popup="true" class="w-[200px]" />
+    <!-- Create Folder -->
+    <div v-if="createFolder" class="w-screen h-screen grid bg-[#3F3F3F] bg-opacity-[26%] justify-items-center z-40 fixed">
+        <div class="w-[604px] h-[331px] grid p-6 m-auto bg-sidebar-bg rounded-[4px] shadow-nwedrop">
+            <div class="w-full h-fit flow-root">
+                <div class="w-fit h-full flex items-center text-[32px] text-custom-black font-semibold float-left">
+                    <p>Create Folder</p>
+                </div>
 
-            <!-- Move to -->
-            <button v-if="notes.length > 0 && selectedFolder != 'shared'" @click="moveToggle" aria-haspopup="true" aria-controls="move_menumove_menu" class="h-fit w-fit flex gap-2 items-center px-2 py-[5px] text-[14px] font-medium border-[1px] border-transparent hover:bg-custom-bg hover:border-custom-light dark:hover:bg-opacity-20 dark:hover:bg-custom-gray dark:hover:border-custom-dark-bg rounded-[5px]">Move to <i class="pi pi-folder-open"></i></button>
-            <Menu ref="move_menu" id="move_menu" :model="folder_items" :popup="true" class="w-fit" />
-
-            <!-- Share -->
-            <button @click="shareNotebook = true" v-if="notes.length > 0 && selectedFolder != 'shared'" class="h-fit w-fit flex gap-2 items-center px-2 py-[5px] text-[14px] font-medium hover:bg-custom-bg border-[1px] border-transparent hover:border-custom-light dark:hover:bg-custom-gray dark:hover:bg-opacity-20 dark:hover:border-custom-dark-bg rounded-[5px]">Share <i class="pi pi-share-alt"></i></button>
-            
-            <!-- Tags -->
-            <div v-if="notes.length > 0 && selectedFolder != 'shared'" class="w-fit h-fit flex items-center gap-2">
-                <p class="text-[14px] font-medium flex items-center gap-2">Tags <i class="pi pi-tag"></i></p>
-                <MultiSelect v-model="notes[selectedNote].tags" :options="tags" optionLabel="name" class="w-[200px] h-[30px] text-[12px] flex items-center" >
-                    <template #option="slotProps">
-                        <div class="flex gap-2 items-center">
-                            <div :class="'bg-['+slotProps.option.color+']'" class="px-4 rounded-full text-white">{{ slotProps.option.name }}</div>
-                        </div>
-                    </template>
-                </MultiSelect>
+                <!-- Close Create Folder -->
+                <div @click="()=>{createFolder = false; newFolderName = ''}" class="h-[39px] w-[39px] grid bg-white rounded-[2px] float-right shadow-newdrop cursor-pointer"><XMarkIcon class="h-[24px] m-auto text-custom-red" /></div>
             </div>
 
-            <!-- Favorites -->
-            <button v-if="notes.length > 0 && selectedFolder != 'shared'" @click="saveNote(true, false)" class="h-fit w-fit flex gap-2 items-center px-2 py-[5px] text-[14px] font-medium border-[1px] border-transparent rounded-[5px]"><i class="pi pi-star-fill text-custom-orange"></i> {{ notes[selectedNote].favorite ? 'Remove from Favorites' : 'Add to Favorites' }}</button>
+            <!-- Folder Name -->
+            <InputText v-model="newFolderName" placeholder="Folder Name" class="h-[48px] w-full" />
         
-            <!-- Important -->
-            <button v-if="notes.length > 0 && selectedFolder != 'shared'" @click="saveNote(false, true)" class="h-fit w-fit flex gap-2 items-center px-2 py-[5px] text-[14px] font-medium border-[1px] border-transparent rounded-[5px]"><i class="pi pi-flag-fill text-custom-red dark:text-red-500"></i> {{ notes[selectedNote].important ? 'Undo Important' : 'Mark Important' }}</button>
-        </div>
-
-        <div v-if="notes.length > 0" class="h-full w-fit flex items-center gap-2 float-right text-custom-dark-blue dark:text-white">
-            <!-- Remove Folder -->
-            <button v-if="selectedFolder != 'shared'" @click="()=>{notes[selectedNote].folder = 'notebooks'; saveNote()}" class="h-fit w-fit flex gap-2 items-center px-2 py-[5px] text-[14px] text-custom-gray dark:text-white font-medium border-[1px] border-transparent rounded-[5px]"><i class="pi pi-history"></i>Reset Note Folder</button>
-            
-            <!-- Save Note -->
-            <button @click="saveNote(false, false)" class="h-fit w-fit flex gap-2 items-center px-2 py-[5px] text-[14px] font-medium hover:bg-custom-bg dark:hover:bg-transparent hover:text-custom-blue border-[1px] border-transparent hover:border-custom-blue rounded-[5px]"><i class="pi pi-save"></i>Save Note</button>
-
-            <!-- Delete Note -->
-            <button v-if="selectedFolder != 'shared'" @click="deleteNote()" class="h-fit w-fit flex gap-2 items-center px-2 py-[5px] text-[14px] font-medium hover:bg-custom-bg dark:hover:bg-transparent hover:text-custom-red dark:hover:text-red-500 border-[1px] border-transparent hover:border-custom-red dark:hover:border-red-500 rounded-[5px]"><i class="pi pi-trash"></i>Delete Note</button>
+            <!-- Add Folder -->
+            <div class="w-full h-fit grid gap-2">
+                <button @click="function(){if (newFolderName == ''){$toast.add({severity: 'warn',summary:'Folder Name',detail:'Please enter a name to create folder.',life:2500})}else{newFolder()}}" class="w-full h-[48px] text-white text-[16px] font-semibold bg-custom-purple shadow-newdrop rounded-[4px]">Add Folder</button>
+            </div>
         </div>
     </div>
 
-    <div v-if="ready" class="w-full h-full grid gap-8 grid-cols-4 p-6">
+    <!-- Share Notebook -->
+    <div v-if="shareNotebook" class="w-screen h-screen grid bg-[#3F3F3F] bg-opacity-[26%] justify-items-center z-40 fixed">
+        <div class="w-[604px] h-[331px] grid p-6 m-auto bg-sidebar-bg rounded-[4px] shadow-nwedrop">
+            <div class="w-full h-fit flow-root">
+                <div class="w-fit h-full flex items-center text-[32px] text-custom-black font-semibold float-left">
+                    <p>Share Notebook</p>
+                </div>
+
+                <!-- Close Create Folder -->
+                <div @click="shareNotebook = false" class="h-[39px] w-[39px] grid bg-white rounded-[2px] float-right shadow-newdrop cursor-pointer"><XMarkIcon class="h-[24px] m-auto text-custom-red" /></div>
+            </div>
+
+            <!-- Folder Name -->
+            <MultiSelect v-model="notes[selectedNote].shared" display="chip" :options="members" optionLabel="name" class="w-[560px] h-[48px] text-[12px] flex items-center" />
+        
+            <!-- Add Folder -->
+            <div class="w-full h-fit grid gap-2">
+                <button @click="updateShare()" class="w-full h-[48px] text-white text-[16px] font-semibold bg-custom-purple shadow-newdrop rounded-[4px]">Update Share List</button>
+            </div>
+        </div>
+    </div>
+
+    <div v-if="ready" class="w-full h-screen z-30 absolute">
         <!-- Folders -->
-        <div class="w-full bg-white dark:bg-custom-light-gray-bg h-screen m-[-25px] grid">
-            <ul class="grid gap-2 h-fit text-[16px] text-custom-gray dark:text-white font-medium p-4">
-                <li @click="selectFolder('favorites')" :class="selectedFolder == 'favorites' ? 'bg-custom-bg dark:bg-custom-gray dark:bg-opacity-50' : ''" class="cursor-pointer w-full p-2 hover:bg-custom-bg dark:hover:bg-custom-gray dark:hover:bg-opacity-50 rounded-[4px]"><i class="pi pi-star"></i> Favorites</li>
-                <li @click="selectFolder('shared')" :class="selectedFolder == 'shared' ? 'bg-custom-bg dark:bg-custom-gray dark:bg-opacity-50' : ''" class="cursor-pointer w-full p-2 hover:bg-custom-bg dark:hover:bg-custom-gray dark:hover:bg-opacity-50 rounded-[4px]"><i class="pi pi-users"></i> Shared With Me</li>
-                <li @click="selectFolder('notebooks')" :class="selectedFolder == 'notebooks' ? 'bg-custom-bg dark:bg-custom-gray dark:bg-opacity-50' : ''" class="cursor-pointer w-full p-2 hover:bg-custom-bg dark:hover:bg-custom-gray dark:hover:bg-opacity-50 rounded-[4px]"><i class="pi pi-inbox"></i> Notebooks</li>
-                <ul v-if="folders.length > 0" class="ml-12 grid gap-2 h-fit max-h-[600px] font-normal overflow-y-scroll">
-                    <li @click="selectFolder(folder)" v-for="(folder, index) in folders" :key="index" :class="selectedFolder == folder ? 'bg-custom-bg dark:bg-custom-gray dark:bg-opacity-50' : ''" class="truncate cursor-pointer w-full p-2 hover:bg-custom-bg dark:hover:bg-custom-gray dark:hover:bg-opacity-50 rounded-[4px]"><i class="pi pi-folder"></i> {{ folder }}</li>
-                </ul>
-            </ul>
-        </div>
-
-        <!-- No Notes Created Yet -->
-        <div v-if="notes.length == 0" class="w-full h-fit grid col-span-3 py-12">
-            <div class="mx-auto grid w-fit h-fit px-8 py-4 bg-white dark:bg-custom-dark-bg rounded-[4px] border-[1px] border-custom-light dark:border-custom-gray">
-                <p class="text-[24px] text-custom-dark-blue dark:text-white text-center font-semibold">No Notebooks Found..</p>
-                <p class="text-[18px] text-custom-gray dark:text-custom-bg">Please create a new notebook to view more information</p>
-                <LottieAnimation :animationData="NotFoundAnimation" :width="'250px'" :height="'250px'" :speed="1" class="m-auto" />
+        <div class="w-[305px] h-full px-8 pt-[150px] bg-sidebar-bg z-30 absolute">
+            <div class="w-full h-fit grid gap-4 text-[16px] text-[#787878] font-medium">
+                <div @click="selectFolder('favorites')" :class="selectedFolder == 'favorites' ? 'text-custom-black bg-[#F1F1F1]' : ''" class="w-full h-fit px-4 py-2 flex items-center gap-4 rounded-[4px] hover:bg-[#F1F1F1] cursor-pointer"><StarIcon class="h-[24px]" /> Favorite</div>
+                <div @click="selectFolder('shared')" :class="selectedFolder == 'shared' ? 'text-custom-black bg-[#F1F1F1]' : ''" class="w-full h-fit px-4 py-2 flex items-center gap-4 rounded-[4px] hover:bg-[#F1F1F1] cursor-pointer"><ShareIcon class="h-[24px]" /> Shared With Me</div>
+                <div @click="selectFolder('notebooks')" :class="selectedFolder == 'notebooks' ? 'text-custom-black bg-[#F1F1F1]' : ''" class="w-full h-fit px-4 py-2 flex items-center gap-4 rounded-[4px] hover:bg-[#F1F1F1] cursor-pointer"><BookOpenIcon class="h-[24px]" /> Notebooks</div>
+                
+                <div v-if="folders.length > 0" class="w-full h-fit pl-12 grid">
+                    <div @click="selectFolder(folder)" v-for="(folder, index) in folders" :key="index" :class="selectedFolder == folder ? 'text-custom-black bg-[#F1F1F1]' : ''" class="w-full h-fit px-4 py-2 flex items-center gap-4 rounded-[4px] hover:bg-[#F1F1F1] cursor-pointer">
+                        <BookmarkIcon class="h-[24px] w-[24px]" />
+                        <div class="grid h-fit w-full"><p class="truncate">{{ folder }}</p></div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Note List -->
-        <div v-else class="w-full h-fit grid bg-white dark:bg-custom-dark-bg rounded-[4px] border-[1px] border-custom-light dark:border-custom-gray">
-            <!-- Filter -->
-            <div class="w-full h-[50px] flow-root">
-                <div @click="updateOrder" class="w-fit h-fit flex gap-2 items-center p-4 text-[14px] text-custom-dark-blue dark:text-white font-medium cursor-pointer float-left" style="user-select: none;">
-                    <p>Order By: </p>
-                    <i v-if="descOrder" class="pi pi-sort-alpha-down"></i>
-                    <i v-else class="pi pi-sort-alpha-up-alt"></i>
+        <div class="w-full h-full grid pl-[350px] pt-[110px] pr-[40px] pb-[25px] relative">
+            <div class="w-full h-fit grid gap-8">
+                <div class="w-full h-fit flow-root">
+                    <div class="w-fit h-full grid float-left">
+                        <p class="my-auto text-[32px] text-custom-black font-semibold">Notes</p>
+                    </div>
+
+                    <div class="w-fit h-full flex items-center gap-8 float-right">
+                        <!-- Favorite -->
+                        <div v-if="notes.length > 0 && selectedFolder != 'shared'" class="w-fit h-fit flex items-center gap-2 text-custom-yellow text-[16px] font-medium notebook-favorite">
+                            <Checkbox v-model="notes[selectedNote].favorite" :binary="true" />
+                            <p>Favorite</p>
+                        </div>
+
+                        <!-- Important -->
+                        <div v-if="notes.length > 0 && selectedFolder != 'shared'" class="w-fit h-fit flex items-center gap-2 text-custom-red text-[16px] font-medium notebook-important">
+                            <Checkbox v-model="notes[selectedNote].important" :binary="true" />
+                            <p>Important</p>
+                        </div>
+
+                        <!-- Sort Filter -->
+                        <Dropdown v-model="filter" :options="filter_items" optionLabel="name" placeholder="Select a Country" class="h-[48px] w-[288px]">
+                            <template #value="slotProps">
+                                <div v-if="slotProps.value" class="flex align-items-center">
+                                    <div class="flex items-center gap-2 text-custom-black opacity-80 text-[16px]"><i class="pi pi-filter-fill"></i><span class="font-medium">Sort By:</span> {{ slotProps.value.name }}</div>
+                                </div>
+                                <span v-else>
+                                    {{ slotProps.placeholder }}
+                                </span>
+                            </template>
+                        </Dropdown>
+
+                        <!-- Create Button -->
+                        <button @click="createToggle" aria-haspopup="true" aria-controls="create_menu" class="h-[48px] w-[175px] grid justify-items-center text-[16px] text-white font-semibold bg-custom-purple shadow-customdrop rounded-[4px]"><span class="my-auto flex items-center gap-4"><i class="pi pi-plus"></i>Create</span></button>
+                        <Menu ref="create_menu" id="create_menu" :model="create_items" :popup="true" class="w-[200px]" />
+                    </div>
                 </div>
 
-                <div class="h-fit float-right ">
-                    <p @click="filterToggle" aria-haspopup="true" aria-controls="filter_menu" class="w-fit h-full flex items-center gap-2 text-[14px] text-custom-dark-blue dark:text-white font-medium float-right p-4 cursor-pointer" style="user-select: none;"><FunnelIcon class="h-[20px]" />Filter: {{ filter == 'important' ? 'Important' : (filter == 'title' ? 'Title' : (filter == 'created_at' ? 'Created Date' : 'Updated Date')) }}</p>
-                    <Menu ref="filter_menu" id="filter_menu" :model="filter_items" :popup="true" class="w-[200px]" />
-                </div>
-            </div>
+                <!-- Notes -->
+                <div v-if="notes.length > 0" class="w-full h-fit max-h-[700px] grid gap-8 overflow-y-scroll">
+                    <div v-for="(note, index) in notes" :key="index" class="w-full h-fit">
+                        <!-- If Note is not selected -->
+                        <div v-if="selectedNote != index" @click="selectedNote = index" class="w-full h-[109px] flow-root p-6 bg-white border-[1px] border-custom-black border-opacity-10 rounded-[4px] cursor-pointer">
+                            <div class="w-fit h-full grid float-left text-custom-black">
+                                <!-- Note Title -->
+                                <div class="w-fit h-fit flex items-center gap-2">
+                                    <i v-if="note.important" class="pi pi-flag-fill text-custom-red"></i>
+                                    <p class="text-[24px] font-medium">{{ note.title }}</p>
+                                    <i v-if="note.favorite" class="pi pi-star-fill text-custom-yellow"></i>
+                                </div>
+                                <!-- Body Preview -->
+                                <p class="truncate max-w-[500px] opacity-50">{{ note.body ? note.body.replace(/(<([^>]+)>)/ig, "") : '' }}</p>
+                            </div>
 
-            <div id="notesList" class="w-full h-fit max-h-[700px] grid overflow-y-scroll">
-                <!-- List of Notes -->
-                <div @click="selectedNote = index" v-for="(note, index) in notes" :key="index" :class="[index == selectedNote ? 'bg-custom-bg dark:bg-custom-gray dark:bg-opacity-50' : 'bg-white dark:bg-custom-gray-bg', selectedFolder != 'shared' && note.favorite ? 'inner-border-custom-orange inner-border-[1px]' : '']" class="w-full h-fit grid p-4 text-custom-light-gray dark:text-white text-[14px] border-b-[1px] border-t-[1px] border-custom-light dark:border-custom-gray cursor-pointer">
-                    <!-- Note Title -->
-                    <p class="h-fit flex items-center gap-2 truncate text-custom-dark-blue dark:text-white font-medium"><i v-if="selectedFolder != 'shared' && note.important" class="pi pi-flag-fill text-custom-red dark:text-red-500"></i>{{ note.title }}</p>
-                    
-                    <div class="w-full h-fit grid grid-cols-2">
-                        <!-- Note Body -->
-                        <p class="truncate">{{ note.body ? note.body.replace(/(<([^>]+)>)/ig, "") : '' }}</p>
-                        <!-- Note Update Date -->
-                        <div class="w-full flow-root">
-                            <p class="float-right text-[12px]">{{ moment(note.updated_at).format("MMMM Do YYYY, h:mm a") }}</p>
+                            <div class="w-fit h-full flex items-center gap-12 float-right">
+                                <!-- Note Updated at -->
+                                <div class="w-fit h-fit grid text-custom-black opacity-50">
+                                    <p>Updated:</p>
+                                    <p>{{ moment(note.updated_at).format('ddd MM/DD/YYYY, h:mm a') }}</p>
+                                </div>
+
+                                <!-- Share and Delete Button -->
+                                <div @click="shareNotebook = true" class="w-[48px] h-[48px] grid text-custom-black bg-white rounded-[2px] shadow-newdrop cursor-pointer"><ShareIcon class="h-[24px] m-auto" /></div>
+                                <div v-if="selectedFolder != 'shared'" class="w-[48px] h-[48px] grid text-custom-red bg-white rounded-[2px] shadow-newdrop cursor-pointer"><TrashIcon class="h-[24px] m-auto" /></div>
+                            </div>
+                        </div>
+
+                        <!-- If Note is selected -->
+                        <div v-else class="w-full h-fit grid gap-4 p-6 bg-sidebar-bg border-[1px] border-custom-black border-opacity-10 rounded-[4px] relative">
+                            <div class="w-full h-fit flow-root">
+                                <!-- Note Title -->
+                                <div class="w-fit h-full flex items-center gap-2 float-left note-title">
+                                    <InputText v-model="note.title" class="h-[48p] w-[448px]" />
+                                </div>
+
+                                <div class="float-right w-fit h-full flex items-center gap-8">
+                                    <!-- Note Shared By -->
+                                    <div v-if="selectedFolder == 'shared'" class="w-fit h-fit grid text-custom-black opacity-50">
+                                        <p>Shared By:</p>
+                                        <p>{{ note.owner }}</p>
+                                    </div>
+
+                                    <!-- Note Created at -->
+                                    <div class="w-fit h-fit grid text-custom-black opacity-50">
+                                        <p>Created:</p>
+                                        <p>{{ moment(note.created_at).format('ddd MM/DD/YYYY, h:mm a') }}</p>
+                                    </div>
+                                    
+                                    <!-- Note Updated at -->
+                                    <div class="w-fit h-fit grid text-custom-black opacity-50">
+                                        <p>Updated:</p>
+                                        <p>{{ moment(note.updated_at).format('ddd MM/DD/YYYY, h:mm a') }}</p>
+                                    </div>
+
+                                    <!-- Share Notebook -->
+                                    <div v-if="selectedFolder != 'shared'" @click="shareNotebook = true" class="w-[48px] h-[48px] grid text-custom-black bg-white rounded-[2px] shadow-newdrop cursor-pointer"><ShareIcon class="h-[24px] m-auto" /></div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="w-full h-fit flow-root">
+                                <div class="w-fit max-w-[400px] h-fit flex flex-wrap items-center gap-2 float-left">
+                                    <!-- Favorite -->
+                                    <p v-if="note.favorite" class="w-fit h-fit flex items-center gap-2 text-white text-[12px] py-[3px] px-4 rounded-full bg-custom-yellow"><i class="pi pi-star"></i> Favorites</p>
+                                    <!-- Important -->
+                                    <p v-if="note.important" class="w-fit h-fit flex items-center gap-2 text-white text-[12px] py-[3px] px-4 rounded-full bg-custom-red"><i class="pi pi-flag"></i> Important</p>
+                                    <!-- Tags -->
+                                    <div v-for="(tag, tagIndex) in note.tags" :key="tagIndex" :class="'bg-['+tag.color+']'" class="w-fit h-fit flex items-center gap-2 text-white text-[12px] py-[3px] px-4 rounded-full"><i class="pi pi-tag"></i> {{ tag.name }}</div>
+                                </div>
+
+                                <div class="w-fit h-fit flex gap-8 float-right">
+                                    <!-- Folder -->
+                                    <div v-if="selectedFolder != 'shared'" class="w-fit h-fit grid gap-2">
+                                        <div class="h-fit w-fit flex items-center gap-2 text-custom-black">
+                                            <BookmarkIcon class="h-[24px]"/>
+                                            <Dropdown v-model="notes[selectedNote].folder" :options="folders" class="h-[33px] w-[200px] flex items-center" />
+                                        </div>
+                                    </div>
+
+                                    <!-- Tags -->
+                                    <div v-if="selectedFolder != 'shared'" class="w-fit h-fit grid gap-2">
+                                        <MultiSelect v-model="notes[selectedNote].tags" :options="tags" optionLabel="name" placeholder="Tags" class="w-[117px] h-[33px] text-[12px] flex items-center" >
+                                            <template #value>
+                                                <div class="py-2 flex items-center gap-2">
+                                                    <i class="pi pi-tags"></i>
+                                                    <p>Tags</p>
+                                                </div>
+                                            </template>
+                                            <template #option="slotProps">
+                                                <div class="flex gap-2 items-center">
+                                                    <div :class="'bg-['+slotProps.option.color+']'" class="px-4 rounded-full text-white">{{ slotProps.option.name }}</div>
+                                                </div>
+                                            </template>
+                                        </MultiSelect>
+                                    </div>
+
+                                    <!-- Save and Delete Note -->
+                                    <div v-if="selectedFolder != 'shared'" @click="()=>{notes[selectedNote].folder = 'notebooks'; saveNote()}" class="w-[48px] h-[48px] grid text-custom-black bg-white rounded-[2px] shadow-newdrop cursor-pointer"><FolderMinusIcon class="h-[24px] m-auto" /></div>
+                                    <div @click="saveNote(false, false)" class="w-[48px] h-[48px] grid text-custom-black bg-white rounded-[2px] shadow-newdrop cursor-pointer"><i class="pi pi-save text-[24px] m-auto"></i></div>
+                                    <div v-if="selectedFolder != 'shared'" @click="deleteNote()" class="w-[48px] h-[48px] grid text-custom-red bg-white rounded-[2px] shadow-newdrop cursor-pointer"><TrashIcon class="h-[24px] m-auto" /></div>
+                                </div>
+                            </div>
+
+                            <!-- Note Body -->
+                            <Editor v-model="notes[selectedNote].body" editorStyle="height: 255px" />
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Note Details -->
-        <div v-if="notes.length > 0" class="w-full h-fit grid gap-2 col-span-2 p-4 bg-white dark:bg-custom-dark-bg rounded-[4px] border-[1px] border-custom-light dark:border-custom-gray text-[16px]">
-            <div class="w-full h-fit grid my-2">
-                <!-- Note Details -->
-                <p class="text-custom-light-gray font-medium">Notebook Details</p>
-                <div class="w-full grid grid-cols-2 text-[14px] text-custom-gray dark:text-white">
-                    <div class="w-full h-fit grid mt-2">
-                        <p><span class="font-medium">Updated at:</span> {{ moment(notes[selectedNote].updated_at).format("dddd, MMMM Do YYYY, h:mm a") }}</p>
-                        <p><span class="font-medium">Created at:</span> {{ moment(notes[selectedNote].created_at).format("dddd, MMMM Do YYYY, h:mm a") }}</p>
-                    </div>
-
-                    <div class="w-full h-fit grid mt-2 font-medium">
-                        <p v-if="selectedFolder != 'shared'" class="flex gap-2 items-center"><i class="pi pi-folder"></i>{{ notes[selectedNote].folder == 'notebooks' ? 'No Folder' : notes[selectedNote].folder }}</p>
-                        <div class="w-full h-fit flex items-center gap-2">
-                            <p v-if="selectedFolder != 'shared' && notes[selectedNote].favorite" class="text-white bg-custom-orange px-2 rounded-full">Favorites</p>
-                            <p v-if="selectedFolder != 'shared' && notes[selectedNote].important" class="text-white bg-custom-red dark:bg-red-500 px-2 rounded-full">Important</p>
-                        </div>
-                    </div>
+                <!-- No Notebooks Found -->
+                <div v-else class=" w-full h-full grid">
+                    <LottieAnimation :animationData="NotFoundAnimation" :renderer="'canvas'" :width="'250px'" :height="'250px'" :speed="0.75" class="m-auto" />
                 </div>
             </div>
-
-            <!-- Notebook Tags -->
-            <div class="w-full h-fit flex flex-wrap items-center gap-4">
-                <p v-for="(tag, index) in notes[selectedNote].tags" :key="index" :class="'bg-['+tag.color+']'" class="px-4 text-white font-medium text-[14px] rounded-full">{{ tag.name }}</p>
-            </div>
-
-            <!-- Note Title -->
-            <div class="w-full h-fit grid">
-                <p class="text-custom-light-gray font-medium">Notebook Title:</p>
-                <InputText v-model="notes[selectedNote].title" type="text" placeholder="Title" class="w-full h-[40px] text-[18px] rounded-[4px] dark:bg-custom-light-gray-bg" />
-            </div>
-            <Editor v-model="notes[selectedNote].body" editorStyle="height: 500px" />
         </div>
     </div>
 </template>
@@ -180,10 +240,13 @@ import Editor from 'primevue/editor';
 import Menu from 'primevue/menu';
 import InputSwitch from 'primevue/inputswitch';
 import MultiSelect from 'primevue/multiselect';
+import Dropdown from 'primevue/dropdown';
+import Checkbox from 'primevue/checkbox';
 
-import NotFoundAnimation from '../../assets/notFound.json'
+import NotFoundAnimation from '../../assets/newNotFound.json'
 
-import { TrashIcon, BookmarkSquareIcon, FunnelIcon } from '@heroicons/vue/24/outline'
+import { BookmarkSquareIcon, FunnelIcon, FolderMinusIcon } from '@heroicons/vue/24/outline'
+import { StarIcon, ShareIcon, BookOpenIcon, BookmarkIcon, TrashIcon, XMarkIcon } from '@heroicons/vue/24/solid'
 
 export default{
     name: "Notebooks",
@@ -202,49 +265,12 @@ export default{
             createFolder: false,
             newFolderName: "",
             descOrder: true,
-            filter: "updated_at",
+            filter: {name: "Created Date", code: 'created_at'},
             filter_items: [
-                {
-                    label: 'Sort by',
-                    items: [
-                        {
-                            label: 'Important',
-                            key: 'important',
-                            command: () => {
-                                this.loading = true
-                                this.filter = "important"
-                                this.loading = false
-                            }
-                        },
-                        {
-                            label: 'Title',
-                            key: 'title',
-                            command: () => {
-                                this.loading = true
-                                this.filter = "title"
-                                this.loading = false
-                            }
-                        },
-                        {
-                            label: 'Created Date',
-                            key: 'created',
-                            command: () => {
-                                this.loading = true
-                                this.filter = "created_at"
-                                this.loading = false
-                            }
-                        },
-                        {
-                            label: 'Updated Date',
-                            key: 'updated',
-                            command: () => {
-                                this.loading = true
-                                this.filter = "updated_at"
-                                this.loading = false
-                            }
-                        }
-                    ]
-                }
+                {name: "Important", code:'important'},
+                {name: "Title", code:'title'},
+                {name: "Created Date", code: 'created_at'},
+                {name:  "Updated Date", code: "updated_at"}
             ],
             create_items: [
                 {
@@ -280,12 +306,26 @@ export default{
     async created(){
         this.moment = moment
 
-        await axios.get('/api/notebooks/'+this.filter)
+        await axios.get('/api/notebooks/'+this.filter.code)
         .then(response => {
             this.notes = response.data.notebook
             if(response.data.folders && typeof response.data.folders == 'object' && response.data.folders.length > 0){
                 this.folders = response.data.folders
             }
+
+            this.notes.forEach(note => {
+                if(note.important == 1){
+                    note.important = true
+                } else if(note.important == 0){
+                    note.important = false
+                }
+
+                if(note.favorite == 1){
+                    note.favorite = true
+                } else if(note.favorite == 0){
+                    note.favorite = false
+                }
+            })
 
             this.tags = response.data.tags
         })
@@ -340,8 +380,9 @@ export default{
         filter: async function(value){
             this.loading = true
 
-            await axios.get('/api/notebooks/folder/'+this.selectedFolder+'/'+value)
+            await axios.get('/api/notebooks/folder/'+this.selectedFolder+'/'+value.code)
             .then(response => {
+                console.log(response)
                 this.selectedNote = 0
                 this.notes = response.data.notebooks
             })
@@ -430,7 +471,7 @@ export default{
             this.loading = true
             this.selectedNote = 0
 
-            await axios.get('/api/notebooks/folder/'+folder+'/'+this.filter)
+            await axios.get('/api/notebooks/folder/'+folder+'/'+this.filter.code)
             .then(response => {
                 this.selectedFolder = folder
                 this.notes = response.data.notebooks
@@ -449,6 +490,18 @@ export default{
                     })
 
                     note.shared = shareList
+                }
+
+                if(note.important == 1){
+                    note.important = true
+                } else if(note.important == 0){
+                    note.important = false
+                }
+
+                if(note.favorite == 1){
+                    note.favorite = true
+                } else if(note.favorite == 0){
+                    note.favorite = false
                 }
             })
 
@@ -498,7 +551,15 @@ export default{
         TrashIcon,
         BookmarkSquareIcon,
         FunnelIcon,
-        MultiSelect
+        MultiSelect,
+        StarIcon,
+        ShareIcon,
+        BookOpenIcon,
+        BookmarkIcon,
+        Dropdown,
+        Checkbox,
+        XMarkIcon,
+        FolderMinusIcon
     }
 }
 </script>
@@ -508,4 +569,29 @@ export default{
     border-radius: 100vh;
     background: rgb(241, 240, 240);
 }
+
+:deep( .notebook-favorite .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-highlight){
+    background-color: #FFC15E !important;
+    border-color: #FFC15E !important;
+}
+:deep( .notebook-favorite .p-checkbox .p-checkbox-box ){
+    border-color: #FFC15E !important;
+}
+
+:deep( .notebook-important .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-highlight){
+    background-color: #F42D2D !important;
+    border-color: #F42D2D !important;
+}
+
+:deep( .notebook-important .p-checkbox .p-checkbox-box ){
+    border-color: #F42D2D !important;
+}
+
+:deep( .note-title .p-inputtext ){
+    background-color: white !important;
+    border-radius: 2px;
+    color: #212121;
+    font-size: 20px;
+}
+
 </style>

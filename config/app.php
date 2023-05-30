@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Rocket Admin Portal'),
 
     /*
     |--------------------------------------------------------------------------
@@ -183,6 +183,8 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
+
+        'NotificationsHelper' => App\Helper\NotificationsHelper::class
     ])->toArray(),
 
 ];

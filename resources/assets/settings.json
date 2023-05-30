@@ -1,14 +1,22 @@
 [
     {
         "name": "User Profile",
-        "code": "user"
+        "code": "user",
+        "icon": "gridicons:user"
+    },
+    {
+        "name": "System Users",
+        "code": "users",
+        "icon": "heroicons:user-group-20-solid"
     },
     {
         "name": "Pipeline",
-        "code": "pipeline"
+        "code": "pipeline",
+        "icon": "icon-park-solid:connection-point"
     },
     {
         "name": "Notebooks",
-        "code": "notebooks"
+        "code": "notebooks",
+        "icon": "icon-park-solid:notes"
     }
 ]

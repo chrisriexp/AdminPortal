@@ -32,7 +32,8 @@ class User extends Authenticatable
         'rover',
         'react',
         'notebook_folders',
-        'theme'
+        'theme',
+        'email_notifications'
     ];
 
     /**

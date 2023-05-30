@@ -44,6 +44,14 @@ return [
             'throw' => false,
         ],
 
+        'commission_statements' => [
+            'driver' => 'local',
+            'root' => storage_path('app/commission_statements'),
+            'url' => env('APP_URL').'/commission_statements',
+            'visibility' => 'private',
+            'throw' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
