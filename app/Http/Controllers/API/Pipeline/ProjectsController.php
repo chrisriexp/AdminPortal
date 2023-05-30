@@ -209,7 +209,7 @@ class ProjectsController extends Controller
     public function drop(Request $request, $id){
         $project = PipelineProjects::find($id);
 
-        if($request->user()->role !== 'super-admin' || $request->user()->id !== $project->owner){
+        if($request->user()->role !== 'super-admin' && $request->user()->id !== $project->owner){
             $response = [
                 'success'=> false,
                 'message'=> 'Unathorized'
