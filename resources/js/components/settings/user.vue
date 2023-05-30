@@ -6,7 +6,7 @@
                 <p class="text-[32px] text-custom-black font-semibold">Profile</p>
             </div>
 
-            <div class="w-fit h-full flex items-center gap-2 float-right">
+            <div class="w-fit h-full hidden items-center gap-2 float-right">
                 <InputSwitch v-model="darkMode" />
                 <p class="text-[16px] text-custom-black font-medium opacity-50">{{ darkMode ? 'Dark Mode' : 'Light Mode' }}</p>
             </div>
