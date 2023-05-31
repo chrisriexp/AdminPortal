@@ -43,9 +43,9 @@
                 </div>
 
                 <!-- Projects -->
-                <div class="w-full h-fit grid gap-2 pl-8 text-[14px]">
-                    <div @click="view = project.id" v-for="(project, index) in projects" :key="index" :class="view == project.id ? 'bg-[#F1F1F1] text-custom-black' : ''" class="w-full h-[48px] p-4 flex items-center gap-4 hover:bg-[#F1F1F1] rounded-[4px] cursor-pointer">
-                        <div class="w-[10] h-fit"><div :class="'bg-['+project.color+']'" class="w-[10px] h-[10px] rounded-[4px]"></div></div>
+                <div class="w-full h-fit grid gap-2 text-[14px]">
+                    <div @click="view = project.id" v-for="(project, index) in projects" :key="index" :class="view == project.id ? 'bg-[#F1F1F1] text-custom-black' : ''" class="w-full h-[48px] py-4 px-6 flex items-center gap-2 hover:bg-[#F1F1F1] rounded-[4px] cursor-pointer">
+                        <div class="w-[13] h-fit"><div :class="'bg-['+project.color+']'" class="w-[13px] h-[13px] rounded-[4px]"></div></div>
                         <div :class="view == project.id ? '' : 'opacity-60'" class="w-full h-fit grid"><p class="font-medium truncate">{{ project.name }}</p></div>
                     </div>
                 </div>
