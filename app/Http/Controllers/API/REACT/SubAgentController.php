@@ -9,6 +9,9 @@ use App\Models\react_sub_agents;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
+use PDO;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class SubAgentController extends Controller
 {
@@ -242,6 +245,102 @@ class SubAgentController extends Controller
             'revenue'=> $revenue,
             'pieChart'=> $pieChart,
             'lineChart'=> $lineChart
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    public function bulkUpload(Request $request){
+        $reader = IOFactory::createReader('Xlsx');
+        $date = Carbon::now()->format('Y-m-d');
+
+        // Crete file name and Save file
+        $file_name = $date.'_bulk_agent_upload'.'.' . $request->file('file')->getClientOriginalExtension();
+        $file_path = $request->file('file')->storeAs('agent_bulk_upload', $file_name, 'react');
+        ini_set('mbstring.substitute_character', "none");
+
+        $path = storage_path().'/app/react/'.$file_path;
+        $spreadsheet = $reader->load($path);
+        $sheet = $spreadsheet->getSheet($spreadsheet->getFirstSheetIndex());
+
+        $data = [];
+        
+        // For Each Agent on the Sheet Skipping Row 1
+        foreach($sheet->getRowIterator() as $row){
+            if($row->getRowIndex() == 1){
+                continue;
+            }
+
+            $cells = iterator_to_array($row->getCellIterator("A", "K"));
+            $carriers = ['D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+
+            $agent = (object) [
+                "rocket_id" => $cells['A']->getValue(),
+                "name" => $cells['B']->getValue(),
+                "rocketPlus" => strtolower($cells['C']->getValue()) == "yes" ? true : false,
+            ];
+
+            $i = 0;
+            foreach($this->carriers as $key=>$value){
+                if(!empty($cells[$carriers[$i]]->getValue())){
+                    if($cells[$carriers[$i]]->getValue() == 'null'){
+                        $agent->$key = (object) [
+                            "rocket"=> false,
+                            "code"=> null
+                        ];
+                    }else {
+                        $agent->$key = (object) [
+                            "rocket"=> true,
+                            "code"=> (string) $cells[$carriers[$i]]->getValue()
+                        ];
+                    }
+                }
+
+                $i++;
+            }
+
+            array_push($data, $agent);
+        }
+
+        foreach($data as $agency){
+            Log::channel('react_subagents')->info('New Sub Agent', (array) $agency);
+            $exists = react_sub_agents::where('rocket_id', $agency->rocket_id)->exists();
+
+            if($exists){
+                $existingAgency = react_sub_agents::where('rocket_id', $agency->rocket_id)->first();
+
+                foreach($this->carriers as $key=>$value){
+                    $agency->$key = json_encode($agency->$key);
+                }
+
+                $existingAgency->fill((array) $agency);
+                $existingAgency->save();
+
+                Log::channel('react_subagents')->info('Bulk Upload - Exisitng Agency Update:', (array) $agency);
+            }else {
+                foreach($this->carriers as $key=>$value){
+                    $agency->$key = json_encode($agency->$key);
+                }
+
+                $newAgency = new react_sub_agents();
+                $inputs = (array) $agency;
+                $inputs['id'] = uniqid('react_subagent_');
+                while(react_sub_agents::where('id', $inputs['id'])->exists()){
+                    $inputs['id'] = uniqid('react_subagent_');
+                }
+
+                $newAgency->fill($inputs);
+                $newAgency->save();
+
+                Log::channel('react_subagents')->info('Bulk Upload - New Agency Created:', (array) $agency);
+            }
+        }
+
+        Log::channel('react_subagents')->info('New Agent Bulk Upload - Count: '.count($data));
+
+        $response = [
+            'success'=> true,
+            'message'=> "Agents uploaded successfuly."
         ];
 
         return response()->json($response, 200);

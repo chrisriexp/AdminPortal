@@ -15,8 +15,8 @@
                 <!-- Project Select -->
                 <Dropdown v-model="task.project" :options="projects" optionLabel="name" class="w-full h-[48px] flex items-center" >
                     <template #value="slotProps">
-                        <div class="flex gap-2 items-center">
-                            <p class="flex items-center gap-2"><span class="text-[16px] opacity-80 text-custom-black  flex items-center gap-2"><PuzzlePieceIcon class="h-[24px]" />Project:</span> {{ slotProps.value.name }}</p>
+                        <div class="grid">
+                            <p class="flex items-center gap-2 truncate"><span class="text-[16px] opacity-80 text-custom-black  flex items-center gap-2"><PuzzlePieceIcon class="h-[24px]" />Project:</span> {{ slotProps.value.name }}</p>
                         </div>
                     </template>
                 </Dropdown>

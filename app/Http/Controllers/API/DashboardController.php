@@ -46,7 +46,7 @@ class DashboardController extends Controller
                 'pipeline'=> [
                     'total'=> count($assignedTasks),
                     'dueToday'=> $todayTaskCount,
-                    'recent'=> array_slice($assignedTasks, 0, 5)
+                    'recent'=> array_slice($assignedTasks, 0, 4)
                 ]
             ]
         ];

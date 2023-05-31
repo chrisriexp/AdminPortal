@@ -124,6 +124,7 @@ Route::middleware('auth:sanctum')->get('/notifications', [NotificationsControlle
 // REACT Controller
 Route::middleware('auth:sanctum')->post('/react/sub-agents', [SubAgentController::class, 'index']);
 Route::middleware('auth:sanctum')->post('/react/sub-agent', [SubAgentController::class, 'create']);
+Route::middleware('auth:sanctum')->post('/react/sub-agent/upload', [SubAgentController::class, 'bulkUpload']);
 Route::middleware('auth:sanctum')->put('/react/sub-agent/{id}', [SubAgentController::class, 'update']);
 Route::middleware('auth:sanctum')->get('/react/commission/check', [CommissionStatementController::class, 'check']);
 Route::middleware('auth:sanctum')->post('/react/commission/upload', [CommissionStatementController::class, 'upload']);

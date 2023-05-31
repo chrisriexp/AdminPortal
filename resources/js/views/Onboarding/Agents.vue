@@ -72,14 +72,6 @@
                         <i class="pi pi-search" />
                         <InputText v-model="search" placeholder="Enter agency name, agent name, or email" class="w-[403px] h-[48px] rounded-[4px]" />
                     </span>
-
-                    <!-- Add Sub Agent -->
-                    <button @click="add = true" class="w-[246px] h-[48px] grid text-white text-[16px] font-semibold bg-custom-purple rounded-[4px] shadow-newdrop">
-                        <div class="w-fit h-fit m-auto flex items-center gap-4">
-                            <Icon :icon="'ic:round-plus'" height="24" />
-                            <p>Add Sub Agent</p>
-                        </div>
-                    </button>
                 </div>
             </div>
 

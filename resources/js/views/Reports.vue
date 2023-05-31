@@ -17,7 +17,7 @@
                     <p class="w-fit h-full flex gap-4 items-center text-[24px] font-semibold"><Icon icon="heroicons-solid:document-report" height="24" /> Reports</p>
                 </div>
 
-                <!-- User Profile -->
+                <!-- Reports -->
                 <div v-for="(report, index) in reports_menu" :key="index" @click="$router.replace({params: {category: report.code}})" :class="category == report.code ? 'bg-[#F1F1F1]' : 'opacity-60'" class="w-full h-[48px] px-4 flex items-center gap-4 rounded-[4px] font-medium text-[16px] cursor-pointer">
                     <Icon :icon="report.icon" height="24" />
                     <p>{{ report.name }}</p>

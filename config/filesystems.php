@@ -44,10 +44,10 @@ return [
             'throw' => false,
         ],
 
-        'commission_statements' => [
+        'react' => [
             'driver' => 'local',
-            'root' => storage_path('app/commission_statements'),
-            'url' => env('APP_URL').'/commission_statements',
+            'root' => storage_path('app/react'),
+            'url' => env('APP_URL').'/react',
             'visibility' => 'private',
             'throw' => false,
         ],

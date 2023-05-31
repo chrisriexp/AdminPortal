@@ -137,9 +137,6 @@ export default {
             this.notifications = response.data.notifications
         })
         this.$emit('loading')
-
-        console.log(this.systems)
-        console.log(this.notifications)
     },
     methods: {
         async read(id){

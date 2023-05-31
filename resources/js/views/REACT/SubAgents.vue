@@ -9,9 +9,19 @@
         <topNav class="fixed z-30" :active="'modules'" />
     </div>
 
-    <!-- Add Sub Agent -->
+    <!-- Add Sub Agent Select -->
     <div v-if="add" class="w-screen h-screen grid bg-[#3F3F3F] bg-opacity-[26%] justify-items-center z-40 fixed">
-        <addAgent class="m-auto" @close="add = false" @update="add = false; getAgents()" :agent="agent" />
+        <addAgent class="m-auto" @close="add = false" @single="add = false; addSingle = true" @bulk="add = false; addBulk = true" />
+    </div>
+
+    <!-- Add Bulk Sub Agent -->
+    <div v-if="addBulk" class="w-screen h-screen grid bg-[#3F3F3F] bg-opacity-[26%] justify-items-center z-40 fixed">
+        <addBulkAgent class="m-auto" @close="addBulk = false" @update="addBulk = false; getAgents()" @back="addBulk = false; add = true" @loading="loading = !loading" />
+    </div>
+
+    <!-- Add Single Sub Agent -->
+    <div v-if="addSingle" class="w-screen h-screen grid bg-[#3F3F3F] bg-opacity-[26%] justify-items-center z-40 fixed">
+        <addSingleAgent class="m-auto" @close="addSingle = false" @update="addSingle = false; getAgents()" @back="addSingle = false; add = true" :agent="agent" @loading="loading = !loading" />
     </div>
 
     <!-- View Carrier Codes -->
@@ -129,6 +139,8 @@ import { Icon } from '@iconify/vue';
 import carriers from '../../../assets/react_carriers.json'
 import NotFoundAnimation from '../../../assets/newNotFound.json'
 
+import addBulkAgent from '../../components/react/addBulkAgent.vue'
+import addSingleAgent from '../../components/react/addSingleAgent.vue'
 import addAgent from '../../components/react/addAgent.vue'
 import viewCarrierCodes from '../../components/react/viewCarrierCodes.vue'
 
@@ -150,6 +162,8 @@ export default{
             ],
             loading: true,
             add: false,
+            addSingle: false,
+            addBulk: false,
             carrier_codes: false,
             agents: [],
             agent: {},
@@ -281,6 +295,8 @@ export default{
     components: {
         topNav,
         loading,
+        addSingleAgent,
+        addBulkAgent,
         addAgent,
         Menu,
         viewCarrierCodes,

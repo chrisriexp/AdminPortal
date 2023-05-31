@@ -137,6 +137,12 @@ return [
             'driver' => 'single',
             'path' => storage_path('logs/commissions.log'),
             'level' => 'info',
+        ],
+
+        'react_subagents' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/react_subagents.log'),
+            'level' => 'info',
         ]
     ],
 

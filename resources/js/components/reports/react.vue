@@ -187,7 +187,6 @@ export default {
 
         await axios.get('/api/react/reports')
         .then(response => {
-            console.log(response)
             this.data = response.data.data
         })
 

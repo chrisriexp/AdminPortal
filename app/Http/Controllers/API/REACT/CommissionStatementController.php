@@ -11,8 +11,6 @@ use App\Helper\NotificationsHelper;
 use App\Models\react_commission_policies;
 use Illuminate\Support\Facades\Log;
 
-use function PHPSTORM_META\map;
-
 class CommissionStatementController extends Controller
 {
     public $carriers = [
@@ -175,10 +173,10 @@ class CommissionStatementController extends Controller
 
         // Crete file name and Save file
         $file_name = $month.'_'.$request['type'].'.' . $request->file('file')->getClientOriginalExtension();
-        $file_path = $request->file('file')->storeAs('', $file_name, 'commission_statements');
+        $file_path = $request->file('file')->storeAs('commission_statements', $file_name, 'react');
         ini_set('mbstring.substitute_character', "none");
 
-        $path = storage_path().'/app/commission_statements/'.$file_path;
+        $path = storage_path().'/app/react/'.$file_path;
         $spreadsheet = $reader->load($path);
         $sheet = $spreadsheet->getSheet($spreadsheet->getFirstSheetIndex());
 
@@ -187,7 +185,7 @@ class CommissionStatementController extends Controller
         $totalComm = 0;
         $totalOverride = 0;
 
-        // Get every policy on the statement
+        // Get every policy on the statement skipping row 1
         foreach($sheet->getRowIterator() as $row){
             if($row->getRowIndex() == 1){
                 continue;
