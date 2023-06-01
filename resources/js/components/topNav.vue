@@ -1,5 +1,5 @@
 <template>
-    <Reminders v-if="reminders" @close-reminder="reminders = false" />
+    <QuickTools v-if="reminders" @close-reminder="reminders = false" />
 
     <div class="w-full h-[72px] bg-white px-8 flow-root shadow-customdrop border-b-[1px] border-custom-black border-opacity-50 relative">
         <div class="w-fit h-full float-left flex items-center gap-32">
@@ -30,7 +30,7 @@
 import { HomeIcon, DocumentTextIcon, RectangleGroupIcon } from '@heroicons/vue/24/outline';
 
 import Menu from 'primevue/menu';
-import Reminders from '../views/Reminders.vue'
+import QuickTools from '../views/QuickTools.vue'
 
 import { Icon } from '@iconify/vue';
 
@@ -51,8 +51,8 @@ export default{
             reminders: false,
             items: [
                 {
-                    label: 'Reminders',
-                    icon: 'pi pi-hourglass',
+                    label: 'Quick Tools',
+                    icon: 'pi pi-compass',
                     command: async () => {
                         this.reminders = true
                     }
@@ -143,7 +143,7 @@ export default{
         DocumentTextIcon,
         RectangleGroupIcon,
         Menu,
-        Reminders,
+        QuickTools,
         Icon
     }
 }

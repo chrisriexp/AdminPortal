@@ -143,6 +143,12 @@ return [
             'driver' => 'single',
             'path' => storage_path('logs/react_subagents.log'),
             'level' => 'info',
+        ],
+
+        'open_ai' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/open_ai.log'),
+            'level' => 'info',
         ]
     ],
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\API\NotebookController;
 use App\Http\Controllers\API\NotificationsController;
 use App\Http\Controllers\API\Onboarding\Agents;
+use App\Http\Controllers\API\OpenAI\QuickToolsAIController;
 use App\Http\Controllers\API\Pipeline\CommentsController;
 use App\Http\Controllers\API\Pipeline\ProjectsController;
 use App\Http\Controllers\API\Pipeline\TasksController;
@@ -138,3 +139,6 @@ Route::middleware('auth:sanctum')->get('/onboarding/reports', [OnboardingReports
 // ROVER Controller
 Route::middleware('auth:sanctum')->post('rover/errors', [ErrorsController::class, 'index']);
 Route::middleware('auth:sanctum')->get('/rover/reports', [ROVERReports::class, 'index']);
+
+// OpenAI Routes
+Route::middleware('auth:sanctum')->post('/open-ai/quick-tools', [QuickToolsAIController::class, 'prompt']);

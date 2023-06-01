@@ -185,6 +185,8 @@
                                         <button v-tooltip.bottom="'Bold'" class="ql-bold"></button>
                                         <button v-tooltip.bottom="'Italic'" class="ql-italic"></button>
                                         <button v-tooltip.bottom="'Underline'" class="ql-underline"></button>
+                                        <button v-tooltip.bottom="'Image'" class="ql-list" value="ordered"></button>
+                            <button v-tooltip.bottom="'Image'" class="ql-list" value="bullet"></button>
                                         <button v-tooltip.bottom="'Link'" class="ql-link"></button>
                                         <button v-tooltip.bottom="'Code Block'" class="ql-code-block"></button>
                                         <button v-tooltip.bottom="'Image'" class="ql-image"></button>
