@@ -12,13 +12,34 @@ class QuickToolsAIController extends Controller
     public function prompt(Request $request){
         $prompt = $request->prompt;
 
-        $result = OpenAI::completions()->create([
-            'model' => 'text-davinci-003',
-            'prompt' => $prompt,
+        $data = [];
+
+        foreach($request->history as $entry){
+            if($entry['type'] == 'prompt'){
+                array_push($data, [
+                    'role'=> 'user',
+                    'content'=> $entry['text'] 
+                ]);
+            }else if($entry['type']  == 'response'){
+                array_push($data, [
+                    'role'=> 'assistant',
+                    'content'=> $entry['text'] 
+                ]);
+            }
+        }
+
+        array_push($data, [
+            'role'=> 'user',
+            'content'=> $prompt
+        ]);
+
+        $result = OpenAI::chat()->create([
+            'model' => 'gpt-3.5-turbo',
+            'messages' => $data,
             'max_tokens' => 500,
         ]);
 
-        $response = $result['choices'][0]['text'];
+        $response = $result['choices'][0]['message']['content'];
 
         $logInfo = [
             'prompt'=> $prompt,
@@ -31,6 +52,10 @@ class QuickToolsAIController extends Controller
         $response = [
             'success'=> true,
             'data'=> [
+                (object) [
+                    'type'=> 'prompt',
+                    'text'=> $prompt
+                ],
                 (object) [
                     'type'=> 'response',
                     'text'=> $response

@@ -12,7 +12,7 @@
     </div>
 
     <div class="w-full h-fit flex items-center gap-8">
-        <textarea v-model="prompt" name="prompt" placeholder="Enter prompt.." style="height: 80px; resize: none;" class="w-[80%] h-[48px] max-h-[80px] border-[1px] border-custom-black border-opacity-10 rounded-[4px] focus:ring-0 focus:border-custom-black focus:border-opacity-10"></textarea>
+        <textarea v-model="prompt" name="prompt" placeholder="Enter prompt.." style="height: 80px; resize: none;" class="w-[80%] h-[48px] max-h-[80px] border-[1px] border-custom-black border-opacity-10 rounded-[4px] focus:ring-0 focus:border-custom-black focus:border-opacity-10 cursor-normal"></textarea>
 
         <button @click="runPrompt" class="w-[20%] h-[48px] text-[16px] text-white font-semibold bg-custom-purple rounded-[4px] shadow-newdrop">Ask DUZAL..</button>
     </div>
@@ -44,12 +44,7 @@ export default {
                 return
             }
 
-            this.data.push({
-                type: 'prompt',
-                text: this.prompt
-            })
-
-            await axios.post('/api/open-ai/quick-tools', {"prompt": this.prompt})
+            await axios.post('/api/open-ai/quick-tools', {"prompt": this.prompt, "history": this.data})
             .then(response => {
                 console.log(response)
                 
