@@ -19,7 +19,8 @@ class NotificationsHelper
         "system"=> "System Notification",
         "notebooks"=> "Notebook Notification",
         "pipeline"=> "Pipeline Notification",
-        "react"=> "REACT Notifications"
+        "react"=> "REACT Notifications",
+        "onboarding"=> "MGA Onboarding"
     ];
 
     public function createNotification($data){

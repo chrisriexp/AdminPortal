@@ -112,13 +112,15 @@ export default {
                 'system': 'gala:settings',
                 'pipeline': 'icon-park-solid:connection-point',
                 'notebooks': 'icon-park-solid:notes',
-                'react': 'heroicons-solid:document-report'
+                'react': 'heroicons-solid:document-report',
+                'onboarding': 'solar:documents-line-duotone'
             },
             names: {
                 'system': 'System',
                 'pipeline': 'Pipeline',
                 'notebooks': 'Notebooks',
-                'react': "REACT"
+                'react': "REACT",
+                'onboarding': "MGA Onboarding"
             },
             notificationIcons: {
                 'info': 'mdi:information-variant-circle',
