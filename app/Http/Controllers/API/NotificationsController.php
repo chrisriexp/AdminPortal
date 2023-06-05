@@ -38,7 +38,7 @@ class NotificationsController extends Controller
         }
 
         if($request->type == 'onboarding'){
-            (new NotificationsHelper)->createOnboardingNotification($request->notification);
+            (new NotificationsHelper)->createOnboardingNotification((object) $request->notification);
         }
 
         return response()->json(["success"=> true], 200);
