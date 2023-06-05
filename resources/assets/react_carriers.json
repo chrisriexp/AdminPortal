@@ -12,6 +12,10 @@
         "code": "cat"
     },
     {
+        "name": "Dual Flood",
+        "code": "dual"
+    },
+    {
         "name": "Flow Flood",
         "code": "flow"
     },

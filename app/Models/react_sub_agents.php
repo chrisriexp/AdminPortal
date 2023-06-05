@@ -21,6 +21,7 @@ class react_sub_agents extends Model
         'aon',
         'beyond',
         'cat',
+        'dual',
         'flow',
         'neptune',
         'palomar',

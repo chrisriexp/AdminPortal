@@ -55,7 +55,15 @@
             <!-- Project Members -->
             <div class="w-full h-fit grid gap-2">
                 <p class="text-[16px] text-custom-black font-medium">Members</p>
-                <MultiSelect v-model="project.members" :options="users" optionLabel="name" class="w-full h-[48px] text-[16px] flex items-center" />
+                <MultiSelect v-model="project.members" :options="users" optionLabel="name" class="w-full h-[48px] text-[16px] flex items-center">
+                    <template #value="slotProps">
+                        <div class="w-full grid h-fit">
+                            <div class="py-2 flex items-center gap-2 truncate">
+                                <p v-for="(member, index) in slotProps.value" :key="index">{{ member.name }}</p>
+                            </div>
+                        </div>
+                    </template>
+                </MultiSelect>
             </div>
         </div>
 

@@ -19,6 +19,7 @@ class SubAgentController extends Controller
         "aon"=> "Aon Edge",
         "beyond"=> "Beyond Flood",
         "cat"=> "Cat Coverage",
+        "dual"=> "Dual Flood",
         "flow"=> "Flow Flood",
         "neptune"=> "Neptune",
         "palomar"=> "Palomar",
@@ -29,7 +30,7 @@ class SubAgentController extends Controller
     public function index(Request $request){
         $agents = react_sub_agents::orderBy('created_at', 'desc')->get();
 
-        $carriers = ['aon', 'beyond', 'cat', 'flow', 'neptune', 'palomar', 'sterling', 'wright'];
+        $carriers = ['aon', 'beyond', 'cat', 'dual', 'flow', 'neptune', 'palomar', 'sterling', 'wright'];
 
         $data = [];
 
@@ -76,6 +77,7 @@ class SubAgentController extends Controller
             'aon'=> 'required',
             'beyond'=> 'required',
             'cat'=> 'required',
+            'dual'=> 'required',
             'flow'=> 'required',
             'neptune'=> 'required',
             'palomar'=> 'required',
@@ -271,8 +273,8 @@ class SubAgentController extends Controller
                 continue;
             }
 
-            $cells = iterator_to_array($row->getCellIterator("A", "K"));
-            $carriers = ['D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+            $cells = iterator_to_array($row->getCellIterator("A", "L"));
+            $carriers = ['D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
 
             $agent = (object) [
                 "rocket_id" => $cells['A']->getValue(),
@@ -283,7 +285,7 @@ class SubAgentController extends Controller
             $i = 0;
             foreach($this->carriers as $key=>$value){
                 if(!empty($cells[$carriers[$i]]->getValue())){
-                    if($cells[$carriers[$i]]->getValue() == 'null'){
+                    if(strtolower($cells[$carriers[$i]]->getValue()) == 'null'){
                         $agent->$key = (object) [
                             "rocket"=> false,
                             "code"=> null
@@ -319,7 +321,17 @@ class SubAgentController extends Controller
                 Log::channel('react_subagents')->info('Bulk Upload - Exisitng Agency Update:', (array) $agency);
             }else {
                 foreach($this->carriers as $key=>$value){
-                    $agency->$key = json_encode($agency->$key);
+                    // Check to see if the carrier column has an Producer code, if the column was left blank and this is not an exisitng agency then we will create a new object marking rocket as direct and give the code a value of null
+                    if(property_exists($agency, $key)){
+                        $agency->$key = json_encode($agency->$key);
+                    }else{
+                        $carrierObj = (object) [
+                            "rocket"=> true,
+                            "code"=> null
+                        ];
+
+                        $agency->$key = json_encode($carrierObj);
+                    }
                 }
 
                 $newAgency = new react_sub_agents();

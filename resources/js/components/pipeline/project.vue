@@ -136,7 +136,7 @@
 
         <div v-else class="w-full h-fit grid">
             <!-- List View -->
-            <div v-if="view == 'list'" class="w-full h-fit max-h-[600px] grid gap-4 mt-2 overflow-y-scroll">
+            <div v-if="view == 'list'" class="w-full h-fit max-h-[600px] grid gap-4 mt-2 pb-12 overflow-y-scroll">
                 <!-- Tasks with No section -->
                 <div @click="$router.replace({params: {task: task.id}})" v-for="(task, index) in tasks.tasks" :key="index" class="w-full h-[52px] flex items-center px-6 bg-sidebar-bg border-[1px] border-custom-black border-opacity-10 rounded-[2px] cursor-pointer hover:bg-[#F4F4F4]">
                     <div class="w-full h-fit grid grid-cols-6 text-[16px] text-custom-black font-medium">

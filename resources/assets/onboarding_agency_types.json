@@ -1,0 +1,34 @@
+[
+    {
+        "name": "Individual/Sole Proprietor",
+        "code": "Sole"
+    },
+    {
+        "name": "LLC - C Corporation",
+        "code": "LLC-C"
+    },
+    {
+        "name": "LLC - S Corporation",
+        "code": "LLC-S"
+    },
+    {
+        "name": "LLC - Partnership",
+        "code": "LLC-P"
+    },
+    {
+        "name": "C Corporation",
+        "code": "C-Corp"
+    },
+    {
+        "name": "S Corporation",
+        "code": "S-Corp"
+    },
+    {
+        "name": "Partnership",
+        "code": "Partner"
+    },
+    {
+        "name": "Trust/Estate",
+        "code": "Trust"
+    }
+]

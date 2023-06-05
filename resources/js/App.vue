@@ -72,10 +72,16 @@ input:focus{
 }
 
 .p-editor-container .p-editor-toolbar {
-    background: #fff;
+  background: #fff;
 }
 
 .ql-snow .ql-editor pre.ql-syntax{
-  color: #5BA3E0 !important;
+  color: #F1BD6C !important;
+  width: fit-content;
+}
+
+.ql-snow .ql-editor code{
+  background-color: #23241f !important ;
+  color: #F1BD6C !important;
 }
 </style>

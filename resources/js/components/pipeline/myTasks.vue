@@ -76,7 +76,7 @@
 
         <div v-if="tasks.length > 0" class="w-full h-fit grid">
             <!-- List View -->
-            <div v-if="view == 'list'" class="w-full h-fit max-h-[600px] grid mt-10 overflow-y-scroll">
+            <div v-if="view == 'list'" class="w-full h-fit max-h-[600px] grid mt-10 pb-12 overflow-y-scroll">
                 <Accordion :multiple="true" :activeIndex="[0]">
                     <AccordionTab v-for="(project, index) in tasks" :key="index" :header="project.name+' ('+project.tasks.length+')'">
                         <div class="w-full h-fit grid gap-4">

@@ -18,4 +18,22 @@ class Agents extends Controller
 
         return response()->json($response, $data->status());
     }
+
+    public function agency(Request $request, $rocket_id, $category){
+        $data = Http::withHeaders(['token'=>'27b00fca-4d9e-4e28-85ce-54f16af26c0b'])->get('https://onboarding.rocketmga.com/api/admin-portal/agency/'.$rocket_id.'/'.$category,);
+
+        $response = json_decode($data);
+
+        return response()->json($response, $data->status());
+    }
+
+    public function admin_update(Request $request, $rocket_id, $category){
+        $data = Http::withHeaders(['token'=>'27b00fca-4d9e-4e28-85ce-54f16af26c0b'])->put('https://onboarding.rocketmga.com/api/admin-portal/agency/'.$rocket_id.'/'.$category, [
+            "agency"=> $request->agency
+        ]);
+
+        $response = json_decode($data);
+
+        return response()->json($response, $data->status());
+    }
 }

@@ -13,6 +13,9 @@
         <link rel="stylesheet" href="/themes/primevue.css">
         <title>Admin Portal | Rocket Flood</title>
         @vite('resources/css/app.css')
+        <script async defer 
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP7Mf0mNj6uEdgdVdjNQndu6yCNJe2J74&libraries=places&callback=initMap">
+        </script>
     </head>
     <body>
         <div id="app"></div>

@@ -121,6 +121,7 @@ Route::middleware('auth:sanctum')->delete('/notebooks/settings/tags/{id}', [Sett
 
 // Notifications Routes
 Route::middleware('auth:sanctum')->get('/notifications', [NotificationsController::class, 'index']);
+Route::post('/notification-needToken', [NotificationsController::class, 'create_fromToken']);
 
 // REACT Controller
 Route::middleware('auth:sanctum')->post('/react/sub-agents', [SubAgentController::class, 'index']);
@@ -135,6 +136,8 @@ Route::middleware('auth:sanctum')->get('/react/reports', [REACTReports::class, '
 // Onboarding Controller
 Route::middleware('auth:sanctum')->post('/onboarding', [Agents::class, 'index']);
 Route::middleware('auth:sanctum')->get('/onboarding/reports', [OnboardingReports::class, 'index']);
+Route::middleware('auth:sanctum')->get('/onboarding/agency/{rocket_id}/{category}', [Agents::class, 'agency']);
+Route::middleware('auth:sanctum')->put('/onboarding/agency/{rocket_id}/{category}', [Agents::class, 'admin_update']);
 
 // ROVER Controller
 Route::middleware('auth:sanctum')->post('rover/errors', [ErrorsController::class, 'index']);

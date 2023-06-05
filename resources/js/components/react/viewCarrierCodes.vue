@@ -14,7 +14,7 @@
         </div>
 
         <!-- Carriers -->
-        <div class="w-full h-fit grid grid-cols-2 gap-8">
+        <div class="w-full h-fit max-h-[300px] grid grid-cols-2 gap-8 overflow-y-scroll">
             <div class="w-full h-fit grid gap-6">
                 <div v-for="(carrier, index) in carriers" :key="index" :class="index % 2 == 0 ? 'grid' : 'hidden'" class="w-full h-fit gap-[5px]">
                     <div class="w-full h-fit flow-root">

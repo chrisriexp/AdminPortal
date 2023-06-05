@@ -215,7 +215,7 @@
                             </div>
 
                             <!-- Note Body -->
-                            <Editor v-model="notes[selectedNote].body" editorStyle="height: 255px" />
+                            <Editor v-model="notes[selectedNote].body" editorStyle="height: 255px" class="w-full max-w-[1200px]" />
                         </div>
                     </div>
                 </div>

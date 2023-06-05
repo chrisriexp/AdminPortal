@@ -39,7 +39,7 @@
                 </button>
             </div>
 
-            <div class="w-full h-[581px] grid grid-cols-2 mt-12 border-[1px] border-custom-black border-opacity-10 rounded-[4px]">
+            <div class="w-full h-fit grid grid-cols-2 mt-12 border-[1px] border-custom-black border-opacity-10 rounded-[4px]">
                 <!-- Upload Instructions -->
                 <div class="w-full h-full grid p-10 text-custom-black text-[16px] border-r-[1px] border-custom-black border-opacity-10">
                     <p class="text-[24px] font-medium">Instructions</p>
@@ -75,10 +75,10 @@
                 </div>
 
                 <!-- Carrier Statements -->
-                <div class="w-full h-full grid p-10 text-custom-black text-[16px]">
+                <div class="w-full h-fit grid gap-4 p-10 text-custom-black text-[16px]">
                     <p class="text-[24px] font-medium">Upload carrier statement(s)</p>
 
-                    <div class="w-full h-fit grid gap-[10px] carrier-uploads">
+                    <div class="w-full h-fit grid gap-4 carrier-uploads">
                         <div v-for="(carrier, index) in uploaded" :key="index" :class="carrier.exists ? 'carrier-exists' : ''" class="w-full h-[44px] grid px-6 border-[1px] border-custom-black border-opacity-10 rounded-[2px]">
                             <div class="w-fit h-fit my-auto flex items-center gap-4">
                                 <Checkbox v-if="carrier.exists" disabled v-model="carrier.exists" :binary="true" />

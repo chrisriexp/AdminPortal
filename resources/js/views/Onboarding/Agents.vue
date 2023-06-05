@@ -96,7 +96,8 @@
                     <p class="col-span-2">Stage Based Information</p>
                 </div>
 
-                <a v-for="(agent, index) in searchView" :key="index" :href="'https://onboarding.rocketmga.com/admin/agency/'+agent.rocket_id" target="_blank" class="w-full h-[52px] grid grid-cols-5 gap-8 px-4 text-[16px] text-custom-black font-medium border-[1px] border-custom-black border-opacity-10 rounded-[2px] relative">
+                <!-- Link to Onboarding Agency -->
+                <a v-for="(agent, index) in searchView" :key="index" :href="'/onboarding/agency/'+agent.rocket_id+'/agency'" class="w-full h-[52px] grid grid-cols-5 gap-8 px-4 text-[16px] text-custom-black font-medium border-[1px] border-custom-black border-opacity-10 rounded-[2px] relative">
                     <p class="my-auto truncate pr-4">{{ agent.agency_name }}</p>
                     <p class="my-auto truncate pr-4">{{ agent.agent_name }}</p>
                     <p class="my-auto truncate pr-4">{{ agent.email }}</p>

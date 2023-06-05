@@ -11,6 +11,7 @@ import REACTSubAgents from './views/REACT/SubAgents.vue'
 import REACTUploadStatements from './views/REACT/StatementUpload.vue'
 import REACTSubAgent from './views/REACT/SubAgent.vue'
 import OnboardingAgents from './views/Onboarding/Agents.vue'
+import OnboardingAgency from './views/Onboarding/Agency.vue'
 import ROVERErrors from './views/ROVER/Errors.vue'
 
 const routes = [
@@ -95,6 +96,12 @@ const routes = [
                 path: "agents",
                 name: "Onboarding_Agents",
                 component: OnboardingAgents,
+                beforeEnter: validateAccessToken
+            },
+            {
+                path: "agency/:rocket_id/:category",
+                name: "Onboarding_Agency",
+                component: OnboardingAgency,
                 beforeEnter: validateAccessToken
             }
         ]
