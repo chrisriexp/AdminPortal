@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class NotificationsController extends Controller
 {
     public function index(Request $request){
-        $systems = ['notebooks', 'pipeline', 'system', 'react'];
+        $systems = ['notebooks', 'pipeline', 'system', 'react', 'onboarding'];
 
         $notifications = (object) [];
 

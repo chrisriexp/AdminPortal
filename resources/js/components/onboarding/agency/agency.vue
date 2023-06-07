@@ -256,11 +256,19 @@ export default {
         }
     },
     async mounted(){
-        this.$emit('loading')
-
         await axios.get('/api/onboarding/agency/'+this.rocket_id+'/agency')
         .then(response => {
             this.data = response.data.data.agency
+        })
+        .catch(error => {
+            if(error.response.status == 500){
+                this.$toast.add({
+                    severity: 'error',
+                    summary: 'Internal Service Error',
+                    detail: "Please contact a system admin",
+                    life: 2500
+                })
+            }
         })
 
         this.carriers.forEach(carrier => {
@@ -272,7 +280,6 @@ export default {
         })
         
         this.ready = true
-        this.$emit('loading')
     },
     methods: {
         async removeCarrier(index){
@@ -288,6 +295,8 @@ export default {
             this.data.additional_states.push({name: "", code: ""})
         },
         async updateAgency(){
+            this.$emit('loading')
+
             const data = Object.assign({}, this.data)
             data.agency_tax_id = data.agency_tax_id.replace('-', '')
             data.phone = data.phone.replace(/[^\d]/g, "")
@@ -303,6 +312,8 @@ export default {
                     life: 2500
                 })
             })
+
+            this.$emit('loading')
         },
         getAddressData: function (addressData, placeResultData, map) {
             this.data.address1 = `${addressData.street_number} ${addressData.route}`

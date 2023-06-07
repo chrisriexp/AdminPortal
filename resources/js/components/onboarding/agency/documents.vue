@@ -303,7 +303,6 @@ export default {
     },
     async mounted(){
         this.moment = moment
-        this.$emit('loading')
 
         await axios.get('/api/onboarding/agency/'+this.rocket_id+'/documents')
         .then(response => {
@@ -313,14 +312,25 @@ export default {
             this.data.agent_license_exp = moment(this.data.agent_license_exp).format('MM/DD/YYYY')
             this.data.eo_exp = moment(this.data.eo_exp).format('MM/DD/YYYY')
         })
+        .catch(error => {
+            if(error.response.status == 500){
+                this.$toast.add({
+                    severity: 'error',
+                    summary: 'Internal Service Error',
+                    detail: "Please contact a system admin",
+                    life: 2500
+                })
+            }
+        })
 
         console.log(this.files)
         
         this.ready = true
-        this.$emit('loading')
     },
     methods: {
         async updateAgency(){
+            this.$emit('loading')
+
             const dates = ['agent_license_eff', 'agent_license_exp', 'eo_exp']
             const data = Object.assign({}, this.data)
 
@@ -343,8 +353,11 @@ export default {
                     life: 2500
                 })
             })
+
+            this.$emit('loading')
         },
         async uploadFile (e) {
+            this.$emit('loading')
             const file = e.target.files[0]
 
             //Upload file

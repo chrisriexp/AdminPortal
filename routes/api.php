@@ -138,6 +138,8 @@ Route::middleware('auth:sanctum')->post('/onboarding', [Agents::class, 'index'])
 Route::middleware('auth:sanctum')->get('/onboarding/reports', [OnboardingReports::class, 'index']);
 Route::middleware('auth:sanctum')->get('/onboarding/agency/{rocket_id}/{category}', [Agents::class, 'agency']);
 Route::middleware('auth:sanctum')->put('/onboarding/agency/{rocket_id}/{category}', [Agents::class, 'admin_update']);
+Route::middleware('auth:sanctum')->get('/onboarding/approve/{rocket_id}', [Agents::class, 'approve']);
+Route::middleware('auth:sanctum')->get('/onboarding/finalize/{rocket_id}/{force}', [Agents::class, 'finalize']);
 
 // ROVER Controller
 Route::middleware('auth:sanctum')->post('rover/errors', [ErrorsController::class, 'index']);
