@@ -139,9 +139,9 @@ return [
             'level' => 'info',
         ],
 
-        'react_subagents' => [
+        'mga_companies' => [
             'driver' => 'single',
-            'path' => storage_path('logs/react_subagents.log'),
+            'path' => storage_path('logs/mga_companies.log'),
             'level' => 'info',
         ],
 

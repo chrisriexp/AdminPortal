@@ -15,6 +15,7 @@ class mga_companies extends Model
 
     protected $fillable = [
         'rocket_id',
+        'name',
         'aon',
         'beyond',
         'cat',

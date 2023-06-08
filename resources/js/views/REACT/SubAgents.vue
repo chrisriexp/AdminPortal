@@ -114,8 +114,8 @@
                     <p class="my-auto">{{ agent.rocket_id }}</p>
                     <p :class="agent.rocketPlus ? 'text-custom-green' : 'text-custom-red'" class="my-auto">{{ agent.rocketPlus ? 'Yes' : 'No' }}</p>
 
-                    <button @click="subAgentMenu($event, agent.id)" aria-haspopup="true" :aria-controls="agent.id+'_modules_menu'" class="my-auto h-full grid right-8 absolute"><Icon :icon="'carbon:overflow-menu-vertical'" height="24" class="my-auto" /></button>
-                    <Menu :ref="agent.id+'_modules_menu'" :id="agent.id+'_modules_menu'" :model="subagent_menu_items" :popup="true" class="w-fit font-medium text-[16px] text-custom-black" />
+                    <button @click="subAgentMenu($event, agent.rocket_id)" aria-haspopup="true" :aria-controls="agent.rocket_id+'_modules_menu'" class="my-auto h-full grid right-8 absolute"><Icon :icon="'carbon:overflow-menu-vertical'" height="24" class="my-auto" /></button>
+                    <Menu :ref="agent.rocket_id+'_modules_menu'" :id="agent.rocket_id+'_modules_menu'" :model="subagent_menu_items" :popup="true" class="w-fit font-medium text-[16px] text-custom-black" />
                 </div>
             </div>
 
@@ -128,23 +128,23 @@
 </template>
 
 <script>
-import topNav from '../../components/topNav.vue'
-import loading from '../../components/loading.vue'
+import topNav from '../../components/topNav.vue';
+import loading from '../../components/loading.vue';
 import Menu from 'primevue/menu';
 import InputText from 'primevue/inputtext';
 import MultiSelect from 'primevue/multiselect';
 
 import { Icon } from '@iconify/vue';
 
-import carriers from '../../../assets/react_carriers.json'
-import NotFoundAnimation from '../../../assets/newNotFound.json'
+import carriers from '../../../assets/react_carriers.json';
+import NotFoundAnimation from '../../../assets/newNotFound.json';
 
-import addBulkAgent from '../../components/react/addBulkAgent.vue'
-import addSingleAgent from '../../components/react/addSingleAgent.vue'
-import addAgent from '../../components/react/addAgent.vue'
-import viewCarrierCodes from '../../components/react/viewCarrierCodes.vue'
+import addBulkAgent from '../../components/react/addBulkAgent.vue';
+import addSingleAgent from '../../components/react/addSingleAgent.vue';
+import addAgent from '../../components/react/addAgent.vue';
+import viewCarrierCodes from '../../components/react/viewCarrierCodes.vue';
 
-export default{
+export default {
     name: "REACT - Sub Agents",
     data(){
         return {
@@ -228,26 +228,12 @@ export default{
             this.id = id
 
             this.agents.forEach(agent => {
-                if(agent.id ==  id){
+                if(agent.rocket_id ==  id){
                     this.agent = agent
                 }
             })
 
             this.$refs[id+'_modules_menu'][0].toggle(event);
-        },
-        async updateAgents(){
-            await axios.get('/api/react/sub-agents')
-            .then(response => {
-                this.agents = response.data.agents
-
-                this.agents.forEach(agent => {
-                    if(agent.rocketPlus == 1){
-                        agent.rocketPlus = true
-                    }else if(agent.rocketPlus == 0) {
-                        agent.rocketPlus = false
-                    }
-                })
-            })
         },
         async getAgents(){
             this.loading = true

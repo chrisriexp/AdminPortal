@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\Reports;
 
 use App\Http\Controllers\Controller;
+use App\Models\mga_companies;
 use App\Models\react_commission_policies;
 use App\Models\react_commissions;
 use App\Models\react_sub_agents;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 class REACTReports extends Controller
 {
     public $carriers = [
-        "aon"=> "Aon Edge",
+        "aon"=> "AON Edge",
         "beyond"=> "Beyond Flood",
         "cat"=> "Cat Coverage",
         "flow"=> "Flow Flood",
@@ -121,16 +122,16 @@ class REACTReports extends Controller
             ]
         ];
 
-        $sub_agents = react_sub_agents::get();
+        $sub_agents = mga_companies::get();
         $sub_agent_rev = collect([]);
 
         foreach($sub_agents as $agency){
 
             $override = 0;
             foreach($this->carriers as $key=>$value){
-                $carrier = json_decode($agency[$key]);
+                $carrier = json_decode($agency->{$key});
 
-                $agency_policies = react_commission_policies::where('carrier_id', $carrier->code)->get();
+                $agency_policies = react_commission_policies::where('carrier_id', $carrier->commission_id)->get();
                 foreach($agency_policies as $policy){
                     $override = $override + $policy->override;
                 }

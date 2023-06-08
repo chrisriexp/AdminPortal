@@ -3,11 +3,6 @@
         <div class="w-full h-full flow-root">
             <div class="w-fit h-full flex items-center gap-4 float-left">
                 <p class="text-[32px] truncate text-custom-black font-semibold">Sub Agent</p>
-
-                <div class="w-fit h-fit flex items-center gap-2">
-                    <p :class="agent.rocketPlus ? 'text-custom-green' : 'text-custom-red'" class="text-[18px] font-medium">RocketPlus</p>
-                    <InputSwitch v-model="agent.rocketPlus" class="h-[25px] flex items-center" />
-                </div>
             </div>
 
             <div class="w-fit h-full flex items-center float-right">
@@ -36,29 +31,19 @@
         <div class="w-full h-fit max-h-[300px] grid grid-cols-2 gap-8 overflow-y-scroll">
             <div class="w-full h-fit grid gap-6">
                 <div v-for="(carrier, index) in carriers" :key="index" :class="index % 2 == 0 ? 'grid' : 'hidden'" class="w-full h-fit gap-[5px]">
-                    <div class="w-full h-fit flow-root">
-                        <!-- Carrier Name -->
-                        <p class="float-left text-[16px] text-custom-black font-medium">{{ carrier.name }}</p>
-                        <!-- Rocket VS Direct Appointment -->
-                        <InputSwitch v-model="agent[carrier.code].rocket" class="h-[25px] flex items-center float-right" />
-                    </div>
+                    <p class="float-left text-[16px] text-custom-black font-medium">{{ carrier.name }}</p>
 
                     <!-- Carrier Code -->
-                    <InputText v-model="agent[carrier.code].code" :disabled="agent[carrier.code].rocket ? false : true" class="h-[48px] text-[16px] text-custom-black" />
+                    <InputText v-model="agent[carrier.code]" class="h-[48px] text-[16px] text-custom-black" />
                 </div>
             </div>
 
             <div class="w-full h-fit grid gap-6">
                 <div v-for="(carrier, index) in carriers" :key="index" :class="index % 2 == 0 ? 'hidden' : 'grid'" class="w-full h-fit gap-[5px]">
-                    <div class="w-full h-fit flow-root">
-                        <!-- Carrier Name -->
-                        <p class="float-left text-[16px] text-custom-black font-medium">{{ carrier.name }}</p>
-                        <!-- Rocket VS Direct Appointment -->
-                        <InputSwitch v-model="agent[carrier.code].rocket" class="h-[25px] flex items-center float-right" />
-                    </div>
+                    <p class="float-left text-[16px] text-custom-black font-medium">{{ carrier.name }}</p>
 
                     <!-- Carrier Code -->
-                    <InputText v-model="agent[carrier.code].code" :disabled="agent[carrier.code].rocket ? false : true" class="h-[48px] text-[16px] text-custom-black" />
+                    <InputText v-model="agent[carrier.code]" class="h-[48px] text-[16px] text-custom-black" />
                 </div>
             </div>
         </div>
@@ -74,7 +59,6 @@
 
 <script>
 import InputText from 'primevue/inputtext';
-import InputSwitch from 'primevue/inputswitch';
 import carriers from '../../../assets/react_carriers.json'
 
 import { Icon } from '@iconify/vue';
@@ -87,43 +71,15 @@ export default{
             agent: {
                 name: "",
                 rocket_id: "",
-                rocketPlus: false,
-                aon: {
-                    rocket: true,
-                    code: ""
-                },
-                beyond: {
-                    rocket: true,
-                    code: ""
-                },
-                cat: {
-                    rocket: true,
-                    code: ""
-                },
-                dual: {
-                    rocket: true,
-                    code: ""
-                },
-                flow: {
-                    rocket: true,
-                    code: ""
-                },
-                neptune: {
-                    rocket: true,
-                    code: ""
-                },
-                palomar: {
-                    rocket: true,
-                    code: ""
-                },
-                sterling: {
-                    rocket: true,
-                    code: ""
-                },
-                wright: {
-                    rocket: true,
-                    code: ""
-                },
+                aon: "",
+                beyond: "",
+                cat: "",
+                dual: "",
+                flow: "",
+                neptune: "",
+                palomar: "",
+                sterling: "",
+                wright: ""
             }
         }
     },
@@ -174,7 +130,6 @@ export default{
     },
     components: {
         InputText,
-        InputSwitch,
         Icon
     }
 }

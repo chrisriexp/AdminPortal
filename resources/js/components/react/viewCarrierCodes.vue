@@ -21,11 +21,11 @@
                         <!-- Carrier Name -->
                         <p class="float-left text-[16px] text-custom-black font-medium">{{ carrier.name }}</p>
                         <!-- Rocket VS Direct Appointment -->
-                        <InputSwitch v-model="agent[carrier.code].rocket" class="h-[25px] flex items-center float-right" />
+                        <InputSwitch v-model="agent[carrier.code].direct" class="h-[25px] flex items-center float-right" />
                     </div>
 
                     <!-- Carrier Code -->
-                    <InputText v-model="agent[carrier.code].code" :disabled="agent[carrier.code].rocket ? false : true" class="h-[48px] text-[16px] text-custom-black" />
+                    <InputText v-model="agent[carrier.code].commission_id" :disabled="agent[carrier.code].direct ? true : false" class="h-[48px] text-[16px] text-custom-black" />
                 </div>
             </div>
 
@@ -35,11 +35,11 @@
                         <!-- Carrier Name -->
                         <p class="float-left text-[16px] text-custom-black font-medium">{{ carrier.name }}</p>
                         <!-- Rocket VS Direct Appointment -->
-                        <InputSwitch v-model="agent[carrier.code].rocket" class="h-[25px] flex items-center float-right" />
+                        <InputSwitch v-model="agent[carrier.code].direct" class="h-[25px] flex items-center float-right" />
                     </div>
 
                     <!-- Carrier Code -->
-                    <InputText v-model="agent[carrier.code].code" :disabled="agent[carrier.code].rocket ? false : true" class="h-[48px] text-[16px] text-custom-black" />
+                    <InputText v-model="agent[carrier.code].commission_id" :disabled="agent[carrier.code].direct ? true : false" class="h-[48px] text-[16px] text-custom-black" />
                 </div>
             </div>
         </div>
@@ -69,7 +69,7 @@ export default{
     },
     methods: {
         async updateAgent(){
-            await axios.put('/api/react/sub-agent/'+this.agent.id, this.agent)
+            await axios.put('/api/react/sub-agent/'+this.agent.rocket_id, this.agent)
             .then(response => {
                 if(response.data.success){
                     this.$toast.add({

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\REACT;
 
 use App\Http\Controllers\Controller;
+use App\Models\mga_companies;
 use App\Models\react_commission_policies;
 use App\Models\react_commissions;
 use App\Models\react_sub_agents;
@@ -10,51 +11,83 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
-use PDO;
+use Illuminate\Support\Facades\Http;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class SubAgentController extends Controller
 {
     public $carriers = [
-        "aon"=> "Aon Edge",
-        "beyond"=> "Beyond Flood",
-        "cat"=> "Cat Coverage",
-        "dual"=> "Dual Flood",
-        "flow"=> "Flow Flood",
-        "neptune"=> "Neptune",
-        "palomar"=> "Palomar",
-        "sterling"=> "Sterling",
-        "wright"=> "Wright National"
+        "aon"=> [
+            "name"=> "AON Edge",
+        ],
+        "beyond"=> [
+            "name"=> "Beyond Flood",
+        ],
+        "cat"=> [
+            "name"=> "Cat Coverage",
+        ],
+        "dual"=> [
+            "name"=> "Dual Flood",
+        ],
+        "flow"=> [
+            "name"=> "Flow Flood",
+        ],
+        "neptune"=> [
+            "name"=> "Neptune",
+        ],
+        "palomar"=> [
+            "name"=> "Palomar",
+        ],
+        "sterling"=> [
+            "name"=> "Sterling",
+        ],
+        "wright"=> [
+            "name"=> "Wright - NFIP",
+        ]
     ];
 
     public function index(Request $request){
-        $agents = react_sub_agents::orderBy('created_at', 'desc')->get();
-
-        $carriers = ['aon', 'beyond', 'cat', 'dual', 'flow', 'neptune', 'palomar', 'sterling', 'wright'];
+        $agents = mga_companies::orderBy('created_at', 'desc')->get();
 
         $data = [];
 
         foreach($agents as $agent){
-            foreach($carriers as $carrier){
-                $agent[$carrier] = json_decode($agent[$carrier]);
+            $carrier_data = json_decode(Http::get('https://backend.agentportal.rocketmga.com/api/services/client/get-mga-company-carriers/'.$agent->rocket_id))->data->carriers_list;
+            
+            foreach ($carrier_data as $carrier) { 
+                foreach($this->carriers as $key=>$value){
+                    if(!str_contains(strtolower($carrier->name), 'wright') && $carrier->name == $value['name']){
+                        $agent->$key = json_decode($agent->$key);
+                        $agent->$key->direct = $carrier->direct;
+                    }
+                }
+
+                if($carrier->name == "Wright - NFIP"){
+                    $agent->wright = json_decode($agent->wright);
+                    $agent->wright->direct = $carrier->direct;
+                }
             }
 
-            $rocketPlusValid = false;
+            // Decode Cat Coverage
+            $agent->cat = json_decode($agent->cat);
+            $agent->cat->direct = false;
+
+            $rocketPlusValid = true;
             $carriersValid = false;
 
             // Filter Rocket Appointed Carriers
             foreach($request->filter['carriers'] as $carrier){
-                if(!$carriersValid && $agent[$carrier['code']]->rocket){
+                if($carrier['code'] !== 'cat' && !$carriersValid && !$agent->{$carrier['code']}->direct){
                     $carriersValid = true;
                 }
             }
 
             // Filter Rocket Plus Status
-            foreach($request->filter['rocketPlus'] as $value){
-                if(!$rocketPlusValid && $agent->rocketPlus == $value['code']){
-                    $rocketPlusValid = true;
-                }
-            }
+            // foreach($request->filter['rocketPlus'] as $value){
+            //     if(!$rocketPlusValid && $agent->rocketPlus == $value['code']){
+            //         $rocketPlusValid = true;
+            //     }
+            // }
 
             if($carriersValid && $rocketPlusValid){
                 array_push($data, $agent);
@@ -72,17 +105,7 @@ class SubAgentController extends Controller
     public function create(Request $request){
         $validator = Validator::make($request->all(), [
             'name'=> 'required',
-            'rocket_id'=> 'required',
-            'rocketPlus'=> 'required',
-            'aon'=> 'required',
-            'beyond'=> 'required',
-            'cat'=> 'required',
-            'dual'=> 'required',
-            'flow'=> 'required',
-            'neptune'=> 'required',
-            'palomar'=> 'required',
-            'sterling'=> 'required',
-            'wright'=> 'required'
+            'rocket_id'=> 'required'
         ]);
 
         if($validator->fails()){
@@ -94,7 +117,7 @@ class SubAgentController extends Controller
             return response()->json($response, 400);
         }
 
-        if(react_sub_agents::where('rocket_id', $request->rocket_id)->exists()){
+        if(mga_companies::where('rocket_id', $request->rocket_id)->exists()){
             $response = [
                 'success'=> false,
                 'message'=> 'Rocket ID already exists. Please update and try again.'
@@ -103,23 +126,22 @@ class SubAgentController extends Controller
             return response()->json($response, 422);
         }
 
-        $noCarriers = ['name', 'rocket_id', 'rocketPlus'];
+        $noCarriers = ['name', 'rocket_id'];
 
         $inputs = $request->all();
 
         foreach($inputs as $key => $value){
             if(!in_array($key, $noCarriers)){
-                $inputs[$key] = json_encode($value);
+                $inputs[$key] = json_encode((object) [
+                    "carrier_username"=> null,
+                    "commission_id"=> $value
+                ]);
             }
         }
 
-        $inputs['id'] = uniqid('react_subagent_');
-        while(react_sub_agents::where('id', $inputs['id'])->exists()){
-            $inputs['id'] = uniqid('react_subagent_');
-        }
-
-        $subagent = react_sub_agents::create($inputs);
+        $subagent = mga_companies::create($inputs);
         $subagent->save();
+        Log::channel('mga_companies')->info('New MGA Company', (array) $subagent);
 
         $response = [
             'success'=> true,
@@ -129,15 +151,17 @@ class SubAgentController extends Controller
         return response()->json($response, 200);
     }
     
-    public function update(Request $request, $id){
-        $subagent = react_sub_agents::find($id);
+    public function update(Request $request, $rocket_id){
+        // Save MGA Carrier Commission ID for each carrier
+        $subagent = mga_companies::find($rocket_id);
 
-        $noCarriers = ['id', 'name', 'rocket_id', 'rocketPlus'];
+        $noCarriers = ['name', 'rocket_id', 'created_at', 'updated_at'];
 
         $inputs = $request->all();
 
-        foreach($inputs as $key => $value){
+        foreach($inputs as $key=>$value){
             if(!in_array($key, $noCarriers)){
+                unset($value['direct']);
                 $inputs[$key] = json_encode($value);
             }
         }
@@ -145,16 +169,37 @@ class SubAgentController extends Controller
         $subagent->fill($inputs);
         $subagent->save();
 
+        // Save MGA Company Direct disposition for Each carrier
+        $carrier_data = json_decode(Http::get('https://backend.agentportal.rocketmga.com/api/services/client/get-mga-company-carriers/'.$rocket_id))->data->carriers_list;
+
+        foreach($carrier_data as $carrier){
+            foreach($this->carriers as $key=>$value){
+                if(!str_contains(strtolower($carrier->name), 'wright') && $carrier->name == $value['name']){
+                    $carrier->direct = $request->$key['direct'];
+                }
+            }
+
+            if(str_contains(strtolower($carrier->name), 'wright')){
+                $carrier->direct = $request->wright['direct'];
+            }
+        }
+
+        Http::post('https://backend.agentportal.rocketmga.com/api/services/client/update-api-config', [
+            "rocket_id"=> $rocket_id,
+            "carriers_list"=> $carrier_data
+        ]);
+
         $response = [
             'success'=> true,
-            'message'=> 'New sub agent details updated successfully.'
+            'message'=> 'Sub agent details updated successfully.'
         ];
 
         return response()->json($response, 200);
     }
 
-    public function report(Request $request, $id){
-        $agency = react_sub_agents::find($id);
+    public function report(Request $request, $rocket_id){
+        $agency = mga_companies::find($rocket_id);
+        $carrier_data = json_decode(Http::get('https://backend.agentportal.rocketmga.com/api/services/client/get-mga-company-carriers/'.$rocket_id))->data->carriers_list;
 
         $months = [];
         foreach(react_commissions::select('month')->distinct()->get() as $key=>$value){
@@ -186,14 +231,28 @@ class SubAgentController extends Controller
         foreach($this->carriers as $key=>$value){
             // Decode Sub Agent Carrier information and add Carrier name to Object
             $agency->$key = json_decode($agency->$key);
-            $agency->$key->name = $value;
+            $agency->$key->name = $value['name'];
+
+            foreach ($carrier_data as $carrier) { 
+                if(!str_contains(strtolower($carrier->name), 'wright') && $carrier->name == $value['name']){
+                    $agency->$key->direct = $carrier->direct;
+                }
+
+                if($carrier->name == "Wright - NFIP" && $key == 'wright'){
+                    $agency->$key->direct = $carrier->direct;
+                }
+            }
+
+            if($key == 'cat'){
+                $agency->$key->direct = false;
+            }
 
             $carrierPolicies = 0;
             $carrierPrem = 0;
 
             // Check to see if the carrier is Rocket Appointed and if it is pull all the policies attached to the carrier code
-            if($agency->$key->rocket){
-                $carrier_policies = react_commission_policies::where('carrier_id', $agency->$key->code)->get();
+            if(!$agency->$key->direct){
+                $carrier_policies = react_commission_policies::where('carrier_id', $agency->$key->commission_id)->get();
 
                 $carrierPolicies = count($carrier_policies);
 
@@ -207,7 +266,7 @@ class SubAgentController extends Controller
             $agency->$key->prem = (float) number_format($carrierPrem, 2, '.', '');
             $agency->$key->policies = $carrierPolicies;
 
-            array_push($pieChart->labels, $value);
+            array_push($pieChart->labels, $value['name']);
             array_push($pieChart->datasets[0]->data, $carrierPrem);
         }
 
@@ -273,29 +332,20 @@ class SubAgentController extends Controller
                 continue;
             }
 
-            $cells = iterator_to_array($row->getCellIterator("A", "L"));
-            $carriers = ['D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+            $cells = iterator_to_array($row->getCellIterator("A", "K"));
+            $carriers = ['C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
 
             $agent = (object) [
                 "rocket_id" => $cells['A']->getValue(),
                 "name" => $cells['B']->getValue(),
-                "rocketPlus" => strtolower($cells['C']->getValue()) == "yes" ? true : false,
             ];
 
             $i = 0;
             foreach($this->carriers as $key=>$value){
                 if(!empty($cells[$carriers[$i]]->getValue())){
-                    if(strtolower($cells[$carriers[$i]]->getValue()) == 'null'){
-                        $agent->$key = (object) [
-                            "rocket"=> false,
-                            "code"=> null
-                        ];
-                    }else {
-                        $agent->$key = (object) [
-                            "rocket"=> true,
-                            "code"=> (string) $cells[$carriers[$i]]->getValue()
-                        ];
-                    }
+                    $agent->$key = $cells[$carriers[$i]]->getValue();
+                }else{
+                    $agent->$key = null;
                 }
 
                 $i++;
@@ -305,50 +355,42 @@ class SubAgentController extends Controller
         }
 
         foreach($data as $agency){
-            Log::channel('react_subagents')->info('New Sub Agent', (array) $agency);
-            $exists = react_sub_agents::where('rocket_id', $agency->rocket_id)->exists();
+            $exists = mga_companies::where('rocket_id', $agency->rocket_id)->exists();
 
             if($exists){
-                $existingAgency = react_sub_agents::where('rocket_id', $agency->rocket_id)->first();
+                $existingAgency = mga_companies::where('rocket_id', $agency->rocket_id)->first();
 
                 foreach($this->carriers as $key=>$value){
-                    $agency->$key = json_encode($agency->$key);
+                    $carrier_data = json_decode($existingAgency->$key);
+                    $carrier_data->$key->commission_id = $agency->key;
+
+                    $existingAgency->$key = json_encode($carrier_data);
                 }
 
-                $existingAgency->fill((array) $agency);
                 $existingAgency->save();
 
-                Log::channel('react_subagents')->info('Bulk Upload - Exisitng Agency Update:', (array) $agency);
+                Log::channel('mga_companies')->info('Bulk Upload - Exisitng MGA Company Update:', (array) $agency);
             }else {
                 foreach($this->carriers as $key=>$value){
-                    // Check to see if the carrier column has an Producer code, if the column was left blank and this is not an exisitng agency then we will create a new object marking rocket as direct and give the code a value of null
-                    if(property_exists($agency, $key)){
-                        $agency->$key = json_encode($agency->$key);
-                    }else{
-                        $carrierObj = (object) [
-                            "rocket"=> true,
-                            "code"=> null
-                        ];
+                    $carrierObj = (object) [
+                        "carrier_username"=> null,
+                        "commission_id"=> $agency->$key
+                    ];
 
-                        $agency->$key = json_encode($carrierObj);
-                    }
+                    $agency->$key = json_encode($carrierObj);
                 }
 
-                $newAgency = new react_sub_agents();
+                $newAgency = new mga_companies();
                 $inputs = (array) $agency;
-                $inputs['id'] = uniqid('react_subagent_');
-                while(react_sub_agents::where('id', $inputs['id'])->exists()){
-                    $inputs['id'] = uniqid('react_subagent_');
-                }
 
                 $newAgency->fill($inputs);
                 $newAgency->save();
 
-                Log::channel('react_subagents')->info('Bulk Upload - New Agency Created:', (array) $agency);
+                Log::channel('mga_companies')->info('Bulk Upload - New MGA Company Created:', (array) $agency);
             }
         }
 
-        Log::channel('react_subagents')->info('New Agent Bulk Upload - Count: '.count($data));
+        Log::channel('mga_companies')->info('New MGA Company Bulk Upload - Count: '.count($data));
 
         $response = [
             'success'=> true,
