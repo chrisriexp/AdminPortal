@@ -47,7 +47,7 @@ class SubAgentController extends Controller
     ];
 
     public function index(Request $request){
-        $agents = mga_companies::orderBy('created_at', 'desc')->get();
+        $agents = mga_companies::orderBy('created_at', 'desc')->get()->take(50);
 
         $data = [];
 
@@ -362,7 +362,7 @@ class SubAgentController extends Controller
 
                 foreach($this->carriers as $key=>$value){
                     $carrier_data = json_decode($existingAgency->$key);
-                    $carrier_data->$key->commission_id = $agency->key;
+                    $carrier_data->commission_id = $agency->$key;
 
                     $existingAgency->$key = json_encode($carrier_data);
                 }

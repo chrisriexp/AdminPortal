@@ -41,6 +41,7 @@ class Agents extends Controller
             return response()->json($response, $data->status());
         }else{
             $carrier_data = json_decode(Http::get('https://backend.agentportal.rocketmga.com/api/services/client/get-mga-company-carriers/'.$rocket_id))->data->carriers_list;
+            $data = [];
 
             $company_exists = mga_companies::where('rocket_id', $rocket_id)->exists();
 
@@ -58,6 +59,12 @@ class Agents extends Controller
                             $carrier->commission_id = $carrier_info->commission_id;
                         }
                     }
+
+                    if(!str_contains(strtolower($carrier->name), 'wright')){
+                        array_push($data, $carrier);
+                    }elseif($carrier->name == 'Wright - NFIP'){
+                        array_push($data, $carrier);
+                    }
                 }
             }else{
                 $newCompany = new mga_companies();
@@ -73,12 +80,18 @@ class Agents extends Controller
                             $carrier->commission_id = "";
                         }
                     }
+
+                    if(!str_contains(strtolower($carrier->name), 'wright')){
+                        array_push($data, $carrier);
+                    }elseif($carrier->name == 'Wright - NFIP'){
+                        array_push($data, $carrier);
+                    }
                 }
             }
 
             $response = [
                 'success'=> true,
-                'data'=> $carrier_data
+                'data'=> $data
             ];
 
             return response()->json($response, 200);
@@ -112,6 +125,8 @@ class Agents extends Controller
                 ]
             ];
 
+            $wright_data = (object) [];
+
             foreach($request->carriers as $carrier){
                 foreach($this->mga_carriers as $key=>$value){
                     if($value == $carrier['name']){
@@ -122,10 +137,33 @@ class Agents extends Controller
                     }
                 }
 
+                if(!str_contains(strtolower($carrier['name']), 'wright')){
+                    // Push Carrier Data for MGA Portal for all carriers but Wright
+                    $carrier_data = (object) [
+                        "name"=> $carrier['name'],
+                        "direct"=> $carrier['direct'],
+                        "uip_fields"=> $carrier['uip_fields'],
+                    ];
+    
+                    array_push($mga_data->carriers_list, $carrier_data);
+                }else{
+                    // Save Wright Infomation to add it to all the Wright Objects Later
+                    if($carrier['name'] == 'Wright - NFIP'){
+                        $wright_data = (object) [
+                            "direct"=> $carrier['direct'],
+                            "uip_fields"=> $carrier['uip_fields'],
+                        ];
+                    }
+                }
+            }
+
+            $wright_market = [' - Hiscox', ' - ResiFlood', ' - NFIP'];
+
+            foreach($wright_market as $carrier){
                 $carrier_data = (object) [
-                    "name"=> $carrier['name'],
-                    "direct"=> $carrier['direct'],
-                    "uip_fields"=> $carrier['uip_fields'],
+                    "name"=> 'Wright'.$carrier,
+                    "direct"=> $wright_data->direct,
+                    "uip_fields"=> $wright_data->uip_fields,
                 ];
 
                 array_push($mga_data->carriers_list, $carrier_data);
