@@ -132,6 +132,7 @@ Route::middleware('auth:sanctum')->get('/react/commission/check', [CommissionSta
 Route::middleware('auth:sanctum')->post('/react/commission/upload', [CommissionStatementController::class, 'upload']);
 Route::middleware('auth:sanctum')->get('/react/sub-agent/report/{rocket_id}', [SubAgentController::class, 'report']);
 Route::middleware('auth:sanctum')->get('/react/reports', [REACTReports::class, 'index']);
+Route::middleware('auth:sanctum')->get('/react/commissions/{month}', [CommissionStatementController::class, 'month_report']);
 
 // Onboarding Controller
 Route::middleware('auth:sanctum')->post('/onboarding', [Agents::class, 'index']);

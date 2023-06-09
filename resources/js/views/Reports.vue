@@ -19,8 +19,12 @@
 
                 <!-- Reports -->
                 <div v-for="(report, index) in reports_menu" :key="index" @click="$router.replace({params: {category: report.code}})" :class="category == report.code ? 'bg-[#F1F1F1]' : 'opacity-60'" class="w-full h-[48px] px-4 flex items-center gap-4 rounded-[4px] font-medium text-[16px] cursor-pointer">
-                    <Icon :icon="report.icon" height="24" />
-                    <p>{{ report.name }}</p>
+                    <div class="w-[30px] h-[30px] grid">
+                        <Icon :icon="report.icon" height="24" />
+                    </div>
+                    <div class="w-fit grid">
+                        <p class="truncate">{{ report.name }}</p>
+                    </div>
                 </div>
             </div>
         </div>

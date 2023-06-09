@@ -13,5 +13,10 @@
         "name": "REACT",
         "code": "react",
         "icon": "fa-solid:money-check-alt"
+    },
+    {
+        "name": "Commissions Reports",
+        "code": "commissions",
+        "icon": "mdi:note-text"
     }
 ]
