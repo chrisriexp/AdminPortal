@@ -281,7 +281,6 @@ class CommissionStatementController extends Controller
 
         $mga_companies = mga_companies::orderBy('created_at', 'asc')->get();
         $month_policies = react_commission_policies::where('month', $month)->whereIn('carrier', $rocketPayCarriers)->get();
-        Log::info((string) count($month_policies));
         $data = [];
 
         foreach($mga_companies as $agency){
