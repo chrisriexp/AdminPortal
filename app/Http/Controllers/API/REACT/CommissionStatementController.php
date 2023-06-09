@@ -139,8 +139,7 @@ class CommissionStatementController extends Controller
         ]
     ];
 
-    public function check(Request $request){
-        $month = Carbon::now()->year."-".Carbon::now()->format('m');
+    public function check(Request $request, $month){
         $data = (object) [];
 
         foreach($this->carriers as $key=>$value){
@@ -155,8 +154,7 @@ class CommissionStatementController extends Controller
         return response()->json($response, 200);
     }
 
-    public function upload(Request $request){
-        $month = Carbon::now()->year."-".Carbon::now()->format('m');
+    public function upload(Request $request, $month){
         $reader = IOFactory::createReader('Xlsx');
 
         // Check to see if an ID for for statement already exists
@@ -169,7 +167,7 @@ class CommissionStatementController extends Controller
             // Log Unsuccessful Upload
             $logInfo = [
                 "Commission Statement Upload - Unsuccessful",
-                "A ".$this->carriers[$request['type']]['name']." commission statement has already been uploaded for the month of ".Carbon::now()->format('M')." ".Carbon::now()->year,
+                "A ".$this->carriers[$request['type']]['name']." commission statement has already been uploaded for the month of ".Carbon::parse($month)->format('M')." ".Carbon::parse($month)->year,
                 "uploaded_by"=> $request->user()->name
             ];
             
@@ -245,7 +243,7 @@ class CommissionStatementController extends Controller
         // Send Notification to all system Super Admins that a new commission statement was uploaded
         (new NotificationsHelper)->createSuperAdminNotification((object) [
             "header"=> "REACT - Commission Statement Upload",
-            "body"=> "A new ". $this->carriers[$request['type']]['name'] ." commission statment has been uploaded by ".$request->user()->name." for ".Carbon::now()->format('M'). " " .Carbon::now()->year.". The commission statement has been processed successfully.",
+            "body"=> "A new ". $this->carriers[$request['type']]['name'] ." commission statment has been uploaded by ".$request->user()->name." for ".Carbon::parse($month)->format('M'). " " .Carbon::parse($month)->year.". The commission statement has been processed successfully.",
             "type"=> "success",
             "system"=> "react"
         ]);
@@ -253,7 +251,7 @@ class CommissionStatementController extends Controller
         // Create a new Log for the Commission Statement Upload
         $logInfo = [
             "Commission Statement Upload - Successful",
-            Carbon::now()->format('M')." ".Carbon::now()->year,
+            Carbon::parse($month)->format('M')." ".Carbon::parse($month)->year,
             $this->carriers[$request['type']]['name'],
             "override"=> (float) number_format($totalOverride, 2, '.', ''),
             "comm"=> (float) number_format($totalComm, 2, '.', ''),

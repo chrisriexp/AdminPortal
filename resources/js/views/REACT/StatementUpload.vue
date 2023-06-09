@@ -30,13 +30,21 @@
                     <p class="text-[16px] opacity-60">Here you can upload carrier commission statements</p>
                 </div>
                 
-                <!-- Run Accouting Button -->
-                <button @click="loading = true; runAccounting()" class="w-[254px] h-[48px] text-[16px] text-white font-semibold bg-custom-purple rounded-[4px] shadow-newdrop float-right">
-                    <div class="m-auto w-fit h-fit flex items-center gap-4">
-                        <Icon :icon="'fluent:calculator-20-filled'" height="24" />
-                        <p>Run Accounting</p>
+                <div class="w-fit h-fit flex items-center gap-6 float-right">
+                    <!-- Month Select -->
+                    <div class="w-fit h-full flex items-center gap-6">
+                        <p class="text-[18px] text-custom-black font-medium opacity-60">Select Month:</p>
+                        <Calendar v-model="month" view="month" dateFormat="yy-mm" />
                     </div>
-                </button>
+
+                    <!-- Run Accouting Button -->
+                    <button @click="loading = true; runAccounting()" class="w-[254px] h-[48px] text-[16px] text-white font-semibold bg-custom-purple rounded-[4px] shadow-newdrop">
+                        <div class="m-auto w-fit h-fit flex items-center gap-4">
+                            <Icon :icon="'fluent:calculator-20-filled'" height="24" />
+                            <p>Run Accounting</p>
+                        </div>
+                    </button>
+                </div>
             </div>
 
             <div class="w-full h-fit grid grid-cols-2 mt-12 border-[1px] border-custom-black border-opacity-10 rounded-[4px]">
@@ -98,21 +106,29 @@ import topNav from '../../components/topNav.vue'
 import loading from '../../components/loading.vue'
 import { Icon } from '@iconify/vue';
 import Checkbox from 'primevue/checkbox';
+import Calendar from 'primevue/calendar';
 
 import carriers from '../../../assets/react_carriers.json'
+import moment from 'moment';
 
 export default{
     name: "REACT - Upload Statements",
     data(){
         return {
-            checked: true,
             loading: true,
             carriers,
-            uploaded: []
+            month: "",
+            uploaded: [],
+            onLoad: true,
         }
     },
     async created(){
-        await axios.get('/api/react/commission/check')
+        this.moment = moment
+
+        this.moment = moment
+        this.month = moment(Date.now()).format('YYYY-MM')
+
+        await axios.get('/api/react/commission/check/'+this.month)
         .then(response => {
             this.carriers.forEach(carrier => {
                 this.uploaded.push({
@@ -126,6 +142,33 @@ export default{
         })
 
         this.loading = false
+    },
+    watch: {
+        month: async function(value){
+            if(this.onLoad){
+                this.onLoad = false
+            }else{
+                this.loading = true
+
+                this.month = this.month = moment(value).format('YYYY-MM')
+
+                await axios.get('/api/react/commission/check/'+this.month)
+                .then(response => {
+                    this.uploaded = [];
+                    this.carriers.forEach(carrier => {
+                        this.uploaded.push({
+                            "name": carrier.name,
+                            "code": carrier.code,
+                            "file": "",
+                            "uploaded": false,
+                            "exists": response.data.carriers[carrier.code]
+                        })
+                    })
+                })
+
+                this.loading = false
+            }
+        }
     },
     methods: {
         async uploadFile (e) {
@@ -162,9 +205,10 @@ export default{
 
                     let fileData = new FormData();
                     fileData.append('file', carrier.file);
+                    fileData.append('month', this.month);
                     fileData.append('type', carrier.code);
 
-                    await axios.post('/api/react/commission/upload', fileData, fileHeader)
+                    await axios.post('/api/react/commission/upload/'+this.month, fileData, fileHeader)
                     .then(response => {
                         if(response.data.success){
                             this.$toast.add({
@@ -203,7 +247,8 @@ export default{
         topNav,
         loading,
         Icon,
-        Checkbox
+        Checkbox,
+        Calendar
     }
 }
 </script>

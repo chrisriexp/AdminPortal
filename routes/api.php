@@ -128,8 +128,8 @@ Route::middleware('auth:sanctum')->post('/react/sub-agents', [SubAgentController
 Route::middleware('auth:sanctum')->post('/react/sub-agent', [SubAgentController::class, 'create']);
 Route::middleware('auth:sanctum')->post('/react/sub-agent/upload', [SubAgentController::class, 'bulkUpload']);
 Route::middleware('auth:sanctum')->put('/react/sub-agent/{rocket_id}', [SubAgentController::class, 'update']);
-Route::middleware('auth:sanctum')->get('/react/commission/check', [CommissionStatementController::class, 'check']);
-Route::middleware('auth:sanctum')->post('/react/commission/upload', [CommissionStatementController::class, 'upload']);
+Route::middleware('auth:sanctum')->get('/react/commission/check/{month}', [CommissionStatementController::class, 'check']);
+Route::middleware('auth:sanctum')->post('/react/commission/upload/{month}', [CommissionStatementController::class, 'upload']);
 Route::middleware('auth:sanctum')->get('/react/sub-agent/report/{rocket_id}', [SubAgentController::class, 'report']);
 Route::middleware('auth:sanctum')->get('/react/reports', [REACTReports::class, 'index']);
 Route::middleware('auth:sanctum')->get('/react/commissions/{month}', [CommissionStatementController::class, 'month_report']);
