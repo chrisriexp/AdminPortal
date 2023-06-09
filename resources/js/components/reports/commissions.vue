@@ -59,7 +59,6 @@ export default {
 
         await axios.get('/api/react/commissions/'+this.month)
         .then(response => {
-            console.log(response)
             this.commissions = response.data.commissions
             this.$toast.add({
                 severity: 'success',
@@ -80,7 +79,6 @@ export default {
             }else{
                 await axios.get('/api/react/commissions/'+moment(value).format('YYYY-MM'))
                 .then(response => {
-                    console.log(response)
                     this.commissions = response.data.commissions
                     this.$toast.add({
                         severity: 'success',
