@@ -252,7 +252,7 @@ class Agents extends Controller
             foreach($response->rocket_carriers as $carrier){
                 foreach($this->mga_carriers as $key=>$value){
                     if($carrier == $value){
-                        $carrier_logins = $carrier_logins.'<tr><td>'.$value.'</td><td>'.empty(json_decode($mga_company->$key)->carrier_username) ? 'Pending' : json_decode($mga_company->$key)->carrier_username.'</td><td><a href="'.$carrier_links[$value].'" target="_blank">Portal Login</a></td></tr>';
+                        $carrier_logins = $carrier_logins.'<tr><td>'.$value.'</td><td>'. (empty(json_decode($mga_company->$key)->carrier_username) ? 'Pending' : json_decode($mga_company->$key)->carrier_username) .'</td><td><a href="'.$carrier_links[$value].'" target="_blank">Portal Login</a></td></tr>';
                     }
                 }
             }
