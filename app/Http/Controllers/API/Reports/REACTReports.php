@@ -71,7 +71,7 @@ class REACTReports extends Controller
             array_push($lineChart->datasets[0]->data, $monthOverride);
             array_push($revenue, [
                 'month'=> $month,
-                'override'=> $monthOverride
+                'override'=> (float) number_format($monthOverride, 2, '.', '')
             ]);
         }
 
