@@ -246,38 +246,40 @@ class Agents extends Controller
             "Wright - NFIP"=> "https://www.wrightflood.net/praesidium/app/sign-in"
         ];
 
-        $mga_company = mga_companies::find($rocket_id);
+        if($response->success){
+            $mga_company = mga_companies::find($rocket_id);
 
-        foreach($response->rocket_carriers as $carrier){
-            foreach($this->mga_carriers as $key=>$value){
-                if($carrier == $value){
-                    $carrier_logins = $carrier_logins.'<tr><td>'.$carrier.'</td><td>'.json_decode($mga_company->$key)->carrier_username.'</td><td><a href="'.$carrier.'" target="_blank">Portal Login</a></td></tr>';
+            foreach($response->rocket_carriers as $carrier){
+                foreach($this->mga_carriers as $key=>$value){
+                    if($carrier == $value){
+                        $carrier_logins = $carrier_logins.'<tr><td>'.$value.'</td><td>'.empty(json_decode($mga_company->$key)->carrier_username) ? 'Pending' : json_decode($mga_company->$key)->carrier_username.'</td><td><a href="'.$carrier_links[$value].'" target="_blank">Portal Login</a></td></tr>';
+                    }
                 }
             }
+
+            $carrier_logins = $carrier_logins_start.$carrier_logins.$carrier_logins_end;
+
+            $adminEmail = Http::post('https://api.emailjs.com/api/v1.0/email/send', [
+                "service_id"=> "service_nf9yozb",
+                "user_id"=> "h29zXRTKkaswfKPkp",
+                "accessToken"=> "77MJk1G5Dy2wGTpULFmVI",
+                "template_id"=> "template_0qzq3oq",
+                "template_params"=> (object) [
+                    "agency_name"=> $response->agency_name,
+                    "email"=> $response->admin->email,
+                    "password"=> $response->admin->password,
+                    "agent_logins"=> $response->agent_logins,
+                    "carrier_logins"=> $carrier_logins
+                ]
+            ]);
+
+            (new NotificationsHelper)->createOnboardingNotification((object) [
+                'header'=> 'NEW MGA Agency Appointed',
+                'body'=> $response->agency_name." was just fully appointed with Rocket MGA. You can access their onboarding information at https://admin.rocketflood.com/onboarding/agency/". $rocket_id ."/agency",
+                'type'=> 'success',
+                'system'=> 'onboarding' 
+            ]);
         }
-
-        $carrier_logins = $carrier_logins_start.$carrier_logins.$carrier_logins_end;
-
-        $adminEmail = Http::post('https://api.emailjs.com/api/v1.0/email/send', [
-            "service_id"=> "service_nf9yozb",
-            "user_id"=> "h29zXRTKkaswfKPkp",
-            "accessToken"=> "77MJk1G5Dy2wGTpULFmVI",
-            "template_id"=> "template_0qzq3oq",
-            "template_params"=> (object) [
-                "agency_name"=> $response->agency_name,
-                "email"=> $response->admin->email,
-                "password"=> $response->admin->password,
-                "agent_logins"=> $response->agent_logins,
-                "carrier_logins"=> $carrier_logins
-            ]
-        ]);
-
-        (new NotificationsHelper)->createOnboardingNotification((object) [
-            'header'=> 'NEW MGA Agency Appointed',
-            'body'=> $response->agency_name." was just fully appointed with Rocket MGA, the agents and agency admin just received their login credentials to the MGA agent portal. You can access their onboarding information at https://admin.rocketflood.com/onboarding/agency/". $rocket_id ."/agency",
-            'type'=> 'success',
-            'system'=> 'onboarding' 
-        ]);
 
         return response()->json($response, $data->status());
     }

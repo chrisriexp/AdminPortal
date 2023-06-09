@@ -212,7 +212,7 @@ export default {
                     life: 2500
                 })
                 
-                // location.reload()
+                location.reload()
             })
             .catch(error => {
                 if(error.response.status == 500){

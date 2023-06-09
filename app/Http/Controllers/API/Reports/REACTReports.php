@@ -105,8 +105,8 @@ class REACTReports extends Controller
 
             array_push($carriers, [
                 'name'=> $value,
-                'prem'=> $carrierPrem,
-                'override'=> $carrierOverride,
+                'prem'=> (float) number_format($carrierPrem, 2, '.', ''),
+                'override'=> (float) number_format($carrierOverride, 2, '.', ''),
                 'policies'=> $carrierPolicies
             ]);
         }
@@ -139,7 +139,7 @@ class REACTReports extends Controller
 
             $sub_agent_rev->push((object) [
                 "name"=> $agency->name,
-                "override"=> (float) number_format($override, 2, ',', '')
+                "override"=> (float) number_format($override, 2, '.', '')
             ]);
         }
         

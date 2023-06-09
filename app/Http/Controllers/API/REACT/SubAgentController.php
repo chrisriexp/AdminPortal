@@ -47,7 +47,7 @@ class SubAgentController extends Controller
     ];
 
     public function index(Request $request){
-        $agents = mga_companies::orderBy('created_at', 'desc')->get()->take(50);
+        $agents = mga_companies::orderBy('created_at', 'desc')->get();
 
         $data = [];
 
