@@ -1,7 +1,7 @@
 <template>
     <!-- Create Task -->
     <div v-if="showTask" class="w-screen h-screen grid bg-[#3F3F3F] bg-opacity-[26%] justify-items-center">
-        <CreateTask class="m-auto" @close="$emit('close')" @loading="$emit('loading')" :projects="projects" :task_desc="error.updates" />
+        <CreateTask class="m-auto" @close="$emit('close')" @loading="$emit('loading')" @updateTasks="location.reload()" :projects="projects" :task_desc="error.updates" />
     </div>
 
     <div v-else class="w-[604px] h-fit max-h-[800px] grid gap-4 p-6 bg-sidebar-bg rounded-[4px] shadow-newdrop overflow-y-scroll">
@@ -99,7 +99,7 @@ export default {
             error: {
                 cause: {},
                 updates: {},
-                assigned: {}
+                assigned: {},
             },
             createTask: false,
             showTask: false,
@@ -110,15 +110,27 @@ export default {
         async updateStage(){
             this.$emit('loading')
 
-            // await axios.put('/api/rover/stage/'+this.id, {"error": this.error})
-            // .then(response => {
-            //     this.$toast.add({
-            //         severity: 'success',
-            //         summary: 'Error Update',
-            //         detail: response.data.message,
-            //         life: 2500
-            //     })
-            // })
+            if(Object.keys(this.error.cause).length == 0 || Object.keys(this.error.updates).length == 0 || Object.keys(this.error.assigned).length == 0){
+                this.$toast.add({
+                    severity: 'warn',
+                    summary: 'Update Validation',
+                    detail: "You are missing one or more required fields",
+                    life: 2500
+                })
+
+                this.$emit('loading')
+                return
+            }
+
+            await axios.put('/api/rover/stage/'+this.id, {"error": this.error})
+            .then(response => {
+                this.$toast.add({
+                    severity: 'success',
+                    summary: 'Error Update',
+                    detail: response.data.message,
+                    life: 2500
+                })
+            })
 
             if(this.createTask){
                 this.$emit('loading')
@@ -130,8 +142,7 @@ export default {
 
                 this.showTask = true
             }else{
-                this.$emit('loading')
-                this.$emit('close')
+                location.reload()
             }
         }
     },

@@ -19,6 +19,16 @@
         <readyForUpdatesPopup class="m-auto" @close="showReadyForUpdates = false" @loading="loading = !loading" :id="error.id" :users="users" />
     </div>
 
+    <!-- Ready to Test -->
+    <div v-if="showReadyToTest" class="w-screen h-screen grid bg-[#3F3F3F] bg-opacity-[26%] justify-items-center z-40 fixed">
+        <readyToTest class="m-auto" @close="showReadyToTest = false" @loading="loading = !loading" :id="error.id" :users="users" />
+    </div>
+
+    <!-- Log Test -->
+    <div v-if="showLogTest" class="w-screen h-screen grid bg-[#3F3F3F] bg-opacity-[26%] justify-items-center z-40 fixed">
+        <logTest class="m-auto" @close="showLogTest = false" @loading="loading = !loading" :id="error.id" :users="users" />
+    </div>
+
     <div v-if="ready" class="w-full h-screen z-20 absolute">
         <!-- Sidebar -->
         <div class="w-[305px] h-full grid bg-sidebar-bg z-20 absolute">
@@ -125,7 +135,10 @@
 
                             <!-- Update Stage Button -->
                             <div class="w-fit h-full flex items-center float-right">
-                                <button v-if="error.status == 'debug'" @click="showReadyForUpdates = true" class="py-2 px-6 rounded-[2px] text-[16px] text-white font-semibold bg-custom-black">Ready for Updates</button>
+                                <button v-if="error.status == 'debug' || error.status == 'digiprompt' " @click="showReadyForUpdates = true" class="py-2 px-6 rounded-[2px] text-[16px] text-white font-semibold bg-custom-black">Ready for Updates</button>
+                                <button v-else-if="error.status == 'update'" @click="showReadyToTest = true" class="py-2 px-6 rounded-[2px] text-[16px] text-white font-semibold bg-custom-black">Ready to Test</button>
+                                <button v-else-if="error.status == 'test' && error.tests < 3" @click="showLogTest = true" class="py-2 px-6 rounded-[2px] text-[16px] text-white font-semibold bg-custom-black">Log Test</button>
+                                <button v-else-if="error.status == 'test' && error.tests >= 3" @click="markFixed" class="py-2 px-6 rounded-[2px] text-[16px] text-white font-semibold bg-custom-black">Mark Fixed</button>
                             </div>
                         </div>
 
@@ -140,6 +153,11 @@
                             <a :href="(carriers[(error.product == 'HOME' ? error.carrier.substring(3): error.carrier)].backend[error.source])+app_id" target="_blank" class="w-[32px] h-[32px] grid bg-white shadow-newdrop rounded-[2px]">
                                 <Icon :icon="'codicon:debug-line-by-line'" height="24" class="text-custom-purple m-auto" />
                             </a>
+
+                            <div v-if="error.status == 'test' || error.status == 'fixed'" class="w-fit h-fit flex items-center gap-4">
+                                <p class="text-[16px] text-custom-black">Completed Tests:</p>
+                                <img :src="'/images/tests-'+error.tests+'.png'" alt="Progress - Tests">
+                            </div>
                         </div>
 
                         <div class="w-full h-fit grid grid-cols-3 gap-4">
@@ -154,7 +172,7 @@
                                 </Editor>
                             </div>
 
-                            <!-- Error Description -->
+                            <!-- Error Attachments -->
                             <div class="w-full h-fit max-h-[127px] grid overflow-y-scroll">
                                 <p class="text-[16px] text-custom-black font-medium">Attachments</p>
                                 <div v-if="error.uploads.length == 0" class=" w-full h-full grid">
@@ -162,6 +180,30 @@
                                 </div>
                                 <a v-else v-for="(upload, index) in error.uploads" :key="index" :href="'https://rover.rocketflood.com/'+upload.path" target="_blank" class="truncate text-custom-purple underline">{{ upload.name }}</a>
                             </div>
+                        </div>
+
+                        <hr v-if="error.status !== 'debug' || error.status !== 'digiprompt'">
+
+                        <!-- Cause of Error -->
+                        <div class="w-full h-fit grid comment">
+                            <p class="text-[16px] text-custom-black font-medium">Cause of Error</p>
+                            <Editor readonly v-model="error.cause" id="newTaskDesc" editorStyle="height: auto; font-size: 16px;" class="w-full p-2 text-[16px] bg-sidebar-bg border-[1px] border-custom-black border-opacity-10 rounded-[2px]" >
+                                <template v-slot:toolbar>
+                                    <span class="ql-formats flex items-center">
+                                    </span>
+                                </template>
+                            </Editor>
+                        </div>
+
+                        <!-- Updates to Implement -->
+                        <div class="w-full h-fit grid comment">
+                            <p class="text-[16px] text-custom-black font-medium">Updates to Implement</p>
+                            <Editor readonly v-model="error.updates" id="newTaskDesc" editorStyle="height: auto; font-size: 16px;" class="w-full p-2 text-[16px] bg-sidebar-bg border-[1px] border-custom-black border-opacity-10 rounded-[2px]" >
+                                <template v-slot:toolbar>
+                                    <span class="ql-formats flex items-center">
+                                    </span>
+                                </template>
+                            </Editor>
                         </div>
 
                         <hr>
@@ -251,6 +293,8 @@ import carriers from '../../../assets/rover_carriers.json'
 import raters from '../../../assets/raters.json'
 import deleteCommentPopup from '../../components/rover/deleteComment.vue'
 import readyForUpdatesPopup from '../../components/rover/readyForUpdates.vue'
+import readyToTest from '../../components/rover/readyToTest.vue'
+import logTest from '../../components/rover/logTest.vue'
 
 import moment from 'moment';
 
@@ -265,6 +309,8 @@ export default {
             ready: false,
             showDeleteComment: false,
             showReadyForUpdates: false,
+            showReadyToTest: false,
+            showLogTest: false,
             commentIndex: null,
             commentID: null,
             user: "",
@@ -406,6 +452,21 @@ export default {
             })
 
             this.loading = false 
+        },
+        async markFixed(){
+            this.loading = true
+
+            await axios.post('/api/rover/fixed/'+this.error.id)
+            .then(response => {
+                this.$toast.add({
+                    severity: 'success',
+                    summary: 'Error Update',
+                    detail: response.data.message,
+                    life: 2500
+                })
+            })
+            
+            location.reload()
         }
     },
     components: {
@@ -416,7 +477,9 @@ export default {
         Icon,
         Editor,
         deleteCommentPopup,
-        readyForUpdatesPopup
+        readyForUpdatesPopup,
+        readyToTest,
+        logTest
     }
 }
 </script>

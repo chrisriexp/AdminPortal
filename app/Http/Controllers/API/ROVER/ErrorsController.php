@@ -71,7 +71,6 @@ class ErrorsController extends Controller
         ]);
 
         $response = json_decode($data);
-        Log::info('response ', (array) $response);
         if($response->success){
             (new NotificationsHelper)->createNotification((object) [
                 "user_id"=> $request->user['id'],
@@ -81,6 +80,53 @@ class ErrorsController extends Controller
                 "type"=> "info"
             ]);
         }
+
+        return response()->json($response, $data->status());
+    }
+
+    public function update_stage(Request $request, $id){
+        $error = $request->error;
+
+        $error['assigned'] = (object) [
+            "name"=> $request->error['assigned']['name']
+        ];
+        
+        $data = Http::withHeaders(['token'=>'27b00fca-4d9e-4e28-85ce-54f16af26c0b'])->put('https://rover.rocketflood.com/api/admin-portal/stage/'.$id, [
+            "error"=> $error,
+            "changeBy"=> $request->user()->name
+        ]);
+
+        $response = json_decode($data);
+        if($response->success){
+            (new NotificationsHelper)->createNotification((object) [
+                "user_id"=> $request->error['assigned']['id'],
+                "header"=> "ROVER Error Update",
+                "body"=> "A ROVER error's stage has been changed and assigned you by ".$request->user()->name." you can access the error at - https://admin.rocketflood.com/rover/error/".$response->app_id.'/'.$response->carrier,
+                "system"=> "rover",
+                "type"=> "info"
+            ]);
+        }
+
+        return response()->json($response, $data->status());
+    }
+
+    public function log_test(Request $request, $id){
+        $data = Http::withHeaders(['token'=>'27b00fca-4d9e-4e28-85ce-54f16af26c0b'])->post('https://rover.rocketflood.com/api/admin-portal/test/'.$id, [
+            "test"=> $request->test,
+            "logBy"=> $request->user()->name
+        ]);
+
+        $response = json_decode($data);
+
+        return response()->json($response, $data->status());
+    }
+
+    public function fixed(Request $request, $id){
+        $data = Http::withHeaders(['token'=>'27b00fca-4d9e-4e28-85ce-54f16af26c0b'])->post('https://rover.rocketflood.com/api/admin-portal/fixed/'.$id, [
+            "fixedBy"=> $request->user()->name
+        ]);
+
+        $response = json_decode($data);
 
         return response()->json($response, $data->status());
     }

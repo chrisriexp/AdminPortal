@@ -154,7 +154,7 @@ export default {
         
         if(!Object.keys(this.task_desc).length == 0){
             this.task.desc = this.task_desc
-        }else{console.log('this is no desc')}
+        }
     },
     watch: {
         'task.project': async function(value){

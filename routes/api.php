@@ -146,6 +146,9 @@ Route::middleware('auth:sanctum')->get('/onboarding/finalize/{rocket_id}/{force}
 Route::middleware('auth:sanctum')->post('rover/errors', [ErrorsController::class, 'index']);
 Route::middleware('auth:sanctum')->get('rover/app/{id}', [ErrorsController::class, 'application']);
 Route::middleware('auth:sanctum')->get('rover/error/{app_id}/{carrier}', [ErrorsController::class, 'error']);
+Route::middleware('auth:sanctum')->put('rover/stage/{id}', [ErrorsController::class, 'update_stage']);
+Route::middleware('auth:sanctum')->post('rover/test/{id}', [ErrorsController::class, 'log_test']);
+Route::middleware('auth:sanctum')->post('rover/fixed/{id}', [ErrorsController::class, 'fixed']);
 Route::middleware('auth:sanctum')->post('rover/comment', [ErrorsController::class, 'add_comment']);
 Route::middleware('auth:sanctum')->delete('rover/comment/{id}', [ErrorsController::class, 'drop_comment']);
 Route::middleware('auth:sanctum')->put('rover/assigned/{id}', [ErrorsController::class, 'update_assigned']);
