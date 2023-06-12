@@ -113,6 +113,7 @@ export default {
                 'pipeline': 'icon-park-solid:connection-point',
                 'notebooks': 'icon-park-solid:notes',
                 'react': 'heroicons-solid:document-report',
+                'rover': 'codicon:debug-line-by-line',
                 'onboarding': 'solar:documents-line-duotone'
             },
             names: {
@@ -120,6 +121,7 @@ export default {
                 'pipeline': 'Pipeline',
                 'notebooks': 'Notebooks',
                 'react': "REACT",
+                'rover': "ROVER",
                 'onboarding': "MGA Onboarding"
             },
             notificationIcons: {

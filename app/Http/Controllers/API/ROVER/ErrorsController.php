@@ -5,6 +5,9 @@ namespace App\Http\Controllers\API\ROVER;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use App\Helper\NotificationsHelper;
+use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class ErrorsController extends Controller
 {
@@ -23,6 +26,7 @@ class ErrorsController extends Controller
 
         $response = json_decode($data);
         $response->user = $request->user()->name;
+        $response->users = User::orderBy('created_at', 'desc')->get(['name', 'id']);
 
         return response()->json($response, $data->status());
     }
@@ -52,6 +56,31 @@ class ErrorsController extends Controller
         $data = Http::withHeaders(['token'=>'27b00fca-4d9e-4e28-85ce-54f16af26c0b'])->delete('https://rover.rocketflood.com/api/admin-portal/comment/'.$id);
 
         $response = json_decode($data);
+
+        return response()->json($response, $data->status());
+    }
+
+    public function update_assigned(Request $request, $id){
+        $user = (object) [
+            "name"=> $request->user['name']
+        ];
+
+        $data = Http::withHeaders(['token'=>'27b00fca-4d9e-4e28-85ce-54f16af26c0b'])->put('https://rover.rocketflood.com/api/admin-portal/assigned/'.$id, [
+            "user"=> $user,
+            "changeBy"=> $request->user()->name
+        ]);
+
+        $response = json_decode($data);
+        Log::info('response ', (array) $response);
+        if($response->success){
+            (new NotificationsHelper)->createNotification((object) [
+                "user_id"=> $request->user['id'],
+                "header"=> "ROVER Error Update",
+                "body"=> "The ROVER error for ".$request->error['app'].' '.$request->error['carrier_name'].' has been assigned to you by '.$request->user()->name,
+                "system"=> "rover",
+                "type"=> "info"
+            ]);
+        }
 
         return response()->json($response, $data->status());
     }

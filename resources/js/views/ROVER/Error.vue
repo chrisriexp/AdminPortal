@@ -14,6 +14,11 @@
         <deleteCommentPopup class="m-auto" @close="showDeleteComment = false; commentID = null; commentIndex = null;" @delete="deleteComment" />
     </div>
 
+    <!-- Ready for Updates -->
+    <div v-if="showReadyForUpdates" class="w-screen h-screen grid bg-[#3F3F3F] bg-opacity-[26%] justify-items-center z-40 fixed">
+        <readyForUpdatesPopup class="m-auto" @close="readyForUpdatesPopup = false" />
+    </div>
+
     <div v-if="ready" class="w-full h-screen z-20 absolute">
         <!-- Sidebar -->
         <div class="w-[305px] h-full grid bg-sidebar-bg z-20 absolute">
@@ -74,7 +79,8 @@
                     </div>
 
                     <div class="w-[30%] h-full flex items-center float-right">
-                        <Dropdown v-model="error.assigned" :options="roverUsers" optionLabel="name" class="w-full h-[48px] flex items-center" >
+                        <!-- Assigned to -->
+                        <Dropdown v-model="error.assigned" @change="updateAssigned" :options="users" optionLabel="name" class="w-full h-[48px] flex items-center" >
                             <template #value="slotProps">
                                 <div class="grid">
                                     <p class="truncate flex items-center gap-2">Assigned to: {{ slotProps.value.name }}</p>
@@ -201,7 +207,7 @@
                                 <div :class="comment.user == user ? 'w-[90%]' : 'w-full'" class="h-fit grid float-left comment">
                                     <div class="w-full h-fit flow-root">
                                         <!-- User Name -->
-                                        <p v-if="comment.user != 'system'" class="text-[16px] text-custom-black font-medium opacity-80 float-left">{{ comment.user }}</p>
+                                        <p v-if="comment.user != 'System'" class="text-[16px] text-custom-black font-medium opacity-80 float-left">{{ comment.user }}</p>
                                         <!-- System Comment -->
                                         <p v-else class="mb-2 text-[16px] text-white font-medium px-4 bg-custom-black rounded-full float-left">System</p>
                                         
@@ -244,6 +250,7 @@ import NotFoundAnimation from '../../../assets/newNotFound.json'
 import carriers from '../../../assets/rover_carriers.json'
 import raters from '../../../assets/raters.json'
 import deleteCommentPopup from '../../components/rover/deleteComment.vue'
+import readyForUpdatesPopup from '../../components/rover/readyForUpdates.vue'
 
 import moment from 'moment';
 
@@ -271,7 +278,7 @@ export default {
                 digiprompt: "DigiPrompt Queue",
                 fixed: "Fixed"
             },
-            roverUsers: [],
+            users: [],
             showCommentToolBar: false,
             new_comment: {}
         }
@@ -285,7 +292,7 @@ export default {
             this.user = response.data.user
             this.errors = response.data.errors
             this.fixed = response.data.fixed
-            this.roverUsers = response.data.users
+            this.users = response.data.users
         })
 
         await axios.get('/api/rover/error/'+this.app_id+'/'+this.$route.params.carrier)
@@ -317,7 +324,6 @@ export default {
                 }
             })
 
-            this.ready = true
             this.loading = false
         }
     },
@@ -376,6 +382,29 @@ export default {
             })
 
             this.loading = false 
+        },
+        async updateAssigned(){
+            this.loading = true 
+
+            await axios.put('/api/rover/assigned/'+this.error.id, {
+                "user": this.error.assigned,
+                "error": {
+                    "app": this.app_id,
+                    "carrier": this.error.carrier,
+                    "carrier_name": this.carriers[(this.error.product == 'HOME' ? this.error.carrier.substring(3) : this.error.carrier)].name
+                }
+            })
+            .then(response => {
+                this.error.comments = response.data.comments
+                this.$toast.add({
+                    severity: 'success',
+                    summary: 'Error Update',
+                    detail: response.data.message,
+                    life: 2500
+                })
+            })
+
+            this.loading = false 
         }
     },
     components: {
@@ -385,7 +414,8 @@ export default {
         InputText,
         Icon,
         Editor,
-        deleteCommentPopup
+        deleteCommentPopup,
+        readyForUpdatesPopup
     }
 }
 </script>

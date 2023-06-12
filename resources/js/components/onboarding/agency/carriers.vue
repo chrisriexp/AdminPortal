@@ -61,7 +61,7 @@
                 <!-- Carrier UIP(s) -->
                 <div class="w-full h-full grid gap-4">
                     <div v-for="(uip, index) in carrier.uip_fields" :key="index" class="w-full h-fit grid">
-                        <p class="font-medum">{{ uip.name }}</p>
+                        <p class="font-medum">UIP ({{ uip.name }})</p>
                         <InputText v-model="uip.value" class="w-full h-[48px]" />
                     </div>
                 </div>

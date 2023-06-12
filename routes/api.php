@@ -148,6 +148,7 @@ Route::middleware('auth:sanctum')->get('rover/app/{id}', [ErrorsController::clas
 Route::middleware('auth:sanctum')->get('rover/error/{app_id}/{carrier}', [ErrorsController::class, 'error']);
 Route::middleware('auth:sanctum')->post('rover/comment', [ErrorsController::class, 'add_comment']);
 Route::middleware('auth:sanctum')->delete('rover/comment/{id}', [ErrorsController::class, 'drop_comment']);
+Route::middleware('auth:sanctum')->put('rover/assigned/{id}', [ErrorsController::class, 'update_assigned']);
 Route::middleware('auth:sanctum')->get('/rover/reports', [ROVERReports::class, 'index']);
 
 // OpenAI Routes

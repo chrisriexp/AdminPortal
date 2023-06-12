@@ -18,18 +18,7 @@ class UserController extends Controller
 {
     public function member_list(Request $request){
         $id = $request->user()->id;
-        $list = User::orderBy('created_at', 'asc')->get();
-
-        $users = [];
-
-        foreach($list as $user){
-            $data = [
-                "name" => $user->name,
-                "id"=> $user->id
-            ];
-
-            array_push($users, $data);
-        }
+        $users = User::orderBy('created_at', 'asc')->get(['name', 'id']);
 
         $response = [
             'success'=> true,

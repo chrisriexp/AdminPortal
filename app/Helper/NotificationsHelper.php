@@ -20,6 +20,7 @@ class NotificationsHelper
         "notebooks"=> "Notebook Notification",
         "pipeline"=> "Pipeline Notification",
         "react"=> "REACT Notifications",
+        "rover"=> "ROVER Notifications",
         "onboarding"=> "MGA Onboarding"
     ];
 
