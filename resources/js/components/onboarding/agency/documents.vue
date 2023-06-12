@@ -322,8 +322,6 @@ export default {
                 })
             }
         })
-
-        console.log(this.files)
         
         this.ready = true
     },

@@ -115,7 +115,11 @@ export default {
     name: "Create Task",
     props: {
         projects: Array,
-        project_id: String
+        project_id: String,
+        task_desc: {
+            default: {},
+            type: Object
+        }
     },
     data(){
         return{
@@ -147,6 +151,10 @@ export default {
                 }
             })
         }
+        
+        if(!Object.keys(this.task_desc).length == 0){
+            this.task.desc = this.task_desc
+        }else{console.log('this is no desc')}
     },
     watch: {
         'task.project': async function(value){

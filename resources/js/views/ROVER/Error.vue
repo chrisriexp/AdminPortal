@@ -16,7 +16,7 @@
 
     <!-- Ready for Updates -->
     <div v-if="showReadyForUpdates" class="w-screen h-screen grid bg-[#3F3F3F] bg-opacity-[26%] justify-items-center z-40 fixed">
-        <readyForUpdatesPopup class="m-auto" @close="readyForUpdatesPopup = false" />
+        <readyForUpdatesPopup class="m-auto" @close="showReadyForUpdates = false" @loading="loading = !loading" :id="error.id" :users="users" />
     </div>
 
     <div v-if="ready" class="w-full h-screen z-20 absolute">
@@ -125,14 +125,14 @@
 
                             <!-- Update Stage Button -->
                             <div class="w-fit h-full flex items-center float-right">
-                                <button class="py-2 px-6 rounded-[2px] text-[16px] text-white font-semibold bg-custom-black">Ready for Updates</button>
+                                <button v-if="error.status == 'debug'" @click="showReadyForUpdates = true" class="py-2 px-6 rounded-[2px] text-[16px] text-white font-semibold bg-custom-black">Ready for Updates</button>
                             </div>
                         </div>
 
                         <!-- Quick Links -->
                         <div class="w-fit h-fit flex items-center gap-4">
                             <!-- Agent Portal Link -->
-                            <a :href="'https://agent.rocketflood.com/agent-portal/application-details/'+app_id" target="_blank" class="w-[32px] h-[32px] grid bg-white shadow-newdrop rounded-[2px]">
+                            <a :href="'https://'+(error.source == 'RA' ? 'agent.rocketflood.com' : 'agentportal.rocketmga.com')+'/agent-portal/application-details/'+app_id" target="_blank" class="w-[32px] h-[32px] grid bg-white shadow-newdrop rounded-[2px]">
                                 <img src="../../../assets/purpleLogo64.png" alt="Rocket Logo Purple" class="h-[24px] w-[24px] m-auto">
                             </a>
 
@@ -264,6 +264,7 @@ export default {
             loading: true,
             ready: false,
             showDeleteComment: false,
+            showReadyForUpdates: false,
             commentIndex: null,
             commentID: null,
             user: "",
