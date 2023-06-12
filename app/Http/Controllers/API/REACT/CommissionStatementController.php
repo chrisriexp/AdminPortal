@@ -282,6 +282,9 @@ class CommissionStatementController extends Controller
         $mga_companies = mga_companies::orderBy('created_at', 'asc')->get();
         $month_policies = react_commission_policies::where('month', $month)->whereIn('carrier', $rocketPayCarriers)->get();
         $data = [];
+        $totalPolicies = 0;
+        $totalComm = 0;
+        $totalOverride = 0;
 
         foreach($mga_companies as $agency){
             $agency_data = (object) [
@@ -306,6 +309,11 @@ class CommissionStatementController extends Controller
                     // Remove from Month Policies Array
                     foreach($month_policies as $mpKey=>$mpValue){
                         if($policy->id == $mpValue->id){
+                            // Increase Totoal Policies, Comm, and Override
+                            $totalPolicies += 1;
+                            $totalComm = $totalComm + $policy->comm;
+                            $totalOverride = $totalOverride + $policy->override;
+
                             unset($month_policies[$mpKey]);
                         }
                     }
@@ -335,6 +343,11 @@ class CommissionStatementController extends Controller
                     $na_policies->policies += 1;
                     $na_policies->prem = $na_policies->prem + $policy->prem;
                     $na_policies->comm = $na_policies->comm + $policy->comm;
+
+                    // Increase Totoal Policies, Comm, and Override
+                    $totalPolicies += 1;
+                    $totalComm = $totalComm + $policy->comm;
+                    $totalOverride = $totalOverride + $policy->override;
                 }
             }
         }
@@ -348,7 +361,10 @@ class CommissionStatementController extends Controller
         $response = [
             'success'=> true,
             'message'=> 'Please see the below statements for the month of '.$month,
-            'commissions'=> array_reverse($data, false)
+            'commissions'=> array_reverse($data, false),
+            'policies'=> $totalPolicies,
+            'comm'=> (float) number_format($totalComm, 2, '.', ''),
+            'override'=> (float) number_format($totalOverride, 2, '.', '')
         ];
 
         return response()->json($response, 200);

@@ -1,0 +1,14 @@
+{
+    "PL":{
+        "name": "PL Rater"
+    },
+    "QR":{
+        "name": "Quote Rush"
+    },
+    "RA":{
+        "name": "Rocket Automation"
+    },
+    "SP":{
+        "name": "Single Point"
+    }
+}

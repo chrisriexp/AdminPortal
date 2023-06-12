@@ -144,6 +144,10 @@ Route::middleware('auth:sanctum')->get('/onboarding/finalize/{rocket_id}/{force}
 
 // ROVER Controller
 Route::middleware('auth:sanctum')->post('rover/errors', [ErrorsController::class, 'index']);
+Route::middleware('auth:sanctum')->get('rover/app/{id}', [ErrorsController::class, 'application']);
+Route::middleware('auth:sanctum')->get('rover/error/{app_id}/{carrier}', [ErrorsController::class, 'error']);
+Route::middleware('auth:sanctum')->post('rover/comment', [ErrorsController::class, 'add_comment']);
+Route::middleware('auth:sanctum')->delete('rover/comment/{id}', [ErrorsController::class, 'drop_comment']);
 Route::middleware('auth:sanctum')->get('/rover/reports', [ROVERReports::class, 'index']);
 
 // OpenAI Routes

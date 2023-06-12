@@ -15,7 +15,7 @@
         "icon": "fa-solid:money-check-alt"
     },
     {
-        "name": "Commissions Reports",
+        "name": "Commissions",
         "code": "commissions",
         "icon": "mdi:note-text"
     }

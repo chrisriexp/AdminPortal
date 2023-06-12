@@ -108,7 +108,7 @@
                     <p>Stage</p>
                 </div>
 
-                <a v-for="(error, index) in searchView" :key="index" :href="'https://rover.rocketflood.com/task/'+error.app_id+'/'+error.carrier" target="_blank" class="w-full h-[52px] grid grid-cols-6 gap-8 px-4 text-[16px] text-custom-black font-medium border-[1px] border-custom-black border-opacity-10 rounded-[2px] relative">
+                <a v-for="(error, index) in searchView" :key="index" :href="'/rover/error/'+error.app_id+'/'+error.carrier" class="w-full h-[52px] grid grid-cols-6 gap-8 px-4 text-[16px] text-custom-black font-medium border-[1px] border-custom-black border-opacity-10 rounded-[2px] relative">
                     <p class="my-auto truncate pr-4">{{ error.app_id }}</p>
                     <!-- Application Carrier Name -->
                     <p class="my-auto truncate pr-4">{{ error.product == 'HOME' ? carriers[error.carrier.substring(3)].name : carriers[error.carrier].name }}</p>

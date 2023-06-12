@@ -11,8 +11,34 @@
             </div>
         </div>
 
+        <div class="w-full h-fit grid grid-cols-3 gap-6">
+            <!-- total Policies -->
+            <div class="w-full h-[129px] grid p-6 bg-custom-purple bg-opacity-20 rounded-[4px] shadow-newdrop">
+                <p class="text-[18px] text-custom-black font-semibold">Policies</p>
+                <div class="w-full h-fit flow-root">
+                    <p class="text-[32px] text-custom-purple font-semibold float-right">{{ total.policies }}</p>
+                </div>
+            </div>
+
+            <!-- Total Commission -->
+            <div class="w-full h-[129px] grid p-6 bg-custom-red bg-opacity-20 rounded-[4px] shadow-newdrop">
+                <p class="text-[18px] text-custom-black font-semibold">Commission</p>
+                <div class="w-full h-fit flow-root">
+                    <p class="text-[32px] text-custom-red font-semibold float-right">${{ total.comm }}</p>
+                </div>
+            </div>
+
+            <!-- Total Override Revenue -->
+            <div class="w-full h-[129px] grid p-6 bg-custom-yellow bg-opacity-20 rounded-[4px] shadow-newdrop">
+                <p class="text-[18px] text-custom-black font-semibold">Override</p>
+                <div class="w-full h-fit flow-root">
+                    <p class="text-[32px] text-custom-yellow font-semibold float-right">${{ total.override }}</p>
+                </div>
+            </div>
+        </div>
+
         <!-- No Commissions for the selected Month -->
-        <div v-if="commissions.length == 0" class="w-full h-fit grid">
+        <div v-if="commissions.length == 1 && commissions[0].comm == 0" class="w-full h-fit grid">
             <LottieAnimation :animationData="NotFoundAnimation" :renderer="'canvas'" :width="'250px'" :height="'250px'" :speed="0.75" class="m-auto" />
         </div>
         <!-- Commission Reports for the Selected Month -->
@@ -48,6 +74,11 @@ export default {
             NotFoundAnimation,
             month: "",
             commissions: [],
+            total: {
+                policies: 0,
+                comm: 0,
+                override: 0
+            },
             onLoad: true,
         }
     },
@@ -59,6 +90,11 @@ export default {
 
         await axios.get('/api/react/commissions/'+this.month)
         .then(response => {
+            const keys = Object.keys(this.total)
+            keys.forEach(key => {
+                this.total[key] = response.data[key]
+            })
+
             this.commissions = response.data.commissions
             this.$toast.add({
                 severity: 'success',
@@ -79,6 +115,11 @@ export default {
             }else{
                 await axios.get('/api/react/commissions/'+moment(value).format('YYYY-MM'))
                 .then(response => {
+                    const keys = Object.keys(this.total)
+                    keys.forEach(key => {
+                        this.total[key] = response.data[key]
+                    })
+
                     this.commissions = response.data.commissions
                     this.$toast.add({
                         severity: 'success',

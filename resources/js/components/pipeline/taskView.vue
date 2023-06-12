@@ -179,7 +179,7 @@
                     <div class="w-full h-fit flow-root relative">
                         <div class="w-3/4 h-fit flex float-left newcomment relative">
                             <!-- New Comment -->
-                            <Editor v-model="new_comment" id="newTaskDesc" :class="showCommentToolBar ? '' : 'hide-toolbar'" class="w-[90%]" >
+                            <Editor v-model="new_comment" id="newTaskDesc" :class="showCommentToolBar ? '' : 'hide-toolbar'" editorStyle="height: auto; font-size: 16px;" class="w-[90%]" >
                                 <template v-slot:toolbar>
                                     <span class="ql-formats flex items-center h-[30px]">
                                         <button v-tooltip.bottom="'Bold'" class="ql-bold"></button>
@@ -486,8 +486,6 @@ export default {
 }
 :deep( .newcomment .p-editor-container .p-editor-content.ql-snow ){
     border: 1px solid #21212110 !important;
-    min-height: 48px !important;
-    max-height: 80px !important;
 }
 
 :deep( .comment .p-editor-toolbar ){

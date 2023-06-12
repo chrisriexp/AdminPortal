@@ -13,6 +13,7 @@ import REACTSubAgent from './views/REACT/SubAgent.vue'
 import OnboardingAgents from './views/Onboarding/Agents.vue'
 import OnboardingAgency from './views/Onboarding/Agency.vue'
 import ROVERErrors from './views/ROVER/Errors.vue'
+import ROVERError from './views/ROVER/Error.vue'
 
 const routes = [
     {
@@ -116,6 +117,12 @@ const routes = [
                 path: "errors",
                 name: "ROVER_Errors",
                 component: ROVERErrors,
+                beforeEnter: validateAccessToken
+            },
+            {
+                path: "error/:app_id/:carrier",
+                name: "ROVER_Error",
+                component: ROVERError,
                 beforeEnter: validateAccessToken
             }
         ]

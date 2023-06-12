@@ -35,7 +35,8 @@ module.exports = {
       },
       boxShadow: {
         'newdrop': 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;',
-        "customdrop": 'rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;'
+        "customdrop": 'rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;',
+        'purple-drop': '0px 0px 10px 0px rgba(167,120,229,0.6)'
       },
     },
     screens: {
