@@ -47,7 +47,7 @@
                 <div class="w-full h-full grid gap-4">
                     <!-- Carrier Username -->
                     <div>
-                        <p class="font-medum">Username</p>
+                        <p class="font-medum">Portal - Username</p>
                         <InputText v-model="carrier.carrier_username" class="w-full h-[48px]" />
                     </div>
 
