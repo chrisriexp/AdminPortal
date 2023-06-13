@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\REACT;
 use App\Http\Controllers\Controller;
 use App\Models\react_commissions;
 use Carbon\Carbon;
+use PDF;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Helper\NotificationsHelper;
@@ -368,5 +369,19 @@ class CommissionStatementController extends Controller
         ];
 
         return response()->json($response, 200);
+    }
+
+    public function download_month(Request $request, $month){
+        $collection = react_commission_policies::where('month', $month)->get(['policy', 'prem', 'comm']);
+
+        $data = [
+            "today"=> Carbon::now()->format('D, M d, Y'),
+            "month"=> Carbon::parse($month)->format('M')." ".Carbon::parse($month)->year,
+            'collection'=> $collection
+        ];
+
+        $PDF = PDF::loadView('PDF/commission', $data);
+
+        return $PDF->download('pdf_file.pdf');
     }
 }
