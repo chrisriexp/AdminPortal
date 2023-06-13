@@ -16,6 +16,7 @@ class REACTReports extends Controller
     public $carriers = [
         "aon"=> "AON Edge",
         "beyond"=> "Beyond Flood",
+        "dual"=> "Dual Flood",
         "cat"=> "Cat Coverage",
         "flow"=> "Flow Flood",
         "neptune"=> "Neptune",

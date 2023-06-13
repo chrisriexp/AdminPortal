@@ -182,10 +182,10 @@
                             </div>
                         </div>
 
-                        <hr v-if="error.status !== 'debug' || error.status !== 'digiprompt'">
+                        <hr v-if="!error.status == 'debug' || !error.status == 'digiprompt'">
 
                         <!-- Cause of Error -->
-                        <div class="w-full h-fit grid comment">
+                        <div v-if="!error.status == 'debug' || !error.status == 'digiprompt'" class="w-full h-fit grid comment">
                             <p class="text-[16px] text-custom-black font-medium">Cause of Error</p>
                             <Editor readonly v-model="error.cause" id="newTaskDesc" editorStyle="height: auto; font-size: 16px;" class="w-full p-2 text-[16px] bg-sidebar-bg border-[1px] border-custom-black border-opacity-10 rounded-[2px]" >
                                 <template v-slot:toolbar>
@@ -196,7 +196,7 @@
                         </div>
 
                         <!-- Updates to Implement -->
-                        <div class="w-full h-fit grid comment">
+                        <div v-if="!error.status == 'debug' || !error.status == 'digiprompt'" class="w-full h-fit grid comment">
                             <p class="text-[16px] text-custom-black font-medium">Updates to Implement</p>
                             <Editor readonly v-model="error.updates" id="newTaskDesc" editorStyle="height: auto; font-size: 16px;" class="w-full p-2 text-[16px] bg-sidebar-bg border-[1px] border-custom-black border-opacity-10 rounded-[2px]" >
                                 <template v-slot:toolbar>

@@ -11,6 +11,16 @@
             </div>
         </div>
 
+        <div class="w-fit h-fit flex items-center">
+            <!-- Download Month PDF Statement -->
+            <button @click="downloadMonthPDF" class="w-[225px] h-[52px] grid text-[16px] font-semibold text-white rounded-[4px] bg-custom-purple shadow-newdrop">
+                <div class="w-fit h-fit m-auto flex items-center gap-4">
+                    <Icon :icon="'bi:file-earmark-pdf-fill'" height="24" />
+                    <p>Download PDF</p>
+                </div>
+            </button>
+        </div>
+
         <div class="w-full h-fit grid grid-cols-3 gap-6">
             <!-- total Policies -->
             <div class="w-full h-[129px] grid p-6 bg-custom-purple bg-opacity-20 rounded-[4px] shadow-newdrop">
@@ -65,6 +75,7 @@
 <script>
 import NotFoundAnimation from '../../../assets/newNotFound.json'
 import Calendar from 'primevue/calendar';
+import { Icon } from '@iconify/vue';
 import moment from 'moment';
 
 export default {
@@ -133,8 +144,23 @@ export default {
             this.$emit('loading')
         }
     },
+    methods: {
+        async downloadMonthPDF(){
+            this.$emit('loading')
+
+            await axios.get('/api/commission/download/month/'+moment(this.month).format('YYYY-MM'), {responseType: 'blob'})
+            .then(response => {
+                const blob = new Blob([response.data], {type: 'application/pdf'})
+                const pdfUrl = URL.createObjectURL(blob)
+                window.open(pdfUrl)
+            })
+
+            this.$emit('loading')
+        }
+    },
     components: {
-        Calendar
+        Calendar,
+        Icon
     }
 }
 </script>

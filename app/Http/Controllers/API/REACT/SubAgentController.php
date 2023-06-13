@@ -361,10 +361,12 @@ class SubAgentController extends Controller
                 $existingAgency = mga_companies::where('rocket_id', $agency->rocket_id)->first();
 
                 foreach($this->carriers as $key=>$value){
-                    $carrier_data = json_decode($existingAgency->$key);
-                    $carrier_data->commission_id = $agency->$key;
+                    if(!is_null($agency->$key)){
+                        $carrier_data = json_decode($existingAgency->$key);
+                        $carrier_data->commission_id = $agency->$key;
 
-                    $existingAgency->$key = json_encode($carrier_data);
+                        $existingAgency->$key = json_encode($carrier_data);
+                    }
                 }
 
                 $existingAgency->save();

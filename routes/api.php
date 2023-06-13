@@ -154,5 +154,8 @@ Route::middleware('auth:sanctum')->delete('rover/comment/{id}', [ErrorsControlle
 Route::middleware('auth:sanctum')->put('rover/assigned/{id}', [ErrorsController::class, 'update_assigned']);
 Route::middleware('auth:sanctum')->get('/rover/reports', [ROVERReports::class, 'index']);
 
+// Commission Statements
+Route::middleware('auth:sanctum')->get('/commission/download/month/{month}', [CommissionStatementController::class, 'download_month']);
+
 // OpenAI Routes
 Route::middleware('auth:sanctum')->post('/open-ai/quick-tools', [QuickToolsAIController::class, 'prompt']);

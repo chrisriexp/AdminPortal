@@ -3,6 +3,7 @@ module.exports = {
   darkMode: 'class',
   content: [
     "./index.html",
+    "./resources/views/PDF/commission.blade.php",
     "./resources/**/*.{vue,js,ts,jsx,tsx}"
   ],
   theme: {

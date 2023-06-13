@@ -193,6 +193,7 @@ class Agents extends Controller
 
             $newMGA_company = new mga_companies();
             $newMGA_company->rocket_id = $rocket_id;
+            $newMGA_company->name = $response->name;
             $newMGA_company->save();
 
             $mga_company = mga_companies::find($rocket_id);

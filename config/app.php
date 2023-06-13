@@ -157,8 +157,9 @@ return [
 
     'providers' => ServiceProvider::defaultProviders()->merge([
         /*
-         * Package Service Providers...
-         */
+        * Package Service Providers...
+        */
+        Barryvdh\DomPDF\ServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -183,8 +184,8 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
-
-        'NotificationsHelper' => App\Helper\NotificationsHelper::class
+        'PDF' => Barryvdh\DomPDF\Facade::class,
+        'NotificationsHelper' => App\Helper\NotificationsHelper::class,
     ])->toArray(),
 
 ];
