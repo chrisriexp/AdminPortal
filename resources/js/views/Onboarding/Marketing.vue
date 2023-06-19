@@ -258,6 +258,18 @@ export default {
                 return
             }
 
+            if(Object.keys(this.follow_up_log).length == 0){
+                this.$toast.add({
+                    severity: 'warn',
+                    summary: 'Follow Up',
+                    detail: "Please enter log data.",
+                    life: 2500
+                })
+
+                this.loading = false
+                return
+            }
+
             await axios.post('/api/onboarding/marketing/followed-up/'+id, {log: this.follow_up_log})
             .then(response => {
                 console.log(response)
