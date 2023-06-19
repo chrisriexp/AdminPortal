@@ -183,11 +183,11 @@ class Agents extends Controller
     }
 
     public function approve(Request $request, $rocket_id){
-        $data = Http::withHeaders(['token'=>'27b00fca-4d9e-4e28-85ce-54f16af26c0b'])->get('https://onboarding.rocketmga.com/api/admin-portal/approve/'.$rocket_id);
+        $data = Http::timeout(60)->withHeaders(['token'=>'27b00fca-4d9e-4e28-85ce-54f16af26c0b'])->get('https://onboarding.rocketmga.com/api/admin-portal/approve/'.$rocket_id);
 
         $response = json_decode($data);
 
-        if($data->status() == 200){
+        if($response->success){
             // Create New MGA Company and enter email as username for the corresponding carriers
             $email_user_carriers = ['aon', 'dual', 'flow', 'palomar', 'sterling'];
 
