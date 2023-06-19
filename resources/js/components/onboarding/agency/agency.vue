@@ -51,7 +51,7 @@
                             <Dropdown v-model="data.agency_type" :options="agency_types" optionLabel="name" class="w-full h-[48px]" >
                                 <template #value="slotProps">
                                     <div class="grid">
-                                        <p class="truncate">{{ slotProps.value.name }}</p>
+                                        <p class="truncate">{{ data.agency_type ? slotProps.value.name : "" }}</p>
                                     </div>
                                 </template>
                             </Dropdown>
@@ -222,6 +222,36 @@
                     </div>
                 </div>
             </div>
+
+            <hr>
+
+            <!-- Follow Up Logs -->
+            <div class="w-full h-fit grid gap-4">
+                <p class="text-custom-black text-[16px] font-medium">Follow Up Logs</p>
+
+                <div v-if="follow_up_logs.length == 0" class=" w-full h-full grid">
+                    <LottieAnimation :animationData="NotFoundAnimation" :renderer="'canvas'" :width="'200px'" :height="'200px'" :speed="0.75" class="m-auto" />
+                </div>
+                <div v-else v-for="(log, index) in follow_up_logs" :key="index" class="w-full h-fit p-2 flow root bg-white rounded-[2px] border-[1px] border-custom-black border-opacity-10">
+                    <div class="w-full h-fit grid float-left comment">
+                        <div class="w-full h-fit flow-root">
+                            <!-- User Name -->
+                            <p class="text-[16px] text-custom-black font-medium opacity-80 float-left">{{ log.by }}</p>
+                            
+                            <!-- Comment Date -->
+                            <p class="text-[12px] text-custom-black opacity-60 float-right">{{ moment(log.created_at).format("dddd, MMMM Do YYYY, h:mm a") }}</p>
+                        </div>
+
+                        <!-- Comment -->
+                        <Editor readonly v-model="log.log" id="newTaskDesc" editorStyle="height: auto; font-size: 14px;" class="max-w-[920px] text-[14px] opacity-60 text-custom-black" >
+                            <template v-slot:toolbar>
+                                <span class="ql-formats flex items-center">
+                                </span>
+                            </template>
+                        </Editor>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -233,6 +263,7 @@ import InputMask from 'primevue/inputmask';
 import Editor from 'primevue/editor';
 import InputSwitch from 'primevue/inputswitch';
 import { Icon } from '@iconify/vue';
+import moment from 'moment';
 
 import VueGoogleAutocomplete from "vue-google-autocomplete";
 
@@ -252,13 +283,16 @@ export default {
             carriers,
             states,
             agency_types,
-            data: {}
+            data: {},
+            follow_up_logs: []
         }
     },
     async mounted(){
+        this.moment = moment
         await axios.get('/api/onboarding/agency/'+this.rocket_id+'/agency')
         .then(response => {
             this.data = response.data.data.agency
+            this.follow_up_logs = response.data.data.follow_up_logs
         })
         .catch(error => {
             if(error.response.status == 500){
@@ -341,3 +375,19 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+:deep( .comment .p-editor-toolbar ){
+    display: none !important;
+}
+:deep( .comment .p-editor-container .p-editor-content .ql-editor ){
+    background-color: white !important;
+}
+:deep( .comment .p-editor-container .p-editor-content.ql-snow ){
+    border: none !important;
+}
+
+:deep( .comment .ql-editor ){
+    padding: 0px !important;
+}
+</style>
