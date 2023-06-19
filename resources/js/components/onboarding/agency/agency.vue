@@ -267,6 +267,7 @@ import moment from 'moment';
 
 import VueGoogleAutocomplete from "vue-google-autocomplete";
 
+import NotFoundAnimation from '../../../../assets/newNotFound.json'
 import agency_types from '../../../../assets/onboarding_agency_types.json'
 import states from '../../../../assets/states.json'
 import carriers from '../../../../assets/mga_carriers.json'
@@ -279,6 +280,7 @@ export default {
     },
     data(){
         return{
+            NotFoundAnimation,
             ready: false,
             carriers,
             states,
@@ -332,7 +334,11 @@ export default {
             this.$emit('loading')
 
             const data = Object.assign({}, this.data)
-            data.agency_tax_id = data.agency_tax_id.replace('-', '')
+            
+            if(data.agency_tax_id){
+                data.agency_tax_id = data.agency_tax_id.replace('-', '')
+            }
+
             data.phone = data.phone.replace(/[^\d]/g, "")
 
             await axios.put('/api/onboarding/agency/'+this.rocket_id+'/agency', {
