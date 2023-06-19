@@ -135,7 +135,8 @@
                     <a :href="'/onboarding/agency/'+agent.rocket_id+'/agency'" class="w-full h-[52px] grid grid-cols-6 gap-8 px-4 text-[16px] text-custom-black font-medium border-[1px] border-custom-black border-opacity-10 rounded-[2px] relative">
                         <p class="my-auto truncate pr-4">{{ agent.agency_name }}</p>
                         <p class="my-auto truncate pr-4">{{ agent.agent_name }}</p>
-                        <p class="my-auto truncate pr-4">{{ agent.phone }}</p>
+                        <!-- <p class="my-auto truncate pr-4">{{ agent.phone }}</p> -->
+                        <InputMask class="my-auto truncate pr-4 text-[16px] text-custom-black font-medium border-none pl-0 cursor-pointer disabled:opacity-100" v-model="agent.phone" disabled mask="(999) 999-9999" placeholder="(999) 999-9999" />
                         <p class="my-auto truncate pr-4">{{ agent.email }}</p>
                         <p :class="moment(agent.follow_up_date).isBefore(new Date()) ? 'text-custom-red' : ''" class="my-auto truncate pr-4">{{ moment(agent.follow_up_date).format('ddd, MMM DD') }}</p>
                         <p class="my-auto truncate pr-4 text-custom-purple">{{ agent.prospect ? 'Prospect' : 'Currently Onboarding' }}</p>
@@ -162,6 +163,7 @@ import MultiSelect from 'primevue/multiselect';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
 import Editor from 'primevue/editor';
+import InputMask from 'primevue/inputmask';
 
 import { Icon } from '@iconify/vue';
 import moment from 'moment';
@@ -327,7 +329,8 @@ export default {
         Dropdown,
         InputText,
         Icon,
-        Editor
+        Editor,
+        InputMask
     }
 }
 </script>
