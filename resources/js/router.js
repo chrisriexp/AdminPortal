@@ -69,12 +69,6 @@ const routes = [
         },
         children: [
             {
-                path: "mga-marketing",
-                name: "MGA_Marketing",
-                component: MGA_Marketing,
-                beforeEnter: validateAccessToken
-            },
-            {
                 path: "upload-statements",
                 name: "REACT_UploadStatements",
                 component: REACTUploadStatements,
@@ -95,9 +89,9 @@ const routes = [
         },
         children:[
             {
-                path: "agents",
-                name: "Onboarding_Agents",
-                component: OnboardingAgents,
+                path: "mga-marketing",
+                name: "MGA_Marketing",
+                component: MGA_Marketing,
                 beforeEnter: validateAccessToken
             },
             {
