@@ -131,7 +131,7 @@
                 </div>
 
                 <!-- Link to Onboarding Agency -->
-                <div v-for="(agent, index) in searchView" :key="index" class="w-fit h-fit grid gap-2 relative">
+                <div v-for="(agent, index) in searchView" :key="index" class="w-full h-fit grid gap-2 relative">
                     <a :href="'/onboarding/agency/'+agent.rocket_id+'/agency'" class="w-full h-[52px] grid grid-cols-6 gap-8 px-4 text-[16px] text-custom-black font-medium border-[1px] border-custom-black border-opacity-10 rounded-[2px] relative">
                         <p class="my-auto truncate pr-4">{{ agent.agency_name }}</p>
                         <p class="my-auto truncate pr-4">{{ agent.agent_name }}</p>
