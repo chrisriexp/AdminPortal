@@ -69,6 +69,12 @@ const routes = [
         },
         children: [
             {
+                path: "sub-agents",
+                name: "REACT_SubAgents",
+                component: REACTSubAgents,
+                beforeEnter: validateAccessToken
+            },
+            {
                 path: "upload-statements",
                 name: "REACT_UploadStatements",
                 component: REACTUploadStatements,

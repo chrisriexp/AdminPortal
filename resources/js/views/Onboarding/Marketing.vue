@@ -49,6 +49,15 @@
             <div class="w-full max-h-[800px] h-fit grid gap-4 mt-[100px] px-6 overflow-y-scroll text-[16px]">
                 <p class="text-[24px] text-custom-black font-medium">Filter</p>
 
+                <!-- Sort -->
+                <Dropdown v-model="filters.sortBy" :options="sortBy" optionLabel="name" class="w-full h-[40px] flex items-center" >
+                    <template #value="slotProps">
+                        <div class="grid">
+                            <p class="truncate flex items-center gap-2"><span class="text-[16px]  text-custom-black font-medium flex items-center gap-2"><i class="pi pi-filter-fill"></i>Sort:</span> {{ slotProps.value.name }}</p>
+                        </div>
+                    </template>
+                </Dropdown>
+
                 <!-- Follow Up Date -->
                 <Dropdown v-model="follow_up" :options="follow_up_options" optionLabel="name" class="w-full h-[40px] flex items-center" >
                     <template #value="slotProps">
@@ -186,6 +195,7 @@ export default {
                 code: 'today'
             },
             filters: {
+                sortBy: { name: 'Follow Up', code: 'follow_up_date' },
                 sources: [],
                 type: [],
                 reps: []
@@ -203,6 +213,11 @@ export default {
                     name: "All",
                     code: 'all'
                 }
+            ],
+            sortBy: [
+                { name: 'Follow Up', code: 'follow_up_date' },
+                { name: 'Agency Name', code: 'agency_name' },
+                { name: 'Agent Name', code: 'agent_name' },
             ],
             sources: onboardingSources,
             type: [
@@ -228,6 +243,8 @@ export default {
         keys.forEach(key => {
             this.filters[key] = this[key]
         })
+
+        this.filters.sortBy = { name: 'Follow Up', code: 'follow_up_date' }
 
         await axios.post('/api/onboarding/marketing', {"filters": this.filters, "follow_up": this.follow_up.code})
         .then(response => {
@@ -301,6 +318,8 @@ export default {
             keys.forEach(key => {
                 this.filters[key] = this[key]
             })
+
+            this.filters.sortBy = { name: 'Follow Up', code: 'follow_up_date' }
 
             await axios.post('/api/onboarding/marketing', {"filters": this.filters, "follow_up": this.follow_up.code})
             .then(response => {
