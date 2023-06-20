@@ -137,6 +137,46 @@ class CommissionStatementController extends Controller
             ],
             "if_nbs" => "nbs",
             "rocketPay" => false
+        ],
+        "wright" => [
+            // Only explictly listed commission for NFIP and Hiscox all others will be based off Resi Flood Comm
+            "name" => "Wright National",
+            "comm" => [
+                "FLD"=> [
+                    "NBS" => 0.20,
+                    "RWL" => 0.18
+                ],
+                "HFLD"=> [
+                    "NBS" => 0.15,
+                    "RWL" => 0.15
+                ],
+                "NBS" => 0.15,
+                "RWL" => 0.12
+            ],
+            "override" => [
+                "FLD"=> [
+                    "NBS" => 0.02,
+                    "RWL" => 0.02
+                ],
+                "HFLD"=> [
+                    "NBS" => 0.0,
+                    "RWL" => 0.0
+                ],
+                "NBS" => 0.01,
+                "RWL" => 0.01
+            ],
+            "trans_types" => [
+                "NB"=> "NBS",
+                "NB/RO"=> "NBS",
+                "RE" => "RWL",
+                "RI" => "REI",
+                "AE" => "PCH",
+                "EN" => "PCH",
+                "CF"=> "XLC",
+                "CP"=> "XLC",
+            ],
+            "if_nbs" => "0",
+            "rocketPay" => true
         ]
     ];
 
@@ -197,7 +237,7 @@ class CommissionStatementController extends Controller
                 continue;
             }
 
-            $cells = iterator_to_array($row->getCellIterator("A", "H"));
+            $cells = iterator_to_array($row->getCellIterator("A", "I"));
 
             $policy = (object) [
                 "carrier_id"=> $cells['A']->getValue(),
@@ -212,8 +252,19 @@ class CommissionStatementController extends Controller
             ];
 
             $policy->policy_type = $this->carriers[$request['type']]['if_nbs'] == (string) $cells['H']->getValue() ? 'NBS' : 'RWL';
-            $policy->comm = (float) number_format($policy->prem * $this->carriers[$request['type']]['comm'][$policy->policy_type], 2, '.', '');
-            $policy->override = (float) number_format($policy->prem * $this->carriers[$request['type']]['override'][$policy->policy_type], 2, '.', '');
+            
+            if(!$request['type'] == 'wright'){
+                $policy->comm = (float) number_format($policy->prem * $this->carriers[$request['type']]['comm'][$policy->policy_type], 2, '.', '');
+                $policy->override = (float) number_format($policy->prem * $this->carriers[$request['type']]['override'][$policy->policy_type], 2, '.', '');
+            }else{
+                if($cells['I']->getValue() == 'FLD' || $cells['I']->getValue() == 'HFLD'){
+                    $policy->comm = (float) number_format($policy->prem * $this->carriers[$request['type']]['comm'][$cells['I']->getValue()][$policy->policy_type], 2, '.', '');
+                    $policy->override = (float) number_format($policy->prem * $this->carriers[$request['type']]['override'][$cells['I']->getValue()][$policy->policy_type], 2, '.', '');
+                }else{
+                    $policy->comm = (float) number_format($policy->prem * $this->carriers[$request['type']]['comm'][$policy->policy_type], 2, '.', '');
+                    $policy->override = (float) number_format($policy->prem * $this->carriers[$request['type']]['override'][$policy->policy_type], 2, '.', '');
+                }
+            }
 
             array_push($data, $policy);
             $totalPrem = $totalPrem + $policy->prem;
