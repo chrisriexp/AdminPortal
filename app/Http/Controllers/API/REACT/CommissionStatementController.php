@@ -422,17 +422,218 @@ class CommissionStatementController extends Controller
         return response()->json($response, 200);
     }
 
-    public function download_month(Request $request, $month){
-        $collection = react_commission_policies::where('month', $month)->get(['policy', 'prem', 'comm']);
+    public function download_month(Request $request, $month, $id = 'all'){
+        $rocketPay = [];
+        $carrierPay = [];
+        foreach($this->carriers as $key=>$value){
+            if($value['rocketPay']){
+                array_push($rocketPay, $key);
+            }else{
+                array_push($carrierPay, $key);
+            }
+        }
 
-        $data = [
-            "today"=> Carbon::now()->format('D, M d, Y'),
-            "month"=> Carbon::parse($month)->format('M')." ".Carbon::parse($month)->year,
-            'collection'=> $collection
-        ];
+        $month_policies = react_commission_policies::where('month', $month)->get();
+        
+        // If Pulling all agencies for a given month
+        if($id = 'all'){
+            $data = [
+                "today"=> Carbon::now()->format('D, M d, Y'),
+                "month"=> Carbon::parse($month)->format('M')." ".Carbon::parse($month)->year,
+                "policies"=> 0,
+                "prem"=> 0,
+                "comm"=> 0,
+                "override"=> 0,
+                "agencies"=> []
+            ];
 
-        $PDF = PDF::loadView('PDF/commission', $data);
+            $mga_companies = mga_companies::orderBy('created_at', 'asc')->get();
 
-        return $PDF->download('pdf_file.pdf');
+            foreach($mga_companies as $agency){
+                $agency_data = (object) [
+                    "name"=> $agency->name,
+                    "rocket_id"=> $agency->rocket_id,
+                    "policies"=> 0,
+                    "prem"=> 0,
+                    "comm"=> 0,
+                    "override"=> 0,
+                    "rocketPay"=> (object) [
+                        "prem"=> 0,
+                        "comm"=> 0,
+                        "override"=> 0,
+                        "policies"=> []
+                    ],
+                    "carrierPay"=> (object) [
+                        "prem"=> 0,
+                        "comm"=> 0,
+                        "override"=> 0,
+                        "policies"=> []
+                    ]
+                ];
+
+                foreach($rocketPay as $carrier){
+                    $carrier_id = json_decode($agency->$carrier)->commission_id;
+
+                    $carrier_policies = react_commission_policies::where('month', $month)->where('carrier_id', $carrier_id)->get();
+
+                    foreach($carrier_policies as $policy){
+                        $agency_data->policies += 1;
+                        $agency_data->prem = $agency_data->prem + $policy->prem;
+                        $agency_data->comm = $agency_data->comm + $policy->comm;
+                        $agency_data->override = $agency_data->override + $policy->override;
+                        
+                        // Add Policy to rocketPay Array
+                        $agency_data->rocketPay->prem = $agency_data->rocketPay->prem + $policy->prem;
+                        $agency_data->rocketPay->comm = $agency_data->rocketPay->comm + $policy->comm;
+                        $agency_data->rocketPay->override = $agency_data->rocketPay->override + $policy->override;
+                        array_push($agency_data->rocketPay->policies, $policy);
+    
+                        // Remove from Month Policies Array
+                        foreach($month_policies as $mpKey=>$mpValue){
+                            if($policy->id == $mpValue->id){
+                                // Increase Totoal Policies, Comm, and Override
+                                $data['policies'] += 1;
+                                $data['prem'] = $data['prem'] + $policy->prem;
+                                $data['comm'] = $data['comm'] + $policy->comm;
+                                $data['override'] = $data['override'] + $policy->override;
+    
+                                unset($month_policies[$mpKey]);
+                            }
+                        }
+                    }
+                }
+
+                foreach($carrierPay as $carrier){
+                    $carrier_id = json_decode($agency->$carrier)->commission_id;
+
+                    $carrier_policies = react_commission_policies::where('month', $month)->where('carrier_id', $carrier_id)->get();
+
+                    foreach($carrier_policies as $policy){
+                        $agency_data->policies += 1;
+                        $agency_data->prem = $agency_data->prem + $policy->prem;
+                        $agency_data->comm = $agency_data->comm + $policy->comm;
+                        $agency_data->override = $agency_data->override + $policy->override;
+                        
+                        // Add Policy to rocketPay Array
+                        $agency_data->carrierPay->prem = $agency_data->carrierPay->prem + $policy->prem;
+                        $agency_data->carrierPay->comm = $agency_data->carrierPay->comm + $policy->comm;
+                        $agency_data->carrierPay->override = $agency_data->carrierPay->override + $policy->override;
+                        array_push($agency_data->carrierPay->policies, $policy);
+    
+                        // Remove from Month Policies Array
+                        foreach($month_policies as $mpKey=>$mpValue){
+                            if($policy->id == $mpValue->id){
+                                // Increase Totoal Policies, Comm, and Override
+                                $data['policies'] += 1;
+                                $data['prem'] = $data['prem'] + $policy->prem;
+                                $data['comm'] = $data['comm'] + $policy->comm;
+                                $data['override'] = $data['override'] + $policy->override;
+    
+                                unset($month_policies[$mpKey]);
+                            }
+                        }
+                    }
+                }
+
+                $agency_data->prem = (float) number_format($agency_data->prem, 2, '.', '');
+                $agency_data->comm = (float) number_format($agency_data->comm, 2, '.', '');
+                $agency_data->override = (float) number_format($agency_data->override, 2, '.', '');
+
+                if($agency_data->comm > 0){
+                    array_push($data['agencies'], $agency_data);
+                }
+            }
+
+            $na_policies = (object) [
+                "name"=> "Unassociated Commissions",
+                "rocket_id"=> "00000",
+                "policies"=> 0,
+                "prem"=> 0,
+                "comm"=> 0,
+                "override"=> 0,
+                "rocketPay"=> (object) [
+                    "prem"=> 0,
+                    "comm"=> 0,
+                    "override"=> 0,
+                    "policies"=> []
+                ],
+                "carrierPay"=> (object) [
+                    "prem"=> 0,
+                    "comm"=> 0,
+                    "override"=> 0,
+                    "policies"=> []
+                ]
+            ];
+    
+            // Find the Un Associated carrier policies that is Rocket Pay
+            foreach($rocketPay as $carrier){
+                foreach($month_policies as $policy){
+                    if($policy->carrier == $carrier){
+                        $na_policies->policies += 1;
+                        $na_policies->prem = $na_policies->prem + $policy->prem;
+                        $na_policies->comm = $na_policies->comm + $policy->comm;
+                        $na_policies->override = $na_policies->override + $policy->override;
+
+                        // Add Policy to rocketPay Array
+                        $na_policies->rocketPay->prem = $na_policies->rocketPay->prem + $policy->prem;
+                        $na_policies->rocketPay->comm = $na_policies->rocketPay->comm + $policy->comm;
+                        $na_policies->rocketPay->override = $na_policies->rocketPay->override + $policy->override;
+                        array_push($na_policies->rocketPay->policies, $policy);
+    
+                        // Increase Totoal Policies, Comm, and Override
+                        $data['policies'] += 1;
+                        $data['prem'] = $data['prem'] + $policy->prem;
+                        $data['comm'] = $data['comm'] + $policy->comm;
+                        $data['override'] = $data['override'] + $policy->override;
+                    }
+                }
+            }
+
+            // Find the Un Associated carrier policies that is Carrier Pay
+            foreach($carrierPay as $carrier){
+                foreach($month_policies as $policy){
+                    if($policy->carrier == $carrier){
+                        $na_policies->policies += 1;
+                        $na_policies->prem = $na_policies->prem + $policy->prem;
+                        $na_policies->comm = $na_policies->comm + $policy->comm;
+                        $na_policies->override = $na_policies->override + $policy->override;
+
+                        // Add Policy to carrierPay Array
+                        $na_policies->carrierPay->prem = $na_policies->carrierPay->prem + $policy->prem;
+                        $na_policies->carrierPay->comm = $na_policies->carrierPay->comm + $policy->comm;
+                        $na_policies->carrierPay->override = $na_policies->carrierPay->override + $policy->override;
+                        array_push($na_policies->carrierPay->policies, $policy);
+    
+                        // Increase Totoal Policies, Comm, and Override
+                        $data['policies'] += 1;
+                        $data['prem'] = $data['prem'] + $policy->prem;
+                        $data['comm'] = $data['comm'] + $policy->comm;
+                        $data['override'] = $data['override'] + $policy->override;
+                    }
+                }
+            }
+    
+            $na_policies->prem = (float) number_format($na_policies->prem, 2, '.', '');
+            $na_policies->comm = (float) number_format($na_policies->comm, 2, '.', '');
+            $na_policies->override = (float) number_format($na_policies->override, 2, '.', '');
+    
+            array_push($data['agencies'], $na_policies);
+
+            $data['agencies'] = array_reverse($data['agencies'], false);
+            $data['prem'] = (float) number_format($data['prem'], 2, '.', '');
+            $data['comm'] = (float) number_format($data['comm'], 2, '.', '');
+            $data['override'] = (float) number_format($data['override'], 2, '.', '');
+    
+            $PDF = PDF::loadView('PDF/all_month_commission', $data);
+
+            Log::info($data);
+    
+            // File Name ie. June_2023_commissions.pdf
+            return $PDF->download(Carbon::parse($month)->format('M').'_'.Carbon::parse($month)->year.'_commissions.pdf');
+        }
+        // If Pulling a single agency
+        else{
+
+        }        
     }
 }

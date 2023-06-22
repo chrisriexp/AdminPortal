@@ -189,6 +189,7 @@ async function validateAccessToken(to, from, next) {
     const accessToken = localStorage.getItem('token');
 
     if (!accessToken) {
+        localStorage.removeItem('token');
         next({ name: "Login" });
         return;
     }
@@ -223,11 +224,13 @@ async function validateAccessToken(to, from, next) {
                 next();
             }
         } else {
+            localStorage.removeItem('token');
             next({ name: "Login" });
         }
     })
     .catch(error => {
         console.error(error);
+        localStorage.removeItem('token');
         next({ name: "Login" });
     });
 
