@@ -159,6 +159,11 @@
                                 <img :src="'/images/tests-'+error.tests+'.png'" alt="Progress - Tests">
                             </div>
                         </div>
+                        
+                        <div class="w-fit h-fit flex items-center gap-6 text-[16px] text-custom-black">
+                            <!-- Submitted By -->
+                            <p class="font-medium">Submitted By: {{ error.name}}  {{ error.email }}</p>
+                        </div>
 
                         <div class="w-full h-fit grid grid-cols-3 gap-4">
                             <!-- Error Description -->
