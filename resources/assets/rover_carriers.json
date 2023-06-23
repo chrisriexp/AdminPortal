@@ -1,4 +1,12 @@
 {
+    "general": {
+        "name": "General Failure",
+        "type": "BOT",
+        "backend": {
+            "RA": null,
+            "MGA": null
+        }
+    },
     "aon": {
         "name": "AON Edge",
         "type": "API",
