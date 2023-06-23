@@ -46,7 +46,7 @@
         <table style="border-collapse: collapse; width: 100%;" border="0">
             <tbody>
                 <tr>
-                    <td style="width: 18.1712%;"><span style="font-family: Montserrat; font-size: 12pt;"><img src="C:\Users\CRocha\Documents\_Admin.RocketFlood\admin.rocketflood\resources\views\PDF\logo.png" alt="" width="72" height="75" /></span></td>
+                    <td style="width: 18.1712%;"><span style="font-family: Montserrat; font-size: 12pt;"><img src="/var/www/html/AdminPortal/resources/views/PDF/logo.png" alt="" width="72" height="75" /></span></td>
                     <td style="width: 41.9712%; text-align: center;">
                     <div><span style="font-family: Montserrat; font-size: 12pt;">Rocket <span style="color: #e03e2d;">MGA </span>LLC</span></div>
                     <div><span style="font-family: Montserrat; color: #e03e2d;">commissions@rocketflood.com</span></div>
@@ -242,6 +242,6 @@
         @endforeach
 
         {{-- Commission Schedule --}}
-        <img style="width: 100%; height: 100%;" src="C:\Users\CRocha\Documents\_Admin.RocketFlood\admin.rocketflood\resources\views\PDF\commission_schedule.png" alt="Commission Schedule">
+        <img style="width: 100%; height: 100%;" src="/var/www/html/AdminPortal/resources/views/PDF/commission_schedule.png" alt="Commission Schedule">
     </body>
 </html>

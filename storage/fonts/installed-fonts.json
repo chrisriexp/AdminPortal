@@ -1,9 +1,9 @@
 {
     "montserrat": {
-        "normal": "C:\\Users\\CRocha\\Documents\\_Admin.RocketFlood\\admin.rocketflood\\storage\\fonts\/montserrat_normal_b74b751c20b429298921949795391ef1",
-        "300": "C:\\Users\\CRocha\\Documents\\_Admin.RocketFlood\\admin.rocketflood\\storage\\fonts\/montserrat_300_39b1972e72c43f1f0e368a33cc82c0ce",
-        "500": "C:\\Users\\CRocha\\Documents\\_Admin.RocketFlood\\admin.rocketflood\\storage\\fonts\/montserrat_500_a34ab50d0b60a015b62e11133b0bf05b",
-        "600": "C:\\Users\\CRocha\\Documents\\_Admin.RocketFlood\\admin.rocketflood\\storage\\fonts\/montserrat_600_54346339d706ca965bcbed499d2795db",
-        "bold": "montserrat_bold_4b7576218464d90344a2d2769cab2f75"
+        "normal": "\/var\/www\/html\/AdminPortal\/storage\/fonts\/montserrat_normal_b74b751c20b429298921949795391ef1",
+        "300": "\/var\/www\/html\/AdminPortal\/storage\/fonts\/montserrat_300_39b1972e72c43f1f0e368a33cc82c0ce",
+        "500": "\/var\/www\/html\/AdminPortal\/storage\/fonts\/montserrat_500_a34ab50d0b60a015b62e11133b0bf05b",
+        "600": "montserrat_600_54346339d706ca965bcbed499d2795db",
+        "bold": "\/var\/www\/html\/AdminPortal\/storage\/fonts\/montserrat_bold_4b7576218464d90344a2d2769cab2f75"
     }
 }
