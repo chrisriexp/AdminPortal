@@ -41,6 +41,10 @@ class NotificationsController extends Controller
             (new NotificationsHelper)->createOnboardingNotification((object) $request->notification);
         }
 
+        if($request->type == 'rover'){
+            (new NotificationsHelper)->createRoverNotification((object) $request->notification);
+        }
+
         return response()->json(["success"=> true], 200);
     }
 }
