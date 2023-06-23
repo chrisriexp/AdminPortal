@@ -34,12 +34,12 @@
         {{-- PDF Footer --}}
         <footer>
             {{-- Footer --}}
-            <div class="prow">
-                <div class="prow">&nbsp;</div>
+            <div >
+                <div >&nbsp;</div>
             </div>
-            <div class="prow">&nbsp;</div>
-            <div class="prow">&nbsp;</div>
-            <div class="prow"><span style="font-family: Montserrat; font-size: 10pt;">Rocket <span style="color: #e03e2d;">MGA </span>LLC &copy; 2023</span></div>
+            <div >&nbsp;</div>
+            <div >&nbsp;</div>
+            <div ><span style="font-family: Montserrat; font-size: 10pt;">Rocket <span style="color: #e03e2d;">MGA </span>LLC &copy; 2023</span></div>
         </footer>
 
         {{-- PDF Header --}}
@@ -61,12 +61,12 @@
             </tbody>
         </table>
 
-        <div class="prow">&nbsp;</div>
-        <h3 class="prow"><span style="color: #ced4d9; font-family: Montserrat;">Commissions Payable Statement - All <span style="color: #e03e2d;">MGA </span>Agencies</span></h3>
+        <div >&nbsp;</div>
+        <h3 ><span style="color: #ced4d9; font-family: Montserrat;">Commissions Payable Statement - All <span style="color: #e03e2d;">MGA </span>Agencies</span></h3>
 
         {{-- Grand Total for Month --}}
-        <div class="prow" style="padding: 5px 0px 5px 0px;"><span style="color: #e03e2d;"><span style="color: #ced4d9; font-family: Montserrat;"><span style="color: #e03e2d;">Grand Totals</span></span></span></div>
-        <div class="prow">
+        <div  style="padding: 5px 0px 5px 0px;"><span style="color: #e03e2d;"><span style="color: #ced4d9; font-family: Montserrat;"><span style="color: #e03e2d;">Grand Totals</span></span></span></div>
+        <div >
             <table style="border-collapse: collapse; width: 100%; background-color: #ecf0f1;">
                 <tbody>
                     <tr style="border: 1px solid #CED4D9;">
@@ -79,7 +79,7 @@
             </table>
         </div>
 
-        <div class="prow">&nbsp;</div>
+        <div >&nbsp;</div>
 
         {{-- Agency Information --}}
         @foreach($agencies as $agency)
@@ -97,9 +97,9 @@
             </table>
 
             {{-- Commissions Paid by Rocket --}}
-            <div class="prow">&nbsp;</div>
-            <div class="prow"><span style="font-family: Montserrat; background-color: #ecf0f1; padding: 5px 5px 5px 5px;">Paid By Rocket MGA:</span></div>
-            <div class="prow">&nbsp;</div>
+            <div >&nbsp;</div>
+            <div ><span style="font-family: Montserrat; background-color: #ecf0f1; padding: 5px 5px 5px 5px;">Paid By Rocket MGA:</span></div>
+            <div >&nbsp;</div>
 
             {{-- Headers --}}
             <table style="border-collapse: collapse; width: 100%; height: 18px;" border="0">
@@ -117,7 +117,7 @@
             </table>
 
             {{-- Policies Paid By Rocket --}}
-            <div class="prow">
+            <div >
                 <table style="border-collapse: collapse; width: 100%; height: 19px;" border="1">
                     <tbody>
                         @foreach($agency->rocketPay->policies as $policy)
@@ -142,9 +142,9 @@
                 </table>
             </div>
 
-            <div class="prow">&nbsp;</div>
+            <div >&nbsp;</div>
             {{-- Total Paid By Rocket --}}
-            <div class="prow">
+            <div >
                 <table style="border-collapse: collapse; width: 100%; background-color: #ecf0f1;">
                     <tbody>
                         <tr style="background-color: #ecf0f1; text-align: center; border: 1px solid #CED4D9;">
@@ -157,15 +157,14 @@
                 </table>
             </div>
 
-            <div class="prow" style="opacity: 20%"><hr /></div>
-            <div class="prow">&nbsp;</div>
-            <div class="prow">
+            <div  style="opacity: 20%"><hr /></div>
+            <div >&nbsp;</div>
 
             {{-- Paid By Carrier --}}
-            <div class="prow"><span style="font-family: Montserrat; background-color: #ecf0f1; padding: 5px 5px 5px 5px;">Paid By Carrier:</span></div>
-            <div class="prow">&nbsp;</div>
+            <div ><span style="font-family: Montserrat; background-color: #ecf0f1; padding: 5px 5px 5px 5px;">Paid By Carrier:</span></div>
+            <div >&nbsp;</div>
 
-            <div class="prow">
+            <div >
                 {{-- Headers --}}
                 <table style="border-collapse: collapse; width: 100%; height: 18px;" border="0">
                     <tbody>
@@ -182,7 +181,7 @@
                 </table>
             </div>
 
-            <div class="prow">
+            <div >
                 <table style="border-collapse: collapse; width: 100%; height: 19px;" border="1">
                     <tbody>
                         @foreach($agency->carrierPay->policies as $policy)
@@ -208,8 +207,8 @@
             </div>
 
             {{-- Paid by Carriers Totals --}}
-            <div class="prow">&nbsp;</div>
-            <div class="prow">
+            <div >&nbsp;</div>
+            <div >
                 <table style="border-collapse: collapse; width: 100%; background-color: #ecf0f1;">
                     <tbody>
                         <tr style="background-color: #ecf0f1; text-align: center; border: 1px solid #CED4D9;">
@@ -222,12 +221,12 @@
                 </table>
             </div>
 
-            <div class="prow" style="opacity: 20%"><hr /></div>
+            <div  style="opacity: 20%"><hr /></div>
             {{-- Agency Totals -- Add Agency Name Before "Totals" --}}
-            <div class="prow" style="padding: 5px 0px 5px 0px;"><span style="font-family: Montserrat; color: #e03e2d;">{{ $agency->name }} Totals</span></div>
+            <div  style="padding: 5px 0px 5px 0px;"><span style="font-family: Montserrat; color: #e03e2d;">{{ $agency->name }} Totals</span></div>
 
             {{-- Page Break Here --}}
-            <div class="prow" style="page-break-after:always;">
+            <div  style="page-break-after:always;">
                 <table style="border-collapse: collapse; width: 100%; background-color: #ecf0f1; border-color: #ced4d9;" border="1" cellpadding="5px">
                     <tbody>
                         <tr style="border: 1px solid #CED4D9;">
