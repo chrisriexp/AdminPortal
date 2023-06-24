@@ -11,15 +11,29 @@
             </div>
         </div>
 
-        <div class="w-fit h-fit flex items-center">
-            <!-- Download Month PDF Statement -->
-            <button @click="downloadMonthPDF" class="w-[225px] h-[52px] grid text-[16px] font-semibold text-white rounded-[4px] bg-custom-purple shadow-newdrop">
-                <div class="w-fit h-fit m-auto flex items-center gap-4">
-                    <Icon :icon="'bi:file-earmark-pdf-fill'" height="24" />
-                    <p>Download PDF</p>
+        <div class="w-full h-full flow-root">
+            <div class="w-fit h-full flex items-center float-left">
+                <div class="w-fit h-fit flex items-center">
+                    <!-- Download Month PDF Statement -->
+                    <button @click="downloadMonthPDF" class="w-[225px] h-[52px] grid text-[16px] font-semibold text-white rounded-[4px] bg-custom-purple shadow-newdrop">
+                        <div class="w-fit h-fit m-auto flex items-center gap-4">
+                            <Icon :icon="'bi:file-earmark-pdf-fill'" height="24" />
+                            <p>Download PDF</p>
+                        </div>
+                    </button>
                 </div>
-            </button>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="w-fit h-full flex items-center float-right">
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search" />
+                    <InputText v-model="search" placeholder="Enter agency name or rocket id" class="w-[403px] h-[48px] rounded-[4px]" />
+                </span>
+            </div>
         </div>
+
+        
 
         <div class="w-full h-fit grid grid-cols-3 gap-6">
             <!-- total Policies -->
@@ -48,7 +62,7 @@
         </div>
 
         <!-- No Commissions for the selected Month -->
-        <div v-if="commissions.length == 1 && commissions[0].comm == 0" class="w-full h-fit grid">
+        <div v-if="searchView.length == 1 && searchView[0].comm == 0" class="w-full h-fit grid">
             <LottieAnimation :animationData="NotFoundAnimation" :renderer="'canvas'" :width="'250px'" :height="'250px'" :speed="0.75" class="m-auto" />
         </div>
         <!-- Commission Reports for the Selected Month -->
@@ -61,7 +75,7 @@
                 <p class="opacity-50">Commission</p>
             </div>
 
-            <div v-for="(agency, index) in commissions" :key="index" class="w-full h-[52px] grid grid-cols-6 px-4 border-custom-black border-[1px] border-opacity-10 relative">
+            <div v-for="(agency, index) in searchView" :key="index" class="w-full h-[52px] grid grid-cols-6 px-4 border-custom-black border-[1px] border-opacity-10 relative">
                 <p class="my-auto">{{ agency.rocket_id }}</p>
                 <p class="my-auto col-span-2 truncate pr-4">{{ agency.name }}</p>
                 <p class="my-auto">{{ agency.policies }}</p>
@@ -86,6 +100,7 @@ import Calendar from 'primevue/calendar';
 import { Icon } from '@iconify/vue';
 import moment from 'moment';
 import Menu from 'primevue/menu';
+import InputText from 'primevue/inputtext';
 
 export default {
     name: "Commissions Reports",
@@ -94,6 +109,8 @@ export default {
             NotFoundAnimation,
             month: "",
             commissions: [],
+            search: "",
+            searchView: [],
             total: {
                 policies: 0,
                 comm: 0,
@@ -145,9 +162,20 @@ export default {
             })
         })
 
+        this.searchView = this.commissions
+
         this.$emit('loading')
     },
     watch: {
+        search: async function(value){
+            this.searchView = []
+
+            this.commissions.forEach(agency => {
+                if(agency.name.toLowerCase().includes(value.toLowerCase()) || agency.rocket_id.toLowerCase().includes(value.toLowerCase())){
+                    this.searchView.push(agency)
+                }
+            })
+        },
         month: async function(value){
             this.$emit('loading')
 
@@ -169,6 +197,8 @@ export default {
                         life: 2500
                     })
                 })
+
+                this.searchView = this.commissions
             }
 
             this.$emit('loading')
@@ -195,7 +225,8 @@ export default {
     components: {
         Calendar,
         Icon,
-        Menu
+        Menu,
+        InputText
     }
 }
 </script>
