@@ -39,6 +39,7 @@ class AuthController extends Controller
                 'role'=> $request->user()->role,
                 'react'=> $request->user()->react,
                 'onboarding'=> $request->user()->onboarding,
+                'rover'=> $request->user()->onboarding,
                 'message'=> 'Token authenticated successfully.'
             ];
 
@@ -72,7 +73,16 @@ class AuthController extends Controller
         if(Auth::attempt(['email'=> strtolower($request->email), 'password'=> $request->password])){
             $user = Auth::user();
             
-            $token = $user->createToken('token', [$user->role])->plainTextToken;
+            $modules = ['onboarding', 'rover', 'react'];
+            $tokenAbilites = [$user->role];
+
+            foreach($modules as $module){
+                if($user->$module){
+                    array_push($tokenAbilites, $module);
+                }
+            }
+
+            $token = $user->createToken('token', $tokenAbilites)->plainTextToken;
 
             $response = [
                 'success'=> true,

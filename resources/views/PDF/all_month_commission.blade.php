@@ -46,7 +46,7 @@
         <table style="border-collapse: collapse; width: 100%;" border="0">
             <tbody>
                 <tr>
-                    <td style="width: 18.1712%;"><span style="font-family: Montserrat; font-size: 12pt;"><img src="/var/www/html/AdminPortal/resources/views/PDF/logo.png" alt="" width="72" height="75" /></span></td>
+                    <td style="width: 18.1712%;"><span style="font-family: Montserrat; font-size: 12pt;"><img src="/var/www/html/AdminPortal/resources/views/PDF/logo.png" alt="Rocket MGA Logo" width="72" height="75" /></span></td>
                     <td style="width: 41.9712%; text-align: center;">
                     <div><span style="font-family: Montserrat; font-size: 12pt;">Rocket <span style="color: #e03e2d;">MGA </span>LLC</span></div>
                     <div><span style="font-family: Montserrat; color: #e03e2d;">commissions@rocketflood.com</span></div>
@@ -106,12 +106,12 @@
                 <tbody>
                     <tr style="height: 18px;">
                         <td style="width: 21.2529%; height: 18px;"><span style="font-size: 10pt; font-family: Montserrat; color: #e03e2d;">Insured</span></td>
-                        <td style="width: 21.2529%; height: 18px;"><span style="font-family: Montserrat; font-size: 10pt; color: #e03e2d;">Policy</span></td>
+                        <td style="width: 20.2529%; height: 18px;"><span style="font-family: Montserrat; font-size: 10pt; color: #e03e2d;">Policy</span></td>
+                        <td style="width: 12.2529%; height: 18px;"><span style="font-size: 10pt; font-family: Montserrat; color: #e03e2d;">Carrier</span></td>
                         <td style="width: 7.2529%; height: 18px;"><span style="font-size: 10pt; font-family: Montserrat; color: #e03e2d;">Type</span></td>
                         <td style="width: 14.2529%; height: 18px;"><span style="font-family: Montserrat; font-size: 10pt; color: #e03e2d;">Eff Date</span></td>
-                        <td style="width: 7.2529%; height: 18px;"><span style="font-size: 10pt; font-family: Montserrat; color: #e03e2d;">Rate</span></td>
-                        <td style="width: 14.2529%; height: 18px;"><span style="font-size: 10pt; font-family: Montserrat; color: #e03e2d;">Premium</span></td>
-                        <td style="width: 14.2529%; height: 18px;"><span style="font-family: Montserrat; font-size: 10pt; color: #e03e2d;">Commission</span></td>
+                        <td style="width: 12.2529%; height: 18px;"><span style="font-size: 10pt; font-family: Montserrat; color: #e03e2d;">Premium</span></td>
+                        <td style="width: 12.2529%; height: 18px;"><span style="font-family: Montserrat; font-size: 10pt; color: #e03e2d;">Commission</span></td>
                     </tr>
                 </tbody>
             </table>
@@ -125,17 +125,17 @@
                                 {{-- Insured --}}
                                 <td style="width: 21.2857%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">{{ $policy->insured }}</span></td>
                                 {{-- Policy --}}
-                                <td style="width: 21.2857%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">{{ $policy->policy }}</span></td>
+                                <td style="width: 20.2857%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">{{ $policy->policy }}</span></td>
+                                {{-- Carrier --}}
+                                <td style="width: 12.2857%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">{{ $policy->carrier }}</span></td>
                                 {{-- Transaction Type --}}
                                 <td style="width: 7.2857%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">{{ $policy->trans_type }}</span></td>
                                 {{-- Effective Date --}}
                                 <td style="width: 14.2857%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">{{ $policy->eff }}</span></td>
-                                {{-- Rate --}}
-                                <td style="width: 7.2857%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">{{ (float) number_format($policy->comm / $policy->prem * 100, 1, '.', '') }}%</span></td>
                                 {{-- Premium --}}
-                                <td style="width: 14.2857%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">${{ $policy->prem }}</span></td>
+                                <td style="width: 12.2857%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">${{ $policy->prem }}</span></td>
                                 {{-- Policy --}}
-                                <td style="width: 14.1686%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">${{ $policy->comm }}</span></td>
+                                <td style="width: 12.1686%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">${{ $policy->comm }}</span></td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -170,12 +170,12 @@
                     <tbody>
                         <tr style="height: 18px;">
                             <td style="width: 21.2529%; height: 18px;"><span style="font-size: 10pt; font-family: Montserrat; color: #e03e2d;">Insured</span></td>
-                            <td style="width: 21.2529%; height: 18px;"><span style="font-family: Montserrat; font-size: 10pt; color: #e03e2d;">Policy</span></td>
+                            <td style="width: 20.2529%; height: 18px;"><span style="font-family: Montserrat; font-size: 10pt; color: #e03e2d;">Policy</span></td>
+                            <td style="width: 12.2529%; height: 18px;"><span style="font-size: 10pt; font-family: Montserrat; color: #e03e2d;">Carrier</span></td>
                             <td style="width: 7.2529%; height: 18px;"><span style="font-size: 10pt; font-family: Montserrat; color: #e03e2d;">Type</span></td>
                             <td style="width: 14.2529%; height: 18px;"><span style="font-family: Montserrat; font-size: 10pt; color: #e03e2d;">Eff Date</span></td>
-                            <td style="width: 7.2529%; height: 18px;"><span style="font-size: 10pt; font-family: Montserrat; color: #e03e2d;">Rate</span></td>
-                            <td style="width: 14.2529%; height: 18px;"><span style="font-size: 10pt; font-family: Montserrat; color: #e03e2d;">Premium</span></td>
-                            <td style="width: 14.2529%; height: 18px;"><span style="font-family: Montserrat; font-size: 10pt; color: #e03e2d;">Commission</span></td>
+                            <td style="width: 12.2529%; height: 18px;"><span style="font-size: 10pt; font-family: Montserrat; color: #e03e2d;">Premium</span></td>
+                            <td style="width: 12.2529%; height: 18px;"><span style="font-family: Montserrat; font-size: 10pt; color: #e03e2d;">Commission</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -189,17 +189,17 @@
                                 {{-- Insured --}}
                                 <td style="width: 21.2857%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">{{ $policy->insured }}</span></td>
                                 {{-- Policy --}}
-                                <td style="width: 21.2857%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">{{ $policy->policy }}</span></td>
+                                <td style="width: 20.2857%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">{{ $policy->policy }}</span></td>
+                                {{-- Carrier --}}
+                                <td style="width: 12.2857%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">{{ $policy->carrier }}</span></td>
                                 {{-- Transaction Type --}}
                                 <td style="width: 7.2857%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">{{ $policy->trans_type }}</span></td>
                                 {{-- Effective Date --}}
                                 <td style="width: 14.2857%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">{{ $policy->eff }}</span></td>
-                                {{-- Rate --}}
-                                <td style="width: 7.2857%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">{{ (float) number_format($policy->comm / $policy->prem * 100, 1, '.', '') }}%</span></td>
                                 {{-- Premium --}}
-                                <td style="width: 14.2857%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">${{ $policy->prem }}</span></td>
+                                <td style="width: 12.2857%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">${{ $policy->prem }}</span></td>
                                 {{-- Policy --}}
-                                <td style="width: 14.1686%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">${{ $policy->comm }}</span></td>
+                                <td style="width: 12.1686%; height: 19px; padding: 4px;"><span style="font-family: Montserrat; font-size: 8pt;">${{ $policy->comm }}</span></td>
                             </tr>
                         @endforeach
                     </tbody>

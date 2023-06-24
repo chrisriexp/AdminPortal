@@ -133,6 +133,7 @@ Route::middleware('auth:sanctum')->post('/react/commission/upload/{month}', [Com
 Route::middleware('auth:sanctum')->get('/react/sub-agent/report/{rocket_id}', [SubAgentController::class, 'report']);
 Route::middleware('auth:sanctum')->get('/react/reports', [REACTReports::class, 'index']);
 Route::middleware('auth:sanctum')->get('/react/commissions/{month}', [CommissionStatementController::class, 'month_report']);
+Route::middleware('auth:sanctum')->get('/react/reports', [REACTReports::class, 'index']);
 
 // Onboarding Controller
 Route::middleware('auth:sanctum')->post('/onboarding', [Agents::class, 'index']);
@@ -157,7 +158,7 @@ Route::middleware('auth:sanctum')->put('rover/assigned/{id}', [ErrorsController:
 Route::middleware('auth:sanctum')->get('/rover/reports', [ROVERReports::class, 'index']);
 
 // Commission Statements
-Route::middleware('auth:sanctum')->get('/commission/download/month/{month}/{id?}', [CommissionStatementController::class, 'download_month']);
+Route::middleware(['auth:sanctum', 'ability:admin,super-admin,react'])->get('/commission/download/month/{month}/{id?}', [CommissionStatementController::class, 'download_month']);
 
 // OpenAI Routes
 Route::middleware('auth:sanctum')->post('/open-ai/quick-tools', [QuickToolsAIController::class, 'prompt']);
