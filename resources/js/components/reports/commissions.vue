@@ -61,12 +61,20 @@
                 <p class="opacity-50">Commission</p>
             </div>
 
-            <div v-for="(agency, index) in commissions" :key="index" class="w-full h-[52px] grid grid-cols-6 px-4 border-custom-black border-[1px] border-opacity-10">
+            <div v-for="(agency, index) in commissions" :key="index" class="w-full h-[52px] grid grid-cols-6 px-4 border-custom-black border-[1px] border-opacity-10 relative">
                 <p class="my-auto">{{ agency.rocket_id }}</p>
                 <p class="my-auto col-span-2 truncate pr-4">{{ agency.name }}</p>
                 <p class="my-auto">{{ agency.policies }}</p>
                 <p class="my-auto truncate">${{ agency.prem }}</p>
                 <p class="my-auto truncate">${{ agency.comm }}</p>
+
+                <!-- Menu -->
+                <div v-if="agency.rocket_id != '00000'" class="w-fit h-[50px] grid absolute right-4">
+                    <button @click="agencyToggle($event, agency.rocket_id)" aria-haspopup="true" :aria-controls="agency.rocket_id" class="w-[32px] h-[32px] grid m-auto text-custom-black hover:text-custom-purple bg-white rounded-[2px] shadow-newdrop">
+                        <Icon :icon="'carbon:overflow-menu-vertical'" height="24" class="m-auto" />
+                    </button>
+                    <Menu :ref="agency.rocket_id" :id="agency.rocket_id" :model="agency_menu" :popup="true" />
+                </div>
             </div>
         </div>
     </div>
@@ -77,6 +85,7 @@ import NotFoundAnimation from '../../../assets/newNotFound.json'
 import Calendar from 'primevue/calendar';
 import { Icon } from '@iconify/vue';
 import moment from 'moment';
+import Menu from 'primevue/menu';
 
 export default {
     name: "Commissions Reports",
@@ -90,6 +99,27 @@ export default {
                 comm: 0,
                 override: 0
             },
+            rocket_id: "",
+            agency_menu: [
+                {
+                    label: 'Download PDF',
+                    icon: 'pi pi-file-pdf',
+                    command: async () => {
+                        this.$emit('loading')
+
+                        await axios.get('/api/commission/download/month/'+moment(this.month).format('YYYY-MM')+'/'+this.rocket_id, {responseType: 'blob'})
+                        .then(response => {
+                            const blob = new Blob([response.data], {type: 'application/pdf'})
+                            const pdfUrl = URL.createObjectURL(blob)
+                            window.open(pdfUrl)
+                        })
+
+                        this.$emit('loading')
+
+                        this.rocket_id = ""
+                    }
+                }
+            ],
             onLoad: true,
         }
     },
@@ -156,11 +186,16 @@ export default {
             })
 
             this.$emit('loading')
-        }
+        },
+        agencyToggle(event, rocket_id){
+            this.rocket_id = rocket_id
+            this.$refs[rocket_id][0].toggle(event);
+        },
     },
     components: {
         Calendar,
-        Icon
+        Icon,
+        Menu
     }
 }
 </script>
