@@ -11,7 +11,7 @@
 
     <!-- View Carrier Codes -->
     <div v-if="carrier_codes" class="w-screen h-screen grid bg-[#3F3F3F] bg-opacity-[26%] justify-items-center z-40 fixed">
-        <viewCarrierCodes class="m-auto" @close="carrier_codes = false" :agent="agency" />
+        <viewCarrierCodes class="m-auto" @close="carrier_codes = false" :rocket_id="agency.rocket_id" />
     </div>
 
     <div class="w-full h-screen z-20 absolute">

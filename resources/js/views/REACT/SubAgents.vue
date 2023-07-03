@@ -26,7 +26,7 @@
 
     <!-- View Carrier Codes -->
     <div v-if="carrier_codes" class="w-screen h-screen grid bg-[#3F3F3F] bg-opacity-[26%] justify-items-center z-40 fixed">
-        <viewCarrierCodes class="m-auto" @close="carrier_codes = false" :agent="agent" />
+        <viewCarrierCodes class="m-auto" @close="carrier_codes = false" :rocket_id="id" @loading="loading = !loading" />
     </div>
 
     <div class="w-full h-screen z-20 absolute">
@@ -226,12 +226,6 @@ export default {
     methods: {
         async subAgentMenu(event, id){
             this.id = id
-
-            this.agents.forEach(agent => {
-                if(agent.rocket_id ==  id){
-                    this.agent = agent
-                }
-            })
 
             this.$refs[id+'_modules_menu'][0].toggle(event);
         },

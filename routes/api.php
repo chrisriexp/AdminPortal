@@ -125,6 +125,7 @@ Route::post('/notification-needToken', [NotificationsController::class, 'create_
 
 // REACT Controller
 Route::middleware('auth:sanctum')->post('/react/sub-agents', [SubAgentController::class, 'index']);
+Route::middleware('auth:sanctum')->get('/react/sub-agent/carriers/{rocket_id}', [SubAgentController::class, 'agency']);
 Route::middleware('auth:sanctum')->post('/react/sub-agent', [SubAgentController::class, 'create']);
 Route::middleware('auth:sanctum')->post('/react/sub-agent/upload', [SubAgentController::class, 'bulkUpload']);
 Route::middleware('auth:sanctum')->put('/react/sub-agent/{rocket_id}', [SubAgentController::class, 'update']);

@@ -47,56 +47,42 @@ class SubAgentController extends Controller
     ];
 
     public function index(Request $request){
-        $agents = mga_companies::orderBy('created_at', 'desc')->get();
-
-        $data = [];
-
-        foreach($agents as $agent){
-            $carrier_data = json_decode(Http::get('https://backend.agentportal.rocketmga.com/api/services/client/get-mga-company-carriers/'.$agent->rocket_id))->data->carriers_list;
-            
-            foreach ($carrier_data as $carrier) { 
-                foreach($this->carriers as $key=>$value){
-                    if(!str_contains(strtolower($carrier->name), 'wright') && $carrier->name == $value['name']){
-                        $agent->$key = json_decode($agent->$key);
-                        $agent->$key->direct = $carrier->direct;
-                    }
-                }
-
-                if($carrier->name == "Wright - NFIP"){
-                    $agent->wright = json_decode($agent->wright);
-                    $agent->wright->direct = $carrier->direct;
-                }
-            }
-
-            // Decode Cat Coverage
-            $agent->cat = json_decode($agent->cat);
-            $agent->cat->direct = false;
-
-            $rocketPlusValid = true;
-            $carriersValid = false;
-
-            // Filter Rocket Appointed Carriers
-            foreach($request->filter['carriers'] as $carrier){
-                if($carrier['code'] !== 'cat' && !$carriersValid && !$agent->{$carrier['code']}->direct){
-                    $carriersValid = true;
-                }
-            }
-
-            // Filter Rocket Plus Status
-            // foreach($request->filter['rocketPlus'] as $value){
-            //     if(!$rocketPlusValid && $agent->rocketPlus == $value['code']){
-            //         $rocketPlusValid = true;
-            //     }
-            // }
-
-            if($carriersValid && $rocketPlusValid){
-                array_push($data, $agent);
-            }
-        }
+        $agents = mga_companies::orderBy('created_at', 'desc')->get(['rocket_id', 'name']);
 
         $response = [
             'success'=> true,
-            'agents'=> $data
+            'agents'=> $agents
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    public function agency(Request $request, $rocket_id){
+        $agent = mga_companies::find($rocket_id);
+
+        $carrier_data = json_decode(Http::get('https://backend.agentportal.rocketmga.com/api/services/client/get-mga-company-carriers/'.$rocket_id))->data->carriers_list;
+            
+        foreach ($carrier_data as $carrier) { 
+            foreach($this->carriers as $key=>$value){
+                if(!str_contains(strtolower($carrier->name), 'wright') && $carrier->name == $value['name']){
+                    $agent->$key = json_decode($agent->$key);
+                    $agent->$key->direct = $carrier->direct;
+                }
+            }
+
+            if($carrier->name == "Wright - NFIP"){
+                $agent->wright = json_decode($agent->wright);
+                $agent->wright->direct = $carrier->direct;
+            }
+        }
+
+        // Decode Cat Coverage
+        $agent->cat = json_decode($agent->cat);
+        $agent->cat->direct = false;
+
+        $response = [
+            'success'=> true,
+            'agent'=> $agent
         ];
 
         return response()->json($response, 200);

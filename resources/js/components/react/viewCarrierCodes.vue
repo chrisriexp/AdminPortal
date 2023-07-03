@@ -60,12 +60,23 @@ import carriers from '../../../assets/react_carriers.json'
 export default{
     name: "View Sub Agent Carrier Codes",
     props: {
-        agent: Object
+        rocket_id: String
     },
     data(){
         return {
-            carriers
+            carriers,
+            agent: {}
         }
+    },
+    async mounted(){
+        this.$emit('loading')
+
+        await axios.get('/api/react/sub-agent/carriers/'+this.rocket_id)
+        .then(response => {
+            this.agent = response.data.agent
+        })
+
+        this.$emit('loading')
     },
     methods: {
         async updateAgent(){
