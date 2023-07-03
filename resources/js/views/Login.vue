@@ -125,7 +125,6 @@ export default {
                         }
                     })
                     .catch(error => {
-                        this.form.email = ''
                         this.form.password = ''
                         if(error.response.status == 400){
                             const keys = Object.keys(error.response.data.message)
