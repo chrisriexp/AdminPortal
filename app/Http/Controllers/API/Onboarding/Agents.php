@@ -62,7 +62,9 @@ class Agents extends Controller
 
             return response()->json($response, $data->status());
         }else{
-            $carrier_data = json_decode(Http::get('https://backend.agentportal.rocketmga.com/api/services/client/get-mga-company-carriers/'.$rocket_id))->data->carriers_list;
+            $mga_data = json_decode(Http::get('https://backend.agentportal.rocketmga.com/api/services/client/get-mga-company-carriers/'.$rocket_id))->data;
+            $carrier_data = $mga_data->carriers_list;
+
             $data = [];
 
             $company_exists = mga_companies::where('rocket_id', $rocket_id)->exists();
@@ -91,6 +93,7 @@ class Agents extends Controller
             }else{
                 $newCompany = new mga_companies();
                 $newCompany->rocket_id = $rocket_id;
+                $newCompany->name = $mga_data->company_name;
                 $newCompany->save();
 
                 // For Each Carrier in the array from MGA Portal if the name property is equal to the carrier value when going through each carrier
