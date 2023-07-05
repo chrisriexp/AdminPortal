@@ -801,6 +801,8 @@ class CommissionStatementController extends Controller
         // Create Zip File
         $zip = Zip::create("package.zip");
 
+        set_time_limit(60);
+
         foreach($data['agencies'] as $agency){
             if($agency->rocket_id !== '00000'){
                 $agencyPDF = PDF::loadView('PDF/agency_month_commission', (array) $agency);

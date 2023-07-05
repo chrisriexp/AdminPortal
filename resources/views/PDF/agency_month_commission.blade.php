@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
         <title>RocketMGA | Commission Statement</title>
         @vite('resources/css/app.css')
         <style type="text/css">
@@ -63,6 +63,9 @@
 
         <div >&nbsp;</div>
         <h3 ><span style="color: #ced4d9; font-family: Montserrat;">Commissions Payable Statement - <span style="color: #e03e2d;">{{ $month }}</span></span></h3>
+
+        <!-- Commission Paid By Disclaimer -->
+        <div><span style="font-family: Montserrat; font-size: 8pt; font-style: italic;"><span style="color: #e03e2d;">**</span> Depending on the Carrier's standard operating procedure, commissions will either come from Rocket MGA or directly from the carrier. Please see below breakdown of this months commissions. <span style="color: #e03e2d;">**</span></span></div>
 
         <div >&nbsp;</div>
 
@@ -143,6 +146,11 @@
 
         {{-- Paid By Carrier --}}
         <div ><span style="font-family: Montserrat; background-color: #ecf0f1; padding: 5px 5px 5px 5px;">Paid By Carrier:</span></div>
+        <div >&nbsp;</div>
+
+        <!-- Direct Pay Disclaimer -->
+        <div><span style="font-family: Montserrat; font-size: 8pt; font-style: italic;"><span style="color: #e03e2d;">**</span> Your agency has received commission for these accounts directly from the carrier. <span style="color: #e03e2d;">**</span></span></div>
+
         <div >&nbsp;</div>
 
         <div >

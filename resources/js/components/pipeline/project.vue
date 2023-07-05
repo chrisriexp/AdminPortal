@@ -213,7 +213,7 @@
 
                         <div class="w-full px-4 h-fit max-h-[500px] grid gap-2 mt-2 overflow-y-scroll">
                             <div @click="$router.replace({params: {task: task.id}})" v-for="(task, taskIndex) in section.tasks" :key="taskIndex" class="w-full min-h-[110px] h-fit grid p-4 text-[16px] text-custom-black font-medium bg-sidebar-bg hover:bg-[#F4F4F4] border-[1px] border-custom-black border-opacity-10 rounded-[10px] cursor-pointer">
-                                <p class="w-full truncate">{{ task.name }}</p>
+                                <p class="w-full h-fit">{{ task.name }}</p>
 
                                 <div class="w-full h-fit flow-root">
                                     <div class="h-full w-fit flex items-center gap-2 float-right">
@@ -263,7 +263,7 @@ export default {
         return{
             NotFoundAnimation,
             viewFilter: false,
-            view: 'list',
+            view: 'board',
             project: {
                 name: "",
                 members: [],
