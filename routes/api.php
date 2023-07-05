@@ -160,6 +160,7 @@ Route::middleware('auth:sanctum')->get('/rover/reports', [ROVERReports::class, '
 
 // Commission Statements
 Route::middleware(['auth:sanctum', 'ability:admin,super-admin,react'])->get('/commission/download/month/{month}/{id?}', [CommissionStatementController::class, 'download_month']);
+Route::middleware(['auth:sanctum', 'ability:admin,super-admin,react'])->get('/commission/download/alltime', [CommissionStatementController::class, 'download_alltime']);
 
 // OpenAI Routes
 Route::middleware('auth:sanctum')->post('/open-ai/quick-tools', [QuickToolsAIController::class, 'prompt']);

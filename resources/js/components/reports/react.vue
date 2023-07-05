@@ -1,6 +1,20 @@
 <template>
     <div class="w-full h-fit grid gap-6 pb-12">
-        <p class="text-[32px] text-custom-black font-semibold">REACT Reports</p>
+        <div class="w-full h-full flow-root">
+            <div class="w-fit h-full flex items-center float-left">
+                <p class="text-[32px] text-custom-black font-semibold">REACT Reports</p>
+            </div>
+
+            <!-- All Time Commissions Reports -->
+            <div class="w-fit h-full flex items-center float-right">
+                <button @click="downloadAllCommissions" class="w-fit h-[52px] grid px-4 text-[16px] font-semibold text-white rounded-[4px] bg-custom-purple shadow-newdrop">
+                    <div class="w-fit h-fit m-auto flex items-center gap-4">
+                        <Icon :icon="'bi:file-earmark-pdf-fill'" height="24" />
+                        <p>Download Commission PDFs</p>
+                    </div>
+                </button>
+            </div>
+        </div>
 
         <!-- Overview Analytics -->
         <div class="w-full h-fit grid grid-cols-3 gap-6">
@@ -195,6 +209,20 @@ export default {
         })
 
         this.$emit('loading')
+    },
+    methods: {
+        async downloadAllCommissions(){
+            this.$emit('loading')
+
+            await axios.get('/api/commission/download/alltime', {responseType: 'blob'})
+            .then(response => {
+                let blob = new Blob([response.data], {type: 'application/zip'})
+                const pdfUrl = URL.createObjectURL(blob)
+                window.open(pdfUrl)
+            })
+
+            this.$emit('loading')
+        }
     },
     components: {
         Icon,

@@ -14,6 +14,7 @@
         "openai-php/client": "^0.5.2",
         "openai-php/laravel": "^0.5.2",
         "phpoffice/phpspreadsheet": "^1.28",
+        "stechstudio/laravel-zipstream": "^4.13",
         "tectalic/openai": "^1.4"
     },
     "require-dev": {
