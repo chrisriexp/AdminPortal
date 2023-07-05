@@ -156,6 +156,24 @@ class Agents extends Controller
                 foreach($this->mga_carriers as $key=>$value){
                     if($value == $carrier['name']){
                         $carrier_info = json_decode($mga_company->$key);
+
+                        if($key == 'beyond' && $carrier['direct']){
+                            // If the database does not have a BF Agent No but one was just entered
+                            if(is_null($carrier_info->carrier_username && !is_null($carrier['carrier_username']))){
+                                // Send BFID Request Email
+                                $bfidRequest = Http::post('https://api.emailjs.com/api/v1.0/email/send', [
+                                    "service_id"=> "service_nf9yozb",
+                                    "user_id"=> "h29zXRTKkaswfKPkp",
+                                    "accessToken"=> "77MJk1G5Dy2wGTpULFmVI",
+                                    "template_id"=> 'template_tyg2qhm',
+                                    "template_params"=> (object) [
+                                        "agency"=> $mga_company->name,
+                                        "bf_agent_no"=> $carrier['carrier_username']
+                                    ]
+                                ]);
+                            }
+                        }
+
                         $carrier_info->carrier_username = $carrier['carrier_username'];
                         $carrier_info->commission_id = $carrier['commission_id'];
                         $mga_company->$key = json_encode($carrier_info);
@@ -230,6 +248,13 @@ class Agents extends Controller
                 $mga_company->$carrier_name = json_encode($carrier_data);
                 $mga_company->save();
             }
+
+            // Map BF Agent No
+            $beyondData = json_decode($mga_company->beyond);
+            $beyondData->carrier_username = $response->bf_agent_no;
+
+            $mga_company->beyond = json_encode($beyondData);
+            $mga_company->save();
 
             if(!is_null($response->agentFLNo)){
                 $neptuneData = json_decode($mga_company->neptune);
