@@ -65,7 +65,7 @@
         <h3 ><span style="color: #ced4d9; font-family: Montserrat;">Commissions Payable Statement - <span style="color: #e03e2d;">{{ $month }}</span></span></h3>
 
         <!-- Commission Paid By Disclaimer -->
-        <div><span style="font-family: Montserrat; font-size: 8pt; font-style: italic;"><span style="color: #e03e2d;">**</span> Depending on the Carrier's standard operating procedure, commissions will either come from Rocket MGA or directly from the carrier. Please see below breakdown of this months commissions. <span style="color: #e03e2d;">**</span></span></div>
+        <div><span style="font-family: Montserrat; font-size: 8pt; font-style: italic;"><span style="color: #e03e2d;">**</span> Depending on each carrier's standard operating procedure, commissions are either distributed by Rocket MGA or directly by the carrier. The commission schedule at the end of this document outlines each carrier's commission % as well as who distributes commission. <span style="color: #e03e2d;">**</span></span></div>
 
         <div >&nbsp;</div>
 
@@ -227,6 +227,6 @@
         </div>
 
         {{-- Commission Schedule --}}
-        <img style="width: 100%; height: 100%;" src="/var/www/html/AdminPortal/resources/views/PDF/commission_schedule.png" alt="Commission Schedule">
+        <img style="width: 100%; height: 100%;" src="/var/www/html/AdminPortal/resources/views/PDF/commission_schedule.jpg" alt="Commission Schedule">
     </body>
 </html>

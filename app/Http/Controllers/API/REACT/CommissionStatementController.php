@@ -810,8 +810,8 @@ class CommissionStatementController extends Controller
             }
         }
 
-        $RocketPDF = PDF::loadView('PDF/all_month_commission', $data);
-        $zip->addRaw($RocketPDF->download('RocketOverview.pdf'), 'RocketOverview.pdf');
+        // $RocketPDF = PDF::loadView('PDF/all_month_commission', $data);
+        // $zip->addRaw($RocketPDF->download('RocketOverview.pdf'), 'RocketOverview.pdf');
 
         return $zip;
     }
