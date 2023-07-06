@@ -238,7 +238,7 @@
 
                     <!-- Agency Information Overlay -->
                     <div class="w-[24px] h-[52px] grid absolute left-[-30px]">
-                        <Icon @click="() => {this.agent = agent}" icon="icomoon-free:profile" height="24" class="m-auto text-custom-black cursor-pointer hover:text-custom-purple" />
+                        <Icon @click="() => {this.agent = agent}" icon="streamline:interface-user-profile-focus-close-geometric-human-person-profile-focus-user" height="24" class="m-auto text-custom-black cursor-pointer hover:text-custom-purple" />
                     </div>
                 </div>
             </div>
