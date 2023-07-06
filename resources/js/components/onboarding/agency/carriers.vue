@@ -60,9 +60,9 @@
 
                 <!-- Carrier UIP(s) -->
                 <div class="w-full h-full grid gap-4">
-                    <div v-for="(uip, index) in carrier.uip_fields" :key="index" class="w-full h-fit grid">
+                    <div v-for="(uip, uipIndex) in carrier.uip_fields" :key="uipIndex" class="w-full h-fit grid">
                         <p class="font-medum">UIP ({{ uip.name }})</p>
-                        <InputText v-model="uip.value" class="w-full h-[48px]" />
+                        <InputText v-model="uip.value" @input="updateCarrierValues(index)" class="w-full h-[48px]" />
                     </div>
                 </div>
             </div>
@@ -108,6 +108,17 @@ export default {
         this.ready = true
     },
     methods: {
+        async updateCarrierValues(index){
+            if(this.data[index].name == 'Neptune'){
+                this.data[index].carrier_username = this.data[index].uip_fields[0].value
+                this.data[index].commission_id = this.data[index].uip_fields[0].value
+            }else if(this.data[index].name == 'Sterling'){
+                this.data[index].commission_id = this.data[index].uip_fields[0].value
+            }else if(this.data[index].name == 'Wright - NFIP'){
+                this.data[index].carrier_username = "FNC"+this.data[index].uip_fields[0].value
+                this.data[index].commission_id = this.data[index].uip_fields[0].value
+            }
+        },
         async updateAgency(){
             this.$emit('loading')
 
