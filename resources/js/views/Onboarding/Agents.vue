@@ -261,6 +261,10 @@ export default{
                 sortBy: { name: 'Date Created', code: 'created_at' },
                 stages: [
                     {
+                        name: "Prospects",
+                        code: "prospect"
+                    },
+                    {
                         name: "Incomplete Paperwork",
                         code: "incomplete"
                     },
@@ -279,22 +283,26 @@ export default{
                 sources: []
             },
             stages: [
-                    {
-                        name: "Incomplete Paperwork",
-                        code: "incomplete"
-                    },
-                    {
-                        name: "Completed Paperwork - Pending Approval",
-                        code: "completed"
-                    },
-                    {
-                        name: "Approved - Pending Carriers",
-                        code: "approved"
-                    },
-                    {
-                        name: "Appointed",
-                        code: "appointed"
-                    }
+                {
+                    name: "Prospects",
+                    code: "prospect"
+                },
+                {
+                    name: "Incomplete Paperwork",
+                    code: "incomplete"
+                },
+                {
+                    name: "Completed Paperwork - Pending Approval",
+                    code: "completed"
+                },
+                {
+                    name: "Approved - Pending Carriers",
+                    code: "approved"
+                },
+                {
+                    name: "Appointed",
+                    code: "appointed"
+                }
             ],
             paperworkStages: [
                 {
@@ -510,6 +518,10 @@ export default{
 
             this.filters.sortBy = { name: 'Date Created', code: 'created_at' }
             this.filters.stages = [
+                {
+                    name: "Prospects",
+                    code: "prospect"
+                },
                 {
                     name: "Incomplete Paperwork",
                     code: "incomplete"
