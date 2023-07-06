@@ -430,13 +430,19 @@ export default{
             this.searchView = this.agents
         })
 
-        // Update All Agent Sources to an Object
+        
         this.agents.forEach(agent => {
+            // Update All Agent Sources to an Object
             this.sources.forEach(source => {
                 if(source.code == agent.source){
                     agent.source = source
                 }
             })
+
+            // Update Follow Up Date
+            if(agent.follow_up_date){
+                agent.follow_up_date = moment(agent.follow_up_date).format('MM/DD/YYYY')
+            }
         })
 
         // Update Search with search value in query
@@ -498,6 +504,10 @@ export default{
 
             let agent = Object.assign({}, this.agent)
             agent.source = agent.source.code
+            
+            if(agent.follow_up_date){
+                agent.follow_up_date = moment(agent.follow_up_date).format('YYYY-MM-DD')
+            }
 
             await axios.post('/api/onboarding', {"update": agent})
             .then(response => {
