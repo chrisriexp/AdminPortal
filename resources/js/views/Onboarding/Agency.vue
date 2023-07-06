@@ -104,7 +104,7 @@
         <div class="w-full h-full z-10 absolute pt-[110px] pb-12 pl-[350px] pr-[50px] overflow-y-scroll">
             <!-- Breadcrumb Menu -->
             <div class="w-fit h-fit flex items-center gap-4 mb-6">
-                <a href="/onboarding/agents" class="w-[24px] h-[24px] grid bg-white rounded-[2px] shadow-newdrop">
+                <a @click="$router.back()" class="w-[24px] h-[24px] grid bg-white rounded-[2px] shadow-newdrop">
                     <Icon icon="material-symbols:arrow-back-rounded" height="18" class="m-auto text-custom-purple" />
                 </a>
 
