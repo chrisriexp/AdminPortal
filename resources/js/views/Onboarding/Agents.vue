@@ -86,7 +86,13 @@
         
             <!-- Existing Follow Up Logs -->
             <p class="font-medium">Existing Follow Up Logs</p>
-            <div v-for="(log, index) in agent.follow_up_logs" :key="index" class="w-full h-fit p-2 flow root bg-white rounded-[2px] border-[1px] border-custom-black border-opacity-10">
+
+            <!-- No Logs Found -->
+            <div v-if="agent.follow_up_logs.length == 0" class=" w-full h-full grid">
+                <LottieAnimation :animationData="NotFoundAnimation" :renderer="'canvas'" :width="'125px'" :height="'125px'" :speed="0.75" class="m-auto" />
+            </div>
+
+            <div v-else v-for="(log, index) in agent.follow_up_logs" :key="index" class="w-full h-fit p-2 flow root bg-white rounded-[2px] border-[1px] border-custom-black border-opacity-10">
                 <div class="w-full h-fit grid float-left comment">
                     <!-- User Name -->
                     <p class="text-[14px] text-custom-black font-medium opacity-80 float-left">{{ log.by }}</p>
