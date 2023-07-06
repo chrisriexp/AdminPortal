@@ -33,6 +33,14 @@ class Agents extends Controller
         return response()->json($response, $data->status());
     }
 
+    public function follow_up_logs(Request $request, $rocket_id){
+        $data = Http::withHeaders(['token'=>'27b00fca-4d9e-4e28-85ce-54f16af26c0b'])->get('https://onboarding.rocketmga.com/api/admin-portal/follow_up_logs/'.$rocket_id);
+
+        $response = json_decode($data);
+
+        return response()->json($response, $data->status());
+    }
+
     public function followed_up(Request $request, $rocket_id){
         $data = Http::withHeaders(['token'=>'27b00fca-4d9e-4e28-85ce-54f16af26c0b'])->post('https://onboarding.rocketmga.com/api/admin-portal/followed_up/'.$rocket_id, [
             "log"=> $request->log,

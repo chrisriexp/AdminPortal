@@ -11,7 +11,7 @@
 
     <!-- Agent Information Sidebar -->
     <Sidebar :visible="agent ? true : false" position="right" :showCloseIcon="false"  class="bg-sidebar-bg z-20">
-        <div class="w-full h-fit grid gap-4 text-custom-black text-[16px]">
+        <div class="w-full h-fit grid gap-4 mb-12 text-custom-black text-[16px]">
             <!-- Close Button -->
             <div class="w-full h-fit flow-root"><Icon @click="agent = null" icon="ph:x-bold" height="24" class="text-custom-black opacity-60 cursor-pointer hover:text-custom-red float-right" /></div>
 
@@ -63,7 +63,7 @@
             <!-- Save and Close Buttons -->
             <button @click="updateAgent" :disabled="loading" class="text-white text-[16px] font-medium py-[4px] bg-custom-purple rounded-[4px] shadow-newdrop">Save Updates</button>
 
-            <!-- Follow Up Log -->
+            <!-- New Follow Up Log -->
             <div class="w-full h-fit grid gap-2">
                 <p class="font-medium">Follow Up Log</p>
                 <Editor :disabled="loading" v-model="follow_up_log" editorStyle="height: auto; font-size: 16px; min-height: 80px" class="w-full" >
@@ -82,7 +82,28 @@
                 </Editor>
             </div>
 
-            <button :disabled="loading" @click="followUpLog" class="mb-12 text-white text-[16px] font-medium py-[4px] bg-custom-purple rounded-[4px] shadow-newdrop">Save Follow Up Log</button>
+            <button :disabled="loading" @click="followUpLog" class="text-white text-[16px] font-medium py-[4px] bg-custom-purple rounded-[4px] shadow-newdrop">Save Follow Up Log</button>
+        
+            <!-- Existing Follow Up Logs -->
+            <p class="font-medium">Existing Follow Up Logs</p>
+            <div v-for="(log, index) in agent.follow_up_logs" :key="index" class="w-full h-fit p-2 flow root bg-white rounded-[2px] border-[1px] border-custom-black border-opacity-10">
+                <div class="w-full h-fit grid float-left comment">
+                    <!-- User Name -->
+                    <p class="text-[14px] text-custom-black font-medium opacity-80 float-left">{{ log.by }}</p>
+
+                    <!-- Comment -->
+                    <Editor readonly v-model="log.log" id="newTaskDesc" editorStyle="height: auto; font-size: 14px;" class="max-w-[920px] text-[14px] opacity-60 text-custom-black" >
+                        <template v-slot:toolbar>
+                            <span class="ql-formats flex items-center">
+                            </span>
+                        </template>
+                    </Editor>
+
+                    <!-- Comment Date -->
+                    <p class="text-[12px] text-custom-black opacity-60 float-right">{{ moment(log.created_at).format("dddd, MMMM Do YYYY, h:mm a") }}</p>
+                </div>
+            </div>
+            
         </div>
     </Sidebar>
 
@@ -456,6 +477,19 @@ export default{
 
             // Add Search value to query
             this.$router.push({ query: Object.assign({}, this.$route.query, { search: value }) });
+        },
+        agent: async function(value){
+            this.loading = true
+
+            if(this.agent){
+                await axios.get('/api/onboarding/follow-up-logs/'+value.rocket_id)
+                .then(response => {
+                    console.log(response)
+                    this.agent.follow_up_logs = response.data.logs
+                })
+            }
+
+            this.loading = false
         }
     },
     methods: {
@@ -504,6 +538,12 @@ export default{
                 })
 
                 this.follow_up_log = {}
+            })
+
+            await axios.get('/api/onboarding/follow-up-logs/'+this.agent.rocket_id)
+            .then(response => {
+                console.log(response)
+                this.agent.follow_up_logs = response.data.logs
             })
 
             this.loading = false;
@@ -591,3 +631,19 @@ export default{
     }
 }
 </script>
+
+<style scoped>
+:deep( .comment .p-editor-toolbar ){
+    display: none !important;
+}
+:deep( .comment .p-editor-container .p-editor-content .ql-editor ){
+    background-color: white !important;
+}
+:deep( .comment .p-editor-container .p-editor-content.ql-snow ){
+    border: none !important;
+}
+
+:deep( .comment .ql-editor ){
+    padding: 0px !important;
+}
+</style>
