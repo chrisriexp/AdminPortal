@@ -12,7 +12,6 @@ import REACTUploadStatements from './views/REACT/StatementUpload.vue'
 import REACTSubAgent from './views/REACT/SubAgent.vue'
 import OnboardingAgents from './views/Onboarding/Agents.vue'
 import OnboardingAgency from './views/Onboarding/Agency.vue'
-import MGA_Marketing from './views/Onboarding/Marketing.vue'
 import ROVERErrors from './views/ROVER/Errors.vue'
 import ROVERError from './views/ROVER/Error.vue'
 
@@ -94,12 +93,6 @@ const routes = [
             onboarding: true
         },
         children:[
-            {
-                path: "mga-marketing",
-                name: "MGA_Marketing",
-                component: MGA_Marketing,
-                beforeEnter: validateAccessToken
-            },
             {
                 path: "agents",
                 name: "Onboarding_Agents",

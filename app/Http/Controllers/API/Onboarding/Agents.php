@@ -24,18 +24,8 @@ class Agents extends Controller
 
     public function index(Request $request){
         $data = Http::withHeaders(['token'=>'27b00fca-4d9e-4e28-85ce-54f16af26c0b'])->post('https://onboarding.rocketmga.com/api/admin-portal/agents', [
-            "filters"=> $request->filters
-        ]);
-
-        $response = json_decode($data);
-
-        return response()->json($response, $data->status());
-    }
-
-    public function marketing(Request $request){
-        $data = Http::withHeaders(['token'=>'27b00fca-4d9e-4e28-85ce-54f16af26c0b'])->post('https://onboarding.rocketmga.com/api/admin-portal/marketing', [
-            "filters"=> $request->filters,
-            "follow_up"=> $request->follow_up
+            "filters"=> $request->has('filters') ? $request->filters : [],
+            "update"=> $request->has('update') ? $request->update : []
         ]);
 
         $response = json_decode($data);

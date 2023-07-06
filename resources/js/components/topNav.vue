@@ -95,13 +95,6 @@ export default{
             ],
             module_items: [
                 {
-                    label: 'MGA Marketing',
-                    icon: '',
-                    command: async () => {
-                        this.$router.push({name: 'MGA_Marketing'})
-                    }
-                },
-                {
                     label: 'MGA Onboarding',
                     icon: '',
                     command: async () => {

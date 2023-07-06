@@ -80,6 +80,18 @@
                         </Dropdown>
                     </div>
 
+                    <!-- Source -->
+                    <div>
+                        <p class="font-medium">Source</p>
+                        <Dropdown v-model="general.source" :options="onboardingSources" optionLabel="name" class="w-full h-[48px]" >
+                            <template #value="slotProps">
+                                <div class="grid">
+                                    <p class="truncate">{{ slotProps.value.name }}</p>
+                                </div>
+                            </template>
+                        </Dropdown>
+                    </div>
+
                     <!-- Follow Up Date -->
                     <div>
                         <p class="font-medium">Follow Up Date</p>
@@ -118,6 +130,7 @@ import InputSwitch from 'primevue/inputswitch';
 
 import { Icon } from '@iconify/vue';
 import rocket_reps from '../../../assets/marketing_reps.json'
+import onboardingSources from '../../../assets/onboardingSources.json'
 import incomplete_uips_popup from '../../components/onboarding/agency/incomplete_uips_popup.vue'
 
 import moment from 'moment';
@@ -127,6 +140,7 @@ export default {
     name: "Onboarding Agency",
     data(){
         return{
+            onboardingSources,
             rocket_reps,
             loading: true,
             ready: false,
@@ -155,6 +169,14 @@ export default {
             }else if(this.general[key] == 0){
                 this.general[key] = false
             }
+
+            if(key == 'source'){
+                this.onboardingSources.forEach(source => {
+                    if(this.general.source == source.code){
+                        this.general.source = source
+                    }
+                })
+            }
         })
 
         this.ready = true
@@ -167,14 +189,12 @@ export default {
             this.category = value
             this.view = defineAsyncComponent(() => import(`../../components/onboarding/agency/${value}.vue`))
         },
-        'general.rocket_rep': async function(value){
-            await this.updateAgency()
-        },
-        'general.follow_up_date': async function(value){
-            await this.updateAgency()
-        },
-        'general.training_completed': async function(value){
-            await this.updateAgency()
+        general: {
+            async handler(value){
+                await this.updateAgency()
+            },
+
+            deep: true
         }
     },
     methods: {
@@ -184,6 +204,7 @@ export default {
 
                 const data = Object.assign({}, this.general)
                 data.follow_up_date = data.follow_up_date == null ? null : moment(data.follow_up_date).format('YYYY-MM-DD')
+                data.source = data.source.code
 
                 await axios.put('/api/onboarding/agency/'+this.rocket_id+'/general', {
                     "agency": data
