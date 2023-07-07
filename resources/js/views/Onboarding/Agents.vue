@@ -88,7 +88,7 @@
             <p class="font-medium">Existing Follow Up Logs</p>
 
             <!-- No Logs Found -->
-            <div v-if="agent.follow_up_logs.length == 0" class=" w-full h-full grid">
+            <div v-if="agent.follow_up_logs && agent.follow_up_logs.length == 0" class=" w-full h-full grid">
                 <LottieAnimation :animationData="NotFoundAnimation" :renderer="'canvas'" :width="'125px'" :height="'125px'" :speed="0.75" class="m-auto" />
             </div>
 
@@ -607,6 +607,20 @@ export default{
             .then(response => {
                 this.agents = response.data.agents
                 this.searchView = this.agents
+            })
+
+            this.agents.forEach(agent => {
+                // Update All Agent Sources to an Object
+                this.sources.forEach(source => {
+                    if(source.code == agent.source){
+                        agent.source = source
+                    }
+                })
+
+                // Update Follow Up Date
+                if(agent.follow_up_date){
+                    agent.follow_up_date = moment(agent.follow_up_date).format('MM/DD/YYYY')
+                }
             })
 
             // Update url query with new filters
