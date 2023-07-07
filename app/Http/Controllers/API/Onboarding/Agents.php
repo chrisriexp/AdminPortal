@@ -14,6 +14,7 @@ class Agents extends Controller
     public $mga_carriers = [
         'aon'=> 'AON Edge',
         'beyond'=> 'Beyond Flood',
+        'cat'=> 'Cat Coverage',
         'dual'=> 'Dual Flood',
         'flow'=> 'Flow Flood',
         'neptune'=> 'Neptune',
