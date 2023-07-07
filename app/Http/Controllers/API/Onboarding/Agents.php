@@ -230,7 +230,7 @@ class Agents extends Controller
 
         if($response->success){
             // Create New MGA Company and enter email as username for the corresponding carriers
-            $email_user_carriers = ['aon', 'dual', 'flow', 'palomar', 'sterling'];
+            $email_user_carriers = ['aon', 'dual', 'flow', 'palomar', 'sterling', 'cat'];
 
             $newMGA_company = new mga_companies();
             $newMGA_company->rocket_id = $rocket_id;
@@ -260,6 +260,14 @@ class Agents extends Controller
                 $neptuneData->commission_id = $response->agentFLNo;
 
                 $mga_company->neptune = json_encode($neptuneData);
+                $mga_company->save();
+            }
+
+            if(!empty($response->cat_agent_id)){
+                $catData = json_decode($mga_company->cat);
+                $catData->commission_id = $response->cat_agent_id;
+
+                $mga_company->cat = json_encode($catData);
                 $mga_company->save();
             }
 

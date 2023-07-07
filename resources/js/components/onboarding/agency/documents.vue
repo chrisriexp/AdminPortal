@@ -86,6 +86,22 @@
                             <button @click="uploadType = 'dual_package' ; $refs.fileUploader.click()" class="w-fit h-fit"><Icon icon="mingcute:file-upload-fill" height="24" class="text-custom-black" /></button>
                         </div>
                     </div>
+
+                    <!-- Cat Coverage Package -->
+                    <div class="w-[23%] h-[48px] flow-root px-4 bg-sidebar-bg border-[1px] border-custom-black border-opacity-10 rounded-[2px]">
+                        <div class="w-fit h-full flex items-center font-medium float-left">
+                            <p>Cat Cov. Package</p>
+                        </div>
+
+                        <div class="w-fit h-full flex items-center gap-4 font-medium float-right">
+                            <!-- Download -->
+                            <a v-if="files.cat_package != null" :href="files.cat_package" target="_blank"><Icon icon="mingcute:file-download-fill" height="24" class="text-custom-purple" /></a>
+                            <Icon v-else icon="mdi:error" height="24" class="text-custom-purple" />
+
+                            <!-- Upload -->
+                            <button @click="uploadType = 'cat_package' ; $refs.fileUploader.click()" class="w-fit h-fit"><Icon icon="mingcute:file-upload-fill" height="24" class="text-custom-black" /></button>
+                        </div>
+                    </div>
                 </div>
             </div>
 

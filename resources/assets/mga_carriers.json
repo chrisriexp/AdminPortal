@@ -8,6 +8,10 @@
         "name": "Beyond Flood"
     },
     {
+        "code": "cat",
+        "name": "Cat Coverage"
+    },
+    {
         "code": "dual",
         "name": "Dual Flood"
     },
