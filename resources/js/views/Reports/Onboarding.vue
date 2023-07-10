@@ -183,10 +183,10 @@ export default {
                 }
             },
             lineGraphOptions: {
-                aspectRatio: 2
+                aspectRatio: 3
             },
             pieChartOptions: {
-                aspectRatio: 2,
+                aspectRatio: 3,
                 plugins: {
                     legend: {
                         position: 'left'
