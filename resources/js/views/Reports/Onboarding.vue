@@ -97,53 +97,44 @@
                 </div>
 
                 <!-- Paperwork Submitted By Rocket Rep -->
-                <div class="w-full h-fit grid gap-2">
-                    <p class="text-[18px] text-custom-black font-medium">Paperwork Submitted by Rocket Rep</p>
+                <div class="w-full h-fit grid gap-6 grid-cols-3">
+                    <!-- Pie Chart -->
+                    <Chart type="pie" :data="data.pieChart" :options="pieChartOptions" class="w-full col-span-2"  />
 
-                    <div class="w-full h-fit grid gap-6 grid-cols-3">
-                        <!-- Pie Chart -->
-                        <Chart type="pie" :data="data.pieChart" :options="pieChartOptions" class="w-full col-span-2"  />
+                    <div class="w-full h-fit p-4 rounded-[2px] shadow-newdrop">
+                        <p class="text-[16px] text-custom-black font-medium mb-4">Paperwork Submitted by Rep:</p>
 
-                        <div class="w-full h-fit p-4 rounded-[2px] shadow-newdrop">
-                            <p class="text-[16px] text-custom-black font-medium mb-4">Paperwork Submitted by Rep:</p>
-
-                            <div v-for="(rep, index) in data.pieChart.labels" :key="index" class="w-full h-fit grid grid-cols-5 py-2 text-[16px] text-custom-black border-b-[1px] border-custom-black border-opacity-10">
-                                <p class="w-full h-fit my-auto col-span-3 truncate">{{ rep }}</p>
-                                <p class="w-full h-fit my-auto grid justify-items-center">{{ data.pieChart.datasets[0].data[index] }}</p>
-                                
-                                <div class="w-full h-full flow-root">
-                                    <p :class="data.pieChart.datasets[0].data[index] / data.submitted * 100 > 30 ? 'bg-custom-green' : (data.pieChart.datasets[0].data[index] / data.submitted * 100 > 10 ? 'bg-custom-orange' : 'bg-custom-red')" class="w-fit h-full flex items-center float-right p-[5px] px-2 bg-opacity-20 rounded-full font-medium text-[14px] text-custom-black">{{ (data.pieChart.datasets[0].data[index] / data.submitted * 100).toFixed(2) }}%</p>
-                                </div>
+                        <div v-for="(rep, index) in data.pieChart.labels" :key="index" class="w-full h-fit grid grid-cols-5 py-2 text-[16px] text-custom-black border-b-[1px] border-custom-black border-opacity-10">
+                            <p class="w-full h-fit my-auto col-span-3 truncate">{{ rep }}</p>
+                            <p class="w-full h-fit my-auto grid justify-items-center">{{ data.pieChart.datasets[0].data[index] }}</p>
+                            
+                            <div class="w-full h-full flow-root">
+                                <p :class="data.pieChart.datasets[0].data[index] / data.submitted * 100 > 30 ? 'bg-custom-green' : (data.pieChart.datasets[0].data[index] / data.submitted * 100 > 10 ? 'bg-custom-orange' : 'bg-custom-red')" class="w-fit h-full flex items-center float-right p-[5px] px-2 bg-opacity-20 rounded-full font-medium text-[14px] text-custom-black">{{ (data.pieChart.datasets[0].data[index] / data.submitted * 100).toFixed(2) }}%</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Agencies Created During Date Range -->
-                <div class="w-full h-fit grid gap-2">
-                    <p class="text-[18px] text-custom-black font-medium">Agencies Created during Date Range</p>
-
-                    <!-- Bar Graph -->
-                    <Chart type="bar" :data="data.barGraph" :options="barGraphOptions" class="w-full"  />
-                </div>
-
-                <!-- Onboarding Stage Changes during Date Range -->
-                <div class="w-full h-fit grid gap-2">
-                    <p class="text-[18px] text-custom-black font-medium">Onboarding Stage Changes during Date Range</p>
-
-                    <!-- Line Graph -->
-                    <Chart type="line" :data="data.lineGraph" :options="lineGraphOptions" class="w-full"  />
-                </div>
-
                 <!-- Appointment Conversion % -->
-                <!-- <div class="w-full h-[336px] grid p-10 rounded-[4px] border-[1px] border-custom-black border-opacity-10 shadow-newdrop">
-                    <div class="w-full h-fit grid gap-2">
-                        <p class="text-[20px] text-custom-black font-semibold">Appointment Conversion</p>
-                        <p class="text-[16px] text-custom-black opacity-50">Here is the appointment conversion rate,</p>
+                <div class="w-full h-fit grid p-6 rounded-[4px] border-[1px] border-custom-black border-opacity-10 shadow-newdrop">
+                    <div class="w-full h-fit grid">
+                        <p class="text-[20px] text-custom-black font-semibold">Submission Conversion</p>
+                        <p class="text-[16px] text-custom-black opacity-50">Here is the all time submission conversion rate,</p>
                     </div>
     
-                    <Knob v-model="data.conversion" valueTemplate="{value}%" class="mx-auto" :size="175" :strokeWidth="5" disabled  />
-                </div> -->
+                    <div class="w-fit h-fit mx-auto mt-8 flex items-center gap-12 flex-wrap">
+                        <div v-for="(rep, index) in data.conversion" :key="index" class="w-fit h-fit grid justify-items-center">
+                            <p>{{ rep.name }}</p>
+                            <Knob v-model="rep.conv" valueTemplate="{value}%" class="mx-auto" :size="175" :strokeWidth="5" disabled  />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bar Graph -->
+                <Chart type="bar" :data="data.barGraph" :options="barGraphOptions" class="w-full"  />
+
+                <!-- Line Graph -->
+                <Chart type="line" :data="data.lineGraph" :options="lineGraphOptions" class="w-full"  />
             </div>
         </div>
     </div>
