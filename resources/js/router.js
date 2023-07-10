@@ -5,13 +5,13 @@ import NotFound from './views/NotFound.vue'
 import Dashboard from './views/Dashboard.vue'
 import Notebooks from './views/Notebooks.vue'
 import Settings from './views/Settings.vue'
-import Reports from './views/Reports.vue'
 import Pipeline from './views/Pipeline.vue'
 import REACTSubAgents from './views/REACT/SubAgents.vue'
 import REACTUploadStatements from './views/REACT/StatementUpload.vue'
 import REACTSubAgent from './views/REACT/SubAgent.vue'
 import OnboardingAgents from './views/Onboarding/Agents.vue'
 import OnboardingAgency from './views/Onboarding/Agency.vue'
+import OnboardingReport from './views/Reports/Onboarding.vue'
 import ROVERErrors from './views/ROVER/Errors.vue'
 import ROVERError from './views/ROVER/Error.vue'
 
@@ -38,10 +38,18 @@ const routes = [
         beforeEnter: validateAccessToken
     },
     {
-        path: "/reports/:category",
-        name: "Reports",
-        component: Reports,
-        beforeEnter: validateAccessToken
+        path: "/reports",
+        children: [
+            {
+                path: "onboarding",
+                name: "Report_Onboarding",
+                component: OnboardingReport,
+                meta: {
+                    onboarding: true
+                },
+                beforeEnter: validateAccessToken
+            },
+        ]
     },
     {
         path: "/dashboard",

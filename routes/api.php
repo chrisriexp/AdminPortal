@@ -140,7 +140,7 @@ Route::middleware('auth:sanctum')->get('/react/reports', [REACTReports::class, '
 Route::middleware('auth:sanctum')->post('/onboarding', [Agents::class, 'index']);
 Route::middleware('auth:sanctum')->post('/onboarding/followed-up/{rocket_id}', [Agents::class, 'followed_up']);
 Route::middleware('auth:sanctum')->get('/onboarding/follow-up-logs/{rocket_id}', [Agents::class, 'follow_up_logs']);
-Route::middleware('auth:sanctum')->get('/onboarding/reports', [OnboardingReports::class, 'index']);
+Route::middleware('auth:sanctum')->post('/onboarding/reports', [OnboardingReports::class, 'index']);
 Route::middleware('auth:sanctum')->get('/onboarding/agency/{rocket_id}/{category}', [Agents::class, 'agency']);
 Route::middleware('auth:sanctum')->put('/onboarding/agency/{rocket_id}/{category}', [Agents::class, 'admin_update']);
 Route::middleware('auth:sanctum')->get('/onboarding/approve/{rocket_id}', [Agents::class, 'approve']);

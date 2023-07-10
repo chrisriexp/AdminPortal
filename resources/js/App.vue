@@ -1,7 +1,7 @@
 <template>
-    <router-view/>
-    <notifications />
-    <Toast />
+  <notifications />
+  <Toast />
+  <router-view/>
 </template>
 
 <script>

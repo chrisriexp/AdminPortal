@@ -95,7 +95,7 @@ export default {
             }
         }
     },
-    async mounted(){
+    async created(){
         this.$emit('loading')
 
         await axios.get('/api/rover/reports')

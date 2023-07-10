@@ -194,7 +194,7 @@ export default {
             }
         }
     },
-    async mounted(){
+    async created(){
         this.$emit('loading')
 
         this.moment = moment

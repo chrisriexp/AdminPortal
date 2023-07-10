@@ -10,8 +10,9 @@
                 <router-link :to="{name: 'Notebooks'}" :class="active == 'notebooks' ? 'bg-custom-purple text-white' : 'text-custom-black opacity-50'" class="flex items-center gap-2 px-4 py-[4px] text-[16px] font-medium rounded-[4px]"><Icon :icon="'icon-park-solid:notes'" height="24" class="m-auto" /> <span>Notebooks</span></router-link>
                 <router-link :to="{name: 'Pipeline', params: {project: 'my-tasks'}}" :class="active == 'pipeline' ? 'bg-custom-purple text-white' : 'text-custom-black opacity-50'" class="flex items-center gap-2 px-4 py-[4px] text-[16px] font-medium rounded-[4px]"><Icon :icon="'icon-park-solid:connection-point'" height="24" class="m-auto" /> <span>Pipelines</span></router-link>
                 
+                <!-- Modules Menu -->
                 <button @click="toggle_modules_menu" aria-haspopup="true" aria-controls="modules_menu" :class="active=='modules' ? 'bg-custom-purple text-white' : 'text-custom-black opacity-50'" class="flex items-center gap-2 px-4 py-[4px] text-[16px] font-medium rounded-[4px]"><Icon :icon="'material-symbols:space-dashboard-rounded'" height="24" class="m-auto" />Modules</button>
-                <Menu ref="modules_menu" id="modules_menu" :model="module_items" :popup="true" class="text-[16px] text-custom-black dark:text-white" />
+                <Menu ref="modules_menu" id="modules_menu" :model="module_items" :popup="true" class="w-fit text-[16px] text-custom-black dark:text-white" />
             </div>
         </div>
 
@@ -39,7 +40,7 @@ export default{
     props: {
         active: {
             type: String,
-            defaut: 'null'
+            default: 'null'
         }
     },
     data(){
@@ -55,13 +56,6 @@ export default{
                     icon: 'pi pi-compass',
                     command: async () => {
                         this.reminders = true
-                    }
-                },
-                {
-                    label: 'Reports',
-                    icon: 'pi pi-chart-bar',
-                    command: async () => {
-                        this.$router.push({name: 'Reports', params: {category: 'onboarding'}})
                     }
                 },
                 {
@@ -93,33 +87,88 @@ export default{
                     }
                 }
             ],
-            module_items: [
-                {
-                    label: 'MGA Onboarding',
-                    icon: '',
-                    command: async () => {
-                        this.$router.push({name: 'Onboarding_Agents'})
+            module_items: [],
+            onboarding: {
+                label: 'MGA Onboarding',
+                icon: '',
+                items: [
+                    {
+                        label: 'Agents',
+                        icon: 'pi pi-users',
+                        command: async () => {
+                            this.$router.push({name: 'Onboarding_Agents'})
+                        }
+                    },
+                    {
+                        label: 'Reports',
+                        icon: 'pi pi-chart-line',
+                        command: async () => {
+                            this.$router.push({name: 'Report_Onboarding'})
+                        }
                     }
-                },
-                {
-                    label: 'ROVER',
-                    icon: '',
-                    command: async () => {
-                        this.$router.push({name: 'ROVER_Errors'})
+                ]
+                
+            },
+            rover: {
+                label: 'ROVER',
+                icon: '',
+                items: [
+                    {
+                        label: 'Errors',
+                        icon: 'pi pi-exclamation-circle',
+                        command: async () => {
+                            this.$router.push({name: 'ROVER_Errors'})
+                        }
+                    },
+                    {
+                        label: 'Reports',
+                        icon: 'pi pi-chart-bar',
+                        command: async () => {
+                            
+                        }
                     }
-                },
-                {
-                    label: 'REACT',
-                    icon: '',
-                    command: async () => {
-                        this.$router.push({name: 'REACT_SubAgents'})
+                ]
+            },
+            react:  {
+                label: 'REACT',
+                icon: '',
+                items: [
+                    {
+                        label: 'Statement Upload',
+                        icon: 'pi pi-cloud-upload',
+                        command: async () => {
+                            this.$router.push({name: 'REACT_UploadStatements'})
+                        }
+                    },
+                    {
+                        label: 'MGA Companies',
+                        icon: 'pi pi-list',
+                        command: async () => {
+                            this.$router.push({name: 'REACT_SubAgents'})
+                        }
+                    },
+                    {
+                        label: 'Commissions',
+                        icon: 'pi pi-money-bill',
+                        command: async () => {
+                            
+                        }
+                    },
+                    {
+                        label: 'Reports',
+                        icon: 'pi pi-chart-pie',
+                        command: async () => {
+                            
+                        }
                     }
-                }
-            ]
+                ]
+            }
         }
     },
     async created(){
         this.role = this.$route.meta.role
+
+        const modules = ['onboarding', 'rover', 'react']
 
         await axios.get('/api/user')
         .then(response => {
@@ -128,6 +177,12 @@ export default{
             const i2 = Array.from(names[1])[0]
             this.initals = i1+i2
             this.name = response.data.name
+
+            modules.forEach(module => {
+                if(response.data[module] == 1){
+                    this.module_items.push(this[module])
+                }
+            })
         })
     },
     methods: {

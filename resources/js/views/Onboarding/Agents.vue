@@ -598,6 +598,39 @@ export default{
                 this.searchView = this.agents
             })
 
+            this.agents.forEach(agent => {
+                // Update All Agent Sources to an Object
+                this.sources.forEach(source => {
+                    if(source.code == agent.source){
+                        agent.source = source
+                    }
+                })
+
+                // Update Follow Up Date
+                if(agent.follow_up_date){
+                    agent.follow_up_date = moment(agent.follow_up_date).format('MM/DD/YYYY')
+                }
+            })
+
+            // Update url query with new filters
+            let filterQuery = {}
+
+            keys.forEach(key => {
+                if(Array.isArray(this.filters[key])){
+                    let values = []
+
+                    this.filters[key].forEach(value => {
+                        values.push(value.code)
+                    })
+
+                    filterQuery[key] = values
+                }else{
+                    filterQuery[key] = this.filters[key].code
+                }
+            })
+
+            this.$router.push({query: filterQuery})
+
             this.loading = false
         },
         async applyFilters(){

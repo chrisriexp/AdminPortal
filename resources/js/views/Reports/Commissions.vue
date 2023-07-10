@@ -140,7 +140,7 @@ export default {
             onLoad: true,
         }
     },
-    async mounted(){
+    async created(){
         this.$emit('loading')
 
         this.moment = moment

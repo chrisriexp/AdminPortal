@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Http;
 class OnboardingReports extends Controller
 {
     public function index(Request $request){
-        $data = Http::withHeaders(['token'=>'27b00fca-4d9e-4e28-85ce-54f16af26c0b'])->get('https://onboarding.rocketmga.com/api/admin-portal/reports');
+        $data = Http::withHeaders(['token'=>'27b00fca-4d9e-4e28-85ce-54f16af26c0b'])->post('https://onboarding.rocketmga.com/api/admin-portal/reports', [
+            "filters"=> $request->filters
+        ]);
 
         $response = json_decode($data);
 
