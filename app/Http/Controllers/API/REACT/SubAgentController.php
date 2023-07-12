@@ -77,8 +77,8 @@ class SubAgentController extends Controller
         }
 
         // Decode Cat Coverage
-        $agent->cat = json_decode($agent->cat);
-        $agent->cat->direct = false;
+        // $agent->cat = json_decode($agent->cat);
+        // $agent->cat->direct = false;
 
         $response = [
             'success'=> true,
