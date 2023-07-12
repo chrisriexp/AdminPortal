@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\mga_companies;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 
 class checkMGACompanies extends Command
 {

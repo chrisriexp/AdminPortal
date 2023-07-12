@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('rocket_id')->primary();
             $table->string('status')->default('Information Required');
             $table->string('document')->nullable();
-            $table->longText('data')->default('{"agency_name": null, "agent_name": null, "phone": null, "email": null, "address1": null, "address2": null, "city": null, "state": null, "zip": null, "agency_type": null, "agency_tax_id": null, "agency_license": null, "agent_npn": null, "eo_policy": null, "eo_insurer": null, "eo_limit": null, "eo_exp": null}');
+            $table->json('data');
             $table->boolean('appointed')->default(false);
             $table->timestamps();
         });
