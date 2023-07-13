@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\checkMGACompanies::class,
-        Commands\appoint_back_cat::class,
+        Commands\appointBackCatCov::class,
     ];
 
     /**

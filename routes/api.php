@@ -6,6 +6,7 @@ use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\API\NotebookController;
 use App\Http\Controllers\API\NotificationsController;
 use App\Http\Controllers\API\Onboarding\Agents;
+use App\Http\Controllers\API\Onboarding\BackLogsController;
 use App\Http\Controllers\API\OpenAI\QuickToolsAIController;
 use App\Http\Controllers\API\Pipeline\CommentsController;
 use App\Http\Controllers\API\Pipeline\ProjectsController;
@@ -145,6 +146,10 @@ Route::middleware('auth:sanctum')->get('/onboarding/agency/{rocket_id}/{category
 Route::middleware('auth:sanctum')->put('/onboarding/agency/{rocket_id}/{category}', [Agents::class, 'admin_update']);
 Route::middleware('auth:sanctum')->get('/onboarding/approve/{rocket_id}', [Agents::class, 'approve']);
 Route::middleware('auth:sanctum')->get('/onboarding/finalize/{rocket_id}/{force}', [Agents::class, 'finalize']);
+
+// Back Logs Controllers
+Route::middleware('auth:sanctum')->get('/onboarding/backlogs/{carrier}', [BackLogsController::class, 'carrier']);
+Route::middleware('auth:sanctum')->post('/onboarding/backlogs/{carrier}', [BackLogsController::class, 'update_carrier']);
 
 // ROVER Controller
 Route::middleware('auth:sanctum')->post('rover/errors', [ErrorsController::class, 'index']);

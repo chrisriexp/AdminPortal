@@ -75,6 +75,12 @@ input:focus{
   background: #fff;
 }
 
+.p-menubar .p-menubar-root-list>.p-menuitem>.p-menuitem-content .p-menuitem-link .p-menuitem-text{
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(33, 33, 33, 0.5)
+}
+
 .ql-snow .ql-editor pre.ql-syntax{
   color: #F1BD6C !important;
   width: fit-content;
