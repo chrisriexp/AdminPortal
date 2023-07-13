@@ -296,6 +296,7 @@ class Agents extends Controller
         $carrier_links = [
             "AON Edge"=> "https://c68-prod.diamondasaservice.com/DiamondWeb/(S(bwzhni2uocizhp1ynvlnrcj5))/agency",
             "Beyond Flood"=> "https://natgenagency.com/",
+            "Cat Coverage"=> "https://portal.catcoverage.com/home.aspx",
             "Dual Flood"=> "https://app.dualna.com/flood/login?returnUrl=%2Fquotes",
             "Flow Flood"=> "https://agents.flowinsurance.com/Public/AgentLogin",
             "Neptune"=> "https://neptuneflood.com/agent-hub/#/login?redirect=%2Fhome",
