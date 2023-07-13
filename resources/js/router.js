@@ -12,6 +12,7 @@ import REACTSubAgent from './views/REACT/SubAgent.vue'
 import OnboardingAgents from './views/Onboarding/Agents.vue'
 import OnboardingAgency from './views/Onboarding/Agency.vue'
 import OnboardingReport from './views/Reports/Onboarding.vue'
+import CatCovBackLog from './views/Onboarding/BackLogs/CatCoverage.vue'
 import ROVERErrors from './views/ROVER/Errors.vue'
 import ROVERError from './views/ROVER/Error.vue'
 
@@ -111,6 +112,12 @@ const routes = [
                 path: "agency/:rocket_id/:category",
                 name: "Onboarding_Agency",
                 component: OnboardingAgency,
+                beforeEnter: validateAccessToken
+            },
+            {
+                path: "backlogs/catcoverage",
+                name: "CatCovBackLog",
+                component: CatCovBackLog,
                 beforeEnter: validateAccessToken
             }
         ]

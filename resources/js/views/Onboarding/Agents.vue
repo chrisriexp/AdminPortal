@@ -496,7 +496,6 @@ export default{
             if(this.agent){
                 await axios.get('/api/onboarding/follow-up-logs/'+value.rocket_id)
                 .then(response => {
-                    console.log(response)
                     this.agent.follow_up_logs = response.data.logs
                 })
             }
@@ -558,7 +557,6 @@ export default{
 
             await axios.get('/api/onboarding/follow-up-logs/'+this.agent.rocket_id)
             .then(response => {
-                console.log(response)
                 this.agent.follow_up_logs = response.data.logs
             })
 

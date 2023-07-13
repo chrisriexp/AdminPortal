@@ -17,7 +17,9 @@ class appoint_back_cat extends Model
         'status',
         'document',
         'data',
-        'appointed'
+        'appointed',
+        'pass',
+        'subagent_api'
     ];
 
     protected $attributes = [

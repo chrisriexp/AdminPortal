@@ -105,6 +105,13 @@ export default{
                         command: async () => {
                             this.$router.push({name: 'Report_Onboarding'})
                         }
+                    },
+                    {
+                        label: 'Cat Coverage BackLogs',
+                        icon: 'pi pi-history',
+                        command: async () => {
+                            this.$router.push({name: 'CatCovBackLog'})
+                        }
                     }
                 ]
                 
